@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import SearchBar from '@/components/navbar/SearchBar.vue'
-import { h, ref } from 'vue'
+import { h, reactive, ref } from 'vue'
 import type { MenuProps } from 'ant-design-vue'
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons-vue'
+import { AppstoreOutlined, MailOutlined, UserOutlined } from '@ant-design/icons-vue'
+
 
 
 // Menu
@@ -62,6 +63,20 @@ const menuRightItems = ref<MenuProps['items']>([
   },
 ])
 
+// Avatar
+const avatarStyle = reactive({
+  transform: 'translate(0, 0) scale(1)',
+  transition: 'transform 0.3s',
+})
+const avatarMouseEnter = () => {
+  console.log('avatarMouseEnter', avatarStyle)
+  avatarStyle.transform = 'translate(0, 13px) scale(1.5)'
+}
+const avatarMouseLeave = () => {
+  console.log('avatarMouseLeave', avatarStyle)
+  avatarStyle.transform = 'translate(0, 0) scale(1)'
+}
+
 </script>
 
 <template>
@@ -88,23 +103,25 @@ const menuRightItems = ref<MenuProps['items']>([
       <a-col :span="8" class="flex-col">
         <a-flex class="right-part">
           <div class="user-info">
-            <a-avatar style="background-color: #87d068" icon="user" />
-            <a-dropdown>
-              <a class="ant-dropdown-link" href="#">
-                <a-icon type="down" />
-              </a>
-              <a-menu slot="overlay">
-                <a-menu-item>
-                  <a href="#">我的主页</a>
-                </a-menu-item>
-                <a-menu-item>
-                  <a href="#">设置</a>
-                </a-menu-item>
-                <a-menu-item>
-                  <a href="#">退出登录</a>
-                </a-menu-item>
-              </a-menu>
-            </a-dropdown>
+            <a-popover placement="bottom">
+              <template #content>
+                <p>Content</p>
+                <p>Content</p>
+              </template>
+              <template #title>
+                <span>Title</span>
+              </template>
+              <a-avatar
+                :style="avatarStyle"
+                @mouseenter="avatarMouseEnter"
+                @mouseleave="avatarMouseLeave"
+                style="background-color: #87d068"
+              >
+                <template #icon>
+                  <UserOutlined />
+                </template>
+              </a-avatar>
+            </a-popover>
           </div>
           <a-menu
             mode="horizontal"
@@ -156,4 +173,9 @@ const menuRightItems = ref<MenuProps['items']>([
 .user-info {
   margin: 10px 12px;
 }
+/*
+.user-info-popover:hover {
+  transform: translate(0, 13px) scale(1.5);
+  transition: transform .3s;
+}*/
 </style>
