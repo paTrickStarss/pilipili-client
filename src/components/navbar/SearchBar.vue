@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { message } from 'ant-design-vue'
 
 // const props = defineProps({
 //   content: {
@@ -10,6 +11,10 @@ import { ref } from 'vue'
 // })
 
 const contentValue = ref<string>()
+
+const onSearch = (value: string) => {
+  message.info(`onSearch: ${value}`)
+}
 </script>
 
 <template>
@@ -18,6 +23,7 @@ const contentValue = ref<string>()
       placeholder="Enter something"
       class="search-input"
       v-model="contentValue"
+      @search="onSearch"
     />
   </div>
 </template>

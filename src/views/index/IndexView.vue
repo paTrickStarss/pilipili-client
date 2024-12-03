@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import NavBar from '@/components/navbar/NavBar.vue'
 import VideoInfoCard from '@/components/video/VideoInfoCard.vue'
+import { PlusOutlined, RedoOutlined } from '@ant-design/icons-vue'
 
 // 瀑布流
 const initialData = {
@@ -41,17 +42,22 @@ function resetFlowList() {
 <!--      内容主体-->
       <div class="content">
 <!--        顶部宽屏大图-->
-        <a-row :gutter="24" class="landscape-card water-fall">
-          <a-skeleton />
+        <a-row class="banner-card">
+<!--          <a-skeleton />-->
+          <a-image
+            width="100%" height="100%"
+            src="src/assets/image/foster-lake.jpg"
+            :preview="false"
+          />
         </a-row>
 <!--        推荐区域-->
-        <a-row :gutter="24" class="recommend-card water-fall">
+        <a-row  class="recommend-card content-margin">
 <!--          轮播图-->
-          <a-col :span="12">
+          <a-col :span="12" class="recommend-col">
             <a-skeleton />
           </a-col>
 <!--          推荐视频-->
-          <a-col :span="12">
+          <a-col :span="12" class="recommend-col">
             <a-row>
               <a-col :span="8"><VideoInfoCard/></a-col>
               <a-col :span="8"><VideoInfoCard/></a-col>
@@ -64,28 +70,48 @@ function resetFlowList() {
             </a-row>
           </a-col>
         </a-row>
+      </div>
 
-<!--        瀑布流-->
-        <div>
-          <a-row
-            v-for="flow in flowList"
-            :key="flow"
-            :gutter="24"
-            class="water-fall"
-          >
-            <a-skeleton :active="flow.loading" />
-          </a-row>
-        </div>
+      <!--        瀑布流-->
+      <div class="content-margin">
+        <a-row
+          v-for="flow in flowList"
+          :key="flow"
+          :gutter="24"
+          class="water-fall"
+        >
+          <a-skeleton v-if="flow.loading" :active="flow.loading" />
+          <template v-else>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+            <a-col :span="4"><VideoInfoCard/></a-col>
+          </template>
+        </a-row>
       </div>
 
 <!--      页脚-->
       <div class="footer">footer</div>
     </a-flex>
 
-    <a-affix :offset-bottom="200" class="affix-style">
-      <a-button class="affix-button" @click="loadData">Add a row</a-button><br>
-      <a-button class="affix-button" @click="resetFlowList">Reset</a-button>
-    </a-affix>
+    <a-float-button
+      type="primary" @click="loadData"
+      :style="{right: '24px', bottom: '128px'}"
+    >
+      <template #icon>
+        <PlusOutlined />
+      </template>
+    </a-float-button>
+    <a-float-button
+      @click="resetFlowList" v-if="flowList.length !== 1"
+      :style="{right: '24px', bottom: '72px'}"
+    >
+      <template #icon>
+        <RedoOutlined />
+      </template>
+    </a-float-button>
   </div>
 </template>
 
@@ -106,7 +132,7 @@ function resetFlowList() {
   display: flex;
   flex-direction: column;
   text-align: center;
-  min-height: 800px;
+  min-height: 600px;
   width: 100%;
 }
 .footer {
@@ -117,20 +143,20 @@ function resetFlowList() {
   background-color: grey;
   height: 100px;
 }
-.affix-style {
-  text-align: right;
-}
-.affix-button {
-  margin: 10px 20px;
-}
 
 .water-fall {
   width: 100%;
 }
-.landscape-card {
+.banner-card {
   height: 200px;
 }
 .recommend-card {
-  height: 100%;
+  height: 500px;
+}
+.recommend-col {
+  margin: auto 0;
+}
+.content-margin {
+  margin: 0 50px;
 }
 </style>
