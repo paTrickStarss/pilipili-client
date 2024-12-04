@@ -1,14 +1,10 @@
+<!--
+  - Copyright (c) 2024. Bubble
+  -->
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
-
-// const props = defineProps({
-//   content: {
-//     type: String,
-//     default: '',
-//     required: true
-//   }
-// })
 
 const contentValue = ref<string>()
 

@@ -1,9 +1,14 @@
+<!--
+  - Copyright (c) 2024. Bubble
+  -->
+
 <script setup lang="ts">
 import SearchBar from '@/components/navbar/SearchBar.vue'
 import MenuBar from '@/components/navbar/MenuBar.vue'
-import { h, reactive, ref } from 'vue'
-import { AppstoreOutlined, MailOutlined, UserOutlined } from '@ant-design/icons-vue'
-import type { MenuItemType } from '@/utils/PropsType'
+import { reactive, ref } from 'vue'
+import { UserOutlined } from '@ant-design/icons-vue'
+import type { MenuItemType, UserInfoType } from '@/utils/PropsType'
+import { openLink } from '@/utils/CommonUtil'
 
 
 // Menu
@@ -62,6 +67,12 @@ const menuRightItems = ref<MenuItemType[]>([
 
 
 // Avatar
+const userInfo = reactive<UserInfoType>({
+  uid: 233,
+  username: 'Patrick_XRay',
+  spaceUrl: 'https://space.bilibili.com/472980323',
+  desc: 'This is Patrick speaking...'
+})
 const avatarStyle = reactive({
   transform: 'translate(0, 0) scale(1)',
   transition: 'transform 0.3s',
@@ -111,6 +122,7 @@ const avatarMouseLeave = () => {
                 :style="avatarStyle"
                 @mouseenter="avatarMouseEnter"
                 @mouseleave="avatarMouseLeave"
+                @click="$emit('openLoginModal')"
                 style="background-color: #87d068"
               >
                 <template #icon>
@@ -131,7 +143,6 @@ const avatarMouseLeave = () => {
   padding: 0 8px;
   display: flex;
   justify-content: center;
-  background: rgb(255, 255, 255, .8) !important;
 }
 .header-col {
   justify-content: center;
@@ -157,6 +168,7 @@ const avatarMouseLeave = () => {
 
 .user-info {
   margin: 10px 12px;
+  cursor: pointer;
 }
 /*
 .user-info-popover:hover {

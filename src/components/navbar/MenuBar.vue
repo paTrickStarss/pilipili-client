@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) 2024. Bubble
+  -->
+
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { message } from 'ant-design-vue'

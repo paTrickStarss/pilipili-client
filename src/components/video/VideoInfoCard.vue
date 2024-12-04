@@ -1,30 +1,31 @@
+<!--
+  - Copyright (c) 2024. Bubble
+  -->
+
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
 import { openLink } from '@/utils/CommonUtil'
+import type { VideoCardInfoType } from '@/utils/PropsType'
 
-const videoInfo = reactive({
-  title: '[514座!]这架老年波音777竟然能装这么多人',
-  author: 'Hayabusa42',
-  publishDate: '2024-12-01',
-  isFollow: true,
-  url: 'https://www.bilibili.com/video/BV1ycztYWEPD'
-})
+const props = defineProps<{
+  videoCardInfo: VideoCardInfoType
+}>()
 
 </script>
 
 <template>
   <div class="video-info-card">
-    <div class="video-cover" @click="openLink(videoInfo.url)">
-      <img src="@/assets/image/OIP-C.jpg" alt="video cover">
+    <div class="video-cover" @click="openLink(props.videoCardInfo.linkUrl)">
+      <img :src="props.videoCardInfo.coverUrl" alt="video cover">
     </div>
     <div class="card-bottom">
       <div style="text-align: start">
         <div class="video-title">
-          {{ videoInfo.title }}
+          {{ props.videoCardInfo.title }}
         </div>
         <p class="video-author">
-          {{ videoInfo.author }}
+          {{ props.videoCardInfo.authorName }}
         </p>
       </div>
       <div class="toolbox-btn">
@@ -62,6 +63,7 @@ const videoInfo = reactive({
   max-height: 100%;
   max-width: 100%;
   object-fit: cover;
+  cursor: pointer;
 }
 .card-bottom {
   display: flex;
