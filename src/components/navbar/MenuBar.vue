@@ -13,7 +13,6 @@ const props = defineProps<MenuItemProps>()
 onMounted(() => {
   // message.info(`onMounted: ${JSON.stringify(props)}`)
 })
-
 </script>
 
 <template>
@@ -36,13 +35,15 @@ onMounted(() => {
   justify-content: space-between;
   margin: 0 10px;
 }
+
 .menu-item {
   inline-size: 80px;
   margin: 0 10px;
   text-align: center;
-  transition: transform .2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   user-select: none;
 }
+
 .menu-item:hover {
   transform: translateY(-5px);
   cursor: pointer;

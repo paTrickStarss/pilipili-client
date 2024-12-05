@@ -10,32 +10,31 @@ import { UserOutlined } from '@ant-design/icons-vue'
 import type { MenuItemType, UserInfoType } from '@/utils/PropsType'
 import { openLink } from '@/utils/CommonUtil'
 
-
 // Menu
 const menuLeftItems = ref<MenuItemType[]>([
   {
     id: 0,
     label: '首页',
     url: 'https://bilibili.com',
-    desc: 'PiliPili'
+    desc: 'PiliPili',
   },
   {
     id: 1,
     label: '分区1',
     url: '#',
-    desc: ''
+    desc: '',
   },
   {
     id: 2,
     label: '分区2',
     url: '#',
-    desc: ''
+    desc: '',
   },
   {
     id: 3,
     label: '分区3',
     url: '#',
-    desc: ''
+    desc: '',
   },
 ])
 const menuRightItems = ref<MenuItemType[]>([
@@ -43,35 +42,34 @@ const menuRightItems = ref<MenuItemType[]>([
     id: 100,
     label: '会员',
     url: 'https://space.bilibili.com/472980323',
-    desc: 'PiliPili'
+    desc: 'PiliPili',
   },
   {
     id: 101,
     label: '功能1',
     url: 'https://bing.com',
-    desc: ''
+    desc: '',
   },
   {
     id: 102,
     label: '功能2',
     url: 'https://ifconfig.me',
-    desc: ''
+    desc: '',
   },
   {
     id: 103,
     label: '功能3',
     url: 'https://www.gov.cn',
-    desc: ''
+    desc: '',
   },
 ])
-
 
 // Avatar
 const userInfo = reactive<UserInfoType>({
   uid: 233,
   username: 'Patrick_XRay',
   spaceUrl: 'https://space.bilibili.com/472980323',
-  desc: 'This is Patrick speaking...'
+  desc: 'This is Patrick speaking...',
 })
 const avatarStyle = reactive({
   transform: 'translate(0, 0) scale(1)',
@@ -85,7 +83,6 @@ const avatarMouseLeave = () => {
   console.log('avatarMouseLeave', avatarStyle)
   avatarStyle.transform = 'translate(0, 0) scale(1)'
 }
-
 </script>
 
 <template>
@@ -93,10 +90,12 @@ const avatarMouseLeave = () => {
     <a-row>
       <a-col :span="8" class="flex-col">
         <a-flex class="header-col">
-          <div class="logo" >
+          <div class="logo">
             <a-image
-              width="100%" height="100%"
-              src="src/assets/logo.svg" :preview="false"
+              width="100%"
+              height="100%"
+              src="src/assets/logo.svg"
+              :preview="false"
             />
           </div>
           <MenuBar :menu-items="menuLeftItems" />
@@ -104,7 +103,7 @@ const avatarMouseLeave = () => {
       </a-col>
       <a-col :span="8" class="flex-col">
         <a-flex class="header-col">
-          <SearchBar/>
+          <SearchBar />
         </a-flex>
       </a-col>
       <a-col :span="8" class="flex-col">
@@ -144,6 +143,7 @@ const avatarMouseLeave = () => {
   display: flex;
   justify-content: center;
 }
+
 .header-col {
   justify-content: center;
 }
@@ -159,17 +159,19 @@ const avatarMouseLeave = () => {
   background: rgba(255, 255, 255, 0.2);
   margin: 10px 12px;
 }
+
 .menu-bar {
   line-height: 32px;
   width: 450px;
   align-items: center;
-  background: rgb(255, 255, 255, .8) !important;
+  background: rgb(255, 255, 255, 0.8) !important;
 }
 
 .user-info {
   margin: 10px 12px;
   cursor: pointer;
 }
+
 /*
 .user-info-popover:hover {
   transform: translate(0, 13px) scale(1.5);

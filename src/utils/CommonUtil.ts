@@ -7,7 +7,7 @@
  * @param url 链接
  */
 export function openLink(url: string): void {
-  window.open(url, "_blank");
+  window.open(url, '_blank')
 }
 
 /**
@@ -16,7 +16,7 @@ export function openLink(url: string): void {
  * @param max 最大值（不包含）
  */
 export function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 /**
@@ -24,29 +24,29 @@ export function randomInt(min: number, max: number): number {
  * @param obj 拷贝源对象
  */
 export function deepCopy<T>(obj: T): T {
-  if (obj === undefined || obj == null || typeof obj !== "object") {
-    return obj;
+  if (obj === undefined || obj == null || typeof obj !== 'object') {
+    return obj
   }
 
   if (obj instanceof Date) {
-    return new Date(obj.getTime()) as T;
+    return new Date(obj.getTime()) as T
   }
 
   if (obj instanceof Array) {
     const cloneArray: T[] = []
-    obj.forEach(item => cloneArray.push(item));
-    return cloneArray.map(value => deepCopy<T>(value)) as T;
+    obj.forEach(item => cloneArray.push(item))
+    return cloneArray.map(value => deepCopy<T>(value)) as T
   }
 
   if (obj instanceof Object) {
-    const result = {...(obj as {[key: string]: T})} as {[key: string]: T};
+    const result = { ...(obj as { [key: string]: T }) } as { [key: string]: T }
     for (const attr in obj) {
       if ((obj as object).hasOwnProperty(attr)) {
-        result[attr] = deepCopy<T>(obj[attr] as T);
+        result[attr] = deepCopy<T>(obj[attr] as T)
       }
     }
-    return result as T;
+    return result as T
   }
 
-  return obj;
+  return obj
 }

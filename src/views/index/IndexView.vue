@@ -19,6 +19,7 @@ import type {
   VideoCardInfoType,
 } from '@/utils/PropsType'
 import { deepCopy, openLink, randomInt } from '@/utils/CommonUtil'
+import LoginModal from '@/components/LoginModal.vue'
 
 // 轮播图
 const carouselList = ref<Array<CarouselInfoType>>([])
@@ -48,6 +49,7 @@ const flowList = ref<Array<VideoCardFlowInfoType>>([])
 const loading = ref<boolean>(false)
 const isEnd = ref<boolean>(false)
 const maxRow = 5
+
 async function loadData() {
   if (flowList.value.length >= maxRow * 5) {
     if (!isEnd.value) {
@@ -60,6 +62,7 @@ async function loadData() {
     await loadOneData()
   }
 }
+
 async function loadOneData() {
   // const videoCardInfo = JSON.parse(JSON.stringify(demoVideoCardInfo))
   const videoCardInfo = deepCopy<VideoCardInfoType>(demoVideoCardInfo)
@@ -81,6 +84,7 @@ async function loadOneData() {
     loading.value = false
   }, 1000)
 }
+
 function resetFlowList() {
   flowList.value = []
   isEnd.value = false
@@ -92,6 +96,7 @@ const headerStyle = reactive({
   backgroundColor: 'transparent',
   boxShadow: '0 5px 8px rgba(255, 255, 255, 0.5)',
 })
+
 function switchNavBarBackground(isTransparent: boolean) {
   isNavBarTransparent.value = isTransparent
   headerStyle.backgroundColor = isNavBarTransparent.value
@@ -103,16 +108,18 @@ function switchNavBarBackground(isTransparent: boolean) {
   console.log('switchNavBarBackground', isTransparent, headerStyle)
 }
 
-
 // 登录弹窗
 const loginModalVisible = ref<boolean>(false)
+
 function openLoginModal() {
   loginModalVisible.value = true
 }
+
 function handleCancel() {
   message.info('handleCancel')
   loginModalVisible.value = false
 }
+
 function handleOk() {
   message.info('handleOk')
 }
@@ -196,11 +203,8 @@ onUnmounted(() => {
                 @click="openLink(item.linkUrl)"
               >
                 <h3>{{ item.id + 1 }}</h3>
-                <br>
-                <img
-                  :src="item.imageUrl"
-                  :alt="item.desc"
-                />
+                <br />
+                <img :src="item.imageUrl" :alt="item.desc" />
               </div>
             </a-carousel>
           </div>
@@ -263,18 +267,12 @@ onUnmounted(() => {
       </template>
     </a-float-button>
 
-<!--    登录弹窗-->
-    <a-modal v-model:open="loginModalVisible" title="Title">
-      <template #footer>
-        <a-button key="back" @click="handleCancel">Return</a-button>
-        <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
-      </template>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-    </a-modal>
+    <!--    登录弹窗-->
+    <LoginModal
+      v-model:visible="loginModalVisible"
+      @close="handleCancel"
+      @commit="handleOk"
+    />
   </div>
 </template>
 
@@ -283,6 +281,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
 }
+
 .header {
   display: flex;
   position: fixed;
@@ -290,6 +289,7 @@ onUnmounted(() => {
   z-index: 1000;
   transition: all 0.3s;
 }
+
 .content {
   display: flex;
   flex-direction: column;
@@ -297,6 +297,7 @@ onUnmounted(() => {
   min-height: 600px;
   width: 100%;
 }
+
 .footer {
   display: flex;
   justify-content: center;
@@ -315,21 +316,26 @@ onUnmounted(() => {
   grid-template-columns: repeat(5, minmax(200px, 1fr));
   grid-gap: 10px;
 }
+
 .grid-item {
   padding: 10px 5px;
 }
+
 .grid-item-col-2 {
   grid-column: 1 / 3;
   grid-row: 1 / 3;
 }
+
 .carousel-content {
   margin-block-start: auto;
 }
+
 .carousel-content img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .content-margin {
   margin: 0 50px;
 }
