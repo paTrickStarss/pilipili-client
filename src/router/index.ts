@@ -1,23 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import IndexView from '@/views/index/IndexView.vue'
+import MainPageView from '@/views/main/MainPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'indexView',
-      component: IndexView,
+      name: 'MainPageView',
+      component: MainPageView,
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/space/:id?',
+      name: 'space',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('@/views/space/UserSpaceView.vue'),
     },
   ],
 })
+
+// router.beforeEach((to, from, next) => {
+//
+// })
+//
+// router.afterEach((to, from, next) => {
+//
+// })
 
 export default router

@@ -7,32 +7,37 @@ import SearchBar from '@/components/navbar/SearchBar.vue'
 import MenuBar from '@/components/navbar/MenuBar.vue'
 import { reactive, ref } from 'vue'
 import { UserOutlined } from '@ant-design/icons-vue'
-import type { MenuItemType, UserInfoType } from '@/utils/PropsType'
-import { openLink } from '@/utils/CommonUtil'
+import type { MenuItemType } from '@/utils/PropsType'
+import { useUserStore } from '@/stores/user'
+import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 
 // Menu
 const menuLeftItems = ref<MenuItemType[]>([
   {
     id: 0,
     label: '首页',
+    routePath: '/',
     url: 'https://bilibili.com',
     desc: 'PiliPili',
   },
   {
     id: 1,
     label: '分区1',
+    routePath: '/',
     url: '#',
     desc: '',
   },
   {
     id: 2,
     label: '分区2',
+    routePath: '/',
     url: '#',
     desc: '',
   },
   {
     id: 3,
     label: '分区3',
+    routePath: '/',
     url: '#',
     desc: '',
   },
@@ -41,36 +46,42 @@ const menuRightItems = ref<MenuItemType[]>([
   {
     id: 100,
     label: '会员',
+    routePath: '/space/472980323',
     url: 'https://space.bilibili.com/472980323',
     desc: 'PiliPili',
   },
   {
     id: 101,
     label: '功能1',
+    routePath: '/',
     url: 'https://bing.com',
     desc: '',
   },
   {
     id: 102,
     label: '功能2',
+    routePath: '/',
     url: 'https://ifconfig.me',
     desc: '',
   },
   {
     id: 103,
     label: '功能3',
+    routePath: '/',
     url: 'https://www.gov.cn',
     desc: '',
   },
 ])
 
 // Avatar
-const userInfo = reactive<UserInfoType>({
-  uid: 233,
-  username: 'Patrick_XRay',
-  spaceUrl: 'https://space.bilibili.com/472980323',
-  desc: 'This is Patrick speaking...',
-})
+const user = useUserStore()
+const userInfo = reactive(user.userInfo)
+// const userInfo = reactive<UserInfoType>({
+//   uid: 233,
+//   username: 'Patrick_XRay',
+//   spaceUrl: 'https://space.bilibili.com/472980323',
+//   desc: 'This is Patrick speaking...',
+// })
 const avatarStyle = reactive({
   transform: 'translate(0, 0) scale(1)',
   transition: 'transform 0.3s',
@@ -91,11 +102,11 @@ const avatarMouseLeave = () => {
       <a-col :span="8" class="flex-col">
         <a-flex class="header-col">
           <div class="logo">
-            <a-image
+            <img
               width="100%"
               height="100%"
-              src="src/assets/logo.svg"
-              :preview="false"
+              :src="`${ASSETS_BASE_URL}logo.svg`"
+              alt="logo"
             />
           </div>
           <MenuBar :menu-items="menuLeftItems" />
@@ -111,8 +122,10 @@ const avatarMouseLeave = () => {
           <div class="user-info">
             <a-popover placement="bottom">
               <template #content>
-                <p>Content</p>
-                <p>Content</p>
+                <p>uid: {{ userInfo.uid }}</p>
+                <p>username: {{ userInfo.username }}</p>
+                <p>spaceUrl: {{ userInfo.spaceUrl }}</p>
+                <p>desc: {{ userInfo.desc }}</p>
               </template>
               <template #title>
                 <span>Title</span>
@@ -160,21 +173,8 @@ const avatarMouseLeave = () => {
   margin: 10px 12px;
 }
 
-.menu-bar {
-  line-height: 32px;
-  width: 450px;
-  align-items: center;
-  background: rgb(255, 255, 255, 0.8) !important;
-}
-
 .user-info {
   margin: 10px 12px;
   cursor: pointer;
 }
-
-/*
-.user-info-popover:hover {
-  transform: translate(0, 13px) scale(1.5);
-  transition: transform .3s;
-}*/
 </style>

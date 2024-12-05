@@ -20,8 +20,19 @@ const loading = ref<boolean>(false)
 </script>
 
 <template>
+  <!--  <div class="modal-container" v-if="visible">-->
+  <!--    <div class="modal-body">-->
+  <!--      <a-button @click="$emit('close')">关闭</a-button>-->
+  <!--    </div>-->
+  <!--  </div>-->
+
   <div>
     <a-modal v-model:open="visible" title="Title">
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
       <template #footer>
         <a-button key="back" @click="$emit('close')">Return</a-button>
         <a-button
@@ -32,13 +43,26 @@ const loading = ref<boolean>(false)
           >Submit
         </a-button>
       </template>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
     </a-modal>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+</style>

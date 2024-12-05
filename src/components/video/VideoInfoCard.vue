@@ -5,8 +5,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
-import { openLink } from '@/utils/CommonUtil'
 import type { VideoCardInfoType } from '@/utils/PropsType'
+import { openLink } from '@/utils/RouterUtil'
 
 const props = defineProps<{
   videoCardInfo: VideoCardInfoType
@@ -15,7 +15,7 @@ const props = defineProps<{
 
 <template>
   <div class="video-info-card">
-    <div class="video-cover" @click="openLink(props.videoCardInfo.linkUrl)">
+    <div class="video-cover" @click="openLink(props.videoCardInfo.linkUrl, true)">
       <img :src="props.videoCardInfo.coverUrl" alt="video cover" />
     </div>
     <div class="card-bottom">

@@ -3,14 +3,6 @@
  */
 
 /**
- * 在新标签页打开链接
- * @param url 链接
- */
-export function openLink(url: string): void {
-  window.open(url, '_blank')
-}
-
-/**
  * 生成一个随机整数（范围左闭右开）
  * @param min 最小值（包含）
  * @param max 最大值（不包含）

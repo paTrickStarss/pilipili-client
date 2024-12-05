@@ -4,7 +4,8 @@
 export interface MenuItemType {
   id: number
   label: string
-  url: string
+  routePath: string
+  url?: string
   desc?: string
 }
 

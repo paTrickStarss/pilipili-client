@@ -6,9 +6,11 @@
 import { onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import type { MenuItemProps } from '@/utils/PropsType.ts'
-import { openLink } from '@/utils/CommonUtil'
+import { jumpRoute } from '@/utils/RouterUtil'
+import { useRouter } from 'vue-router'
 
-const props = defineProps<MenuItemProps>()
+const router = useRouter()
+defineProps<MenuItemProps>()
 
 onMounted(() => {
   // message.info(`onMounted: ${JSON.stringify(props)}`)
@@ -21,7 +23,7 @@ onMounted(() => {
       class="menu-item"
       v-for="item in menuItems"
       :key="item.id"
-      @click="openLink(item.url)"
+      @click="jumpRoute(router, item.routePath)"
     >
       {{ item.label }}
     </div>
