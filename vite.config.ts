@@ -16,7 +16,7 @@ export default defineConfig({
     cors: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:10000/api',
+        target: 'http://localhost:8000/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api$/, ''),
       }
