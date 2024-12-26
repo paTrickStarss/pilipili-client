@@ -3,19 +3,24 @@
   -->
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
 import { EllipsisOutlined } from '@ant-design/icons-vue'
 import type { VideoCardInfoType } from '@/utils/PropsType'
-import { openLink } from '@/utils/RouterUtil'
+import { jumpRoute } from '@/utils/RouterUtil'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   videoCardInfo: VideoCardInfoType
 }>()
+
+const router = useRouter()
 </script>
 
 <template>
   <div class="video-info-card">
-    <div class="video-cover" @click="openLink(props.videoCardInfo.linkUrl, true)">
+    <div
+      class="video-cover"
+      @click="jumpRoute(router, `/video/${videoCardInfo.id}`)"
+    >
       <img :src="props.videoCardInfo.coverUrl" alt="video cover" />
     </div>
     <div class="card-bottom">

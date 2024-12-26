@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
   const uid = ref<number>(0)
   const username = ref<string>('')
   const spaceUrl = ref<string>('')
+  const gender = ref<number>(0)
   const desc = ref<string>('')
   const password = ref<string>('')
   const avatarUrl = ref<string>('')
@@ -19,6 +20,7 @@ export const useUserStore = defineStore('user', () => {
       uid,
       username,
       spaceUrl,
+      gender,
       desc,
     }
   })
@@ -30,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
     uid.value = 0
     username.value = ''
     spaceUrl.value = ''
+    gender.value = 0
     desc.value = ''
     password.value = ''
     avatarUrl.value = ''
@@ -42,6 +45,7 @@ export const useUserStore = defineStore('user', () => {
     uid.value = 233
     username.value = 'Bubble'
     spaceUrl.value = 'https://space.bilibili.com/472980323'
+    gender.value = 1
     desc.value = 'This is Bubble speaking.'
     password.value = 'xxx'
     avatarUrl.value = 'hhh'
@@ -55,6 +59,7 @@ export const useUserStore = defineStore('user', () => {
     uid.value = userInfo.uid
     username.value = userInfo.username
     spaceUrl.value = userInfo.spaceUrl
+    gender.value = userInfo.gender
     desc.value = userInfo.desc || ''
   }
 

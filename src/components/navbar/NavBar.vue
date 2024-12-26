@@ -76,12 +76,6 @@ const menuRightItems = ref<MenuItemType[]>([
 // Avatar
 const user = useUserStore()
 const userInfo = reactive(user.userInfo)
-// const userInfo = reactive<UserInfoType>({
-//   uid: 233,
-//   username: 'Patrick_XRay',
-//   spaceUrl: 'https://space.bilibili.com/472980323',
-//   desc: 'This is Patrick speaking...',
-// })
 const avatarStyle = reactive({
   transform: 'translate(0, 0) scale(1)',
   transition: 'transform 0.3s',
@@ -105,7 +99,7 @@ const avatarMouseLeave = () => {
             <img
               width="100%"
               height="100%"
-              :src="`${ASSETS_BASE_URL}logo.svg`"
+              :src="`${ASSETS_BASE_URL}/logo.svg`"
               alt="logo"
             />
           </div>

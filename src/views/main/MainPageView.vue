@@ -26,7 +26,7 @@ const loadCarouselList = (size: number) => {
 
 // 瀑布流
 const demoVideoCardInfo = <VideoCardInfoType>{
-  id: 0,
+  id: 111,
   coverUrl: 'src/assets/image/cover-1.jpg',
   linkUrl: 'https://www.bilibili.com/video/BV1ycztYWEPD',
   title: '[514座!]这架老年波音777竟然能装这么多人',
@@ -82,7 +82,6 @@ function resetFlowList() {
 
 
 // useTemplateRef返回值 只有在生命周期钩子函数中才能获取到，这里是null
-const indexRef = useTemplateRef('indexRef')
 const contentRef = useTemplateRef('contentRef')
 const controller = new AbortController()
 onMounted(() => {
@@ -93,18 +92,9 @@ onMounted(() => {
     const appOffsetHeight = (contentRef.value?.offsetHeight || 0) + 90
     const scrollTop = document.documentElement.scrollTop
     const scrollBottom = scrollTop + window.innerHeight
-    // console.log('scrollEventHandler', window, document, scrollBottom, appOffsetHeight, loading.value)
-
-    // 触发navbar背景切换事件
-    if (indexRef.value?.isNavBarTransparent && scrollTop >= 150) {
-      indexRef.value?.switchNavBarBackground(false)
-    } else if (!indexRef.value?.isNavBarTransparent && scrollTop <= 130) {
-      indexRef.value?.switchNavBarBackground(true)
-    }
 
     // 触发数据懒加载事件
     if (!isEnd.value && !loading.value && scrollBottom >= appOffsetHeight) {
-      // message.info('loadData!')
       loadData()
     }
   }

@@ -1,10 +1,17 @@
 @import './base.css';
 
+body {
+    font-family: "Harmony Font", sans-serif;
+}
+:where(.css-dev-only-do-not-override-1p3hq3p)[class^="ant-"] {
+    font-family: inherit;
+}
+
 /*#app {*/
-/*  max-width: 1280px;*/
-/*  margin: 0 auto;*/
-/*  padding: 2rem;*/
-/*  font-weight: normal;*/
+  /*max-width: 1280px;*/
+  /*margin: 0 auto;*/
+  /*padding: 2rem;*/
+  /*font-weight: normal;*/
 /*}*/
 
 /*a,*/

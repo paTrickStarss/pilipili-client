@@ -15,8 +15,13 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/space/UserSpaceView.vue'),
+      component: () => import('@/views/space/UserSpaceView.vue')
     },
+    {
+      path: '/video/:id?',
+      name: 'video',
+      component: () => import('@/views/video/VideoPageView.vue')
+    }
   ],
 })
 

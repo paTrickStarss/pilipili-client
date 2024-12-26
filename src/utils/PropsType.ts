@@ -1,6 +1,10 @@
 /*
  * Copyright (c) 2024. Bubble
  */
+
+/**
+ * 导航栏菜单配置信息
+ */
 export interface MenuItemType {
   id: number
   label: string
@@ -9,6 +13,9 @@ export interface MenuItemType {
   desc?: string
 }
 
+/**
+ * 菜单组件传递属性
+ */
 export interface MenuItemProps {
   menuItems: MenuItemType[]
 }
@@ -30,8 +37,22 @@ export interface UserInfoType {
    */
   spaceUrl: string
   /**
+   * 性别 1男 2女 0未知
+   */
+  gender: number
+  /**
    * 个人介绍
    */
+  desc?: string
+}
+
+/**
+ * 收藏夹信息
+ */
+export interface CollectionInfoType {
+  id: number
+  name: string
+  size: number
   desc?: string
 }
 
@@ -116,6 +137,22 @@ export interface VideoCardFlowInfoType {
    * 是否正在加载
    */
   loading: boolean
+}
+
+/**
+ * 视频页信息
+ */
+export interface VideoPageInfoType {
+  vid: number
+  uid: number
+  title: string
+  coverUrl: string
+  contentUrl: string
+  desc?: string
+}
+
+export interface VideoPageInfoProps {
+  videoInfo: VideoPageInfoType
 }
 
 /**

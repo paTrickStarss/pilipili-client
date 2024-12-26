@@ -3,7 +3,7 @@
   -->
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import NavBar from '@/components/navbar/NavBar.vue'
 import { message } from 'ant-design-vue'
 import LoginModal from '@/components/LoginModal.vue'
@@ -47,9 +47,30 @@ function handleOk() {
   loginModalVisible.value = false
 }
 
-defineExpose({
-  isNavBarTransparent,
-  switchNavBarBackground
+// defineExpose({
+//   isNavBarTransparent,
+//   switchNavBarBackground
+// })
+
+const controller = new AbortController()
+onMounted(() => {
+  const scrollEventHandler = () => {
+    const scrollTop = document.documentElement.scrollTop
+
+    // 触发navbar背景切换事件
+    if (isNavBarTransparent.value && scrollTop >= 150) {
+      switchNavBarBackground(false)
+    } else if (!isNavBarTransparent.value && scrollTop <= 130) {
+      switchNavBarBackground(true)
+    }
+  }
+  window.addEventListener('scroll', scrollEventHandler, {
+    signal: controller.signal,
+  })
+})
+onUnmounted(() => {
+  // window.removeEventListener('scroll', scrollEventHandler)
+  controller.abort()
 })
 
 </script>
@@ -82,6 +103,7 @@ defineExpose({
 .parent {
   width: 100%;
   height: 100%;
+  font-family: inherit;
 }
 
 .header {
@@ -100,7 +122,5 @@ defineExpose({
   background-color: grey;
   height: 100px;
 }
-
-
 
 </style>
