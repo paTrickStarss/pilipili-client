@@ -4,7 +4,7 @@
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { UserInfoType } from '@/utils/PropsType'
+import type { UserInfoType } from '@/types/ApiRespType'
 
 export const useUserStore = defineStore('user', () => {
   const uid = ref<number>(0)
@@ -57,10 +57,10 @@ export const useUserStore = defineStore('user', () => {
    */
   function saveUserInfo(userInfo: UserInfoType) {
     uid.value = userInfo.uid
-    username.value = userInfo.username
-    spaceUrl.value = userInfo.spaceUrl
+    username.value = userInfo.nickname
+    spaceUrl.value = userInfo.uid.toString()
     gender.value = userInfo.gender
-    desc.value = userInfo.desc || ''
+    desc.value = userInfo.description || ''
   }
 
   return {

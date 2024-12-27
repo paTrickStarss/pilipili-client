@@ -15,6 +15,7 @@ export function openLink(url: string, newPage: boolean = false): void {
 
 export function jumpRoute(router: Router, path: string): void {
   // console.log('jumpRoute: ', path)
+
   router.push(path)
     .then(r => {
       console.log('router.push', path, r)

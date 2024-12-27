@@ -7,7 +7,7 @@ import { deepCopy, randomInt } from '@/utils/CommonUtil'
 import { LeftCircleOutlined, PlusOutlined, RedoOutlined, RightCircleOutlined } from '@ant-design/icons-vue'
 import VideoInfoCard from '@/components/video/VideoInfoCard.vue'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import type { CarouselInfoType, VideoCardFlowInfoType, VideoCardInfoType } from '@/utils/PropsType'
+import type { CarouselInfoType, VideoCardFlowInfoType, VideoCardInfoType } from '@/types/PropsType'
 import IndexView from '@/views/index/IndexView.vue'
 import { openLink } from '@/utils/RouterUtil'
 

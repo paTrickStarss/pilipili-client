@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import type { MenuItemProps } from '@/utils/PropsType.ts'
+import type { MenuItemProps } from '@/types/PropsType.ts'
 import { jumpRoute } from '@/utils/RouterUtil'
 import { useRouter } from 'vue-router'
 

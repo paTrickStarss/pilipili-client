@@ -7,7 +7,7 @@ import SearchBar from '@/components/navbar/SearchBar.vue'
 import MenuBar from '@/components/navbar/MenuBar.vue'
 import { reactive, ref } from 'vue'
 import { UserOutlined } from '@ant-design/icons-vue'
-import type { MenuItemType } from '@/utils/PropsType'
+import type { MenuItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 
@@ -81,11 +81,9 @@ const avatarStyle = reactive({
   transition: 'transform 0.3s',
 })
 const avatarMouseEnter = () => {
-  console.log('avatarMouseEnter', avatarStyle)
   avatarStyle.transform = 'translate(0, 13px) scale(1.5)'
 }
 const avatarMouseLeave = () => {
-  console.log('avatarMouseLeave', avatarStyle)
   avatarStyle.transform = 'translate(0, 0) scale(1)'
 }
 </script>
@@ -129,7 +127,7 @@ const avatarMouseLeave = () => {
                 @mouseenter="avatarMouseEnter"
                 @mouseleave="avatarMouseLeave"
                 @click="$emit('openLoginModal')"
-                style="background-color: #87d068"
+                style="background-color: #66ccff"
               >
                 <template #icon>
                   <UserOutlined />

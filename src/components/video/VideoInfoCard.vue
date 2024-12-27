@@ -4,32 +4,46 @@
 
 <script setup lang="ts">
 import { EllipsisOutlined } from '@ant-design/icons-vue'
-import type { VideoCardInfoType } from '@/utils/PropsType'
+import type { VideoCardInfoType } from '@/types/PropsType'
 import { jumpRoute } from '@/utils/RouterUtil'
 import { useRouter } from 'vue-router'
+import { useVideoStore } from '@/stores/video'
 
 const props = defineProps<{
   videoCardInfo: VideoCardInfoType
 }>()
 
 const router = useRouter()
+const videoStore = useVideoStore()
+
+const onCoverClick = () => {
+  const videoCardInfo = props.videoCardInfo
+  videoStore.saveVideoPageInfo({
+    vid: videoCardInfo.id,
+    uid: 233,
+    title: videoCardInfo.title,
+    desc: 'demo description',
+  })
+  jumpRoute(router, `/video/${videoCardInfo.id}`)
+}
+
 </script>
 
 <template>
   <div class="video-info-card">
     <div
       class="video-cover"
-      @click="jumpRoute(router, `/video/${videoCardInfo.id}`)"
+      @click="onCoverClick"
     >
-      <img :src="props.videoCardInfo.coverUrl" alt="video cover" />
+      <img :src="videoCardInfo.coverUrl" alt="video cover" />
     </div>
     <div class="card-bottom">
       <div style="text-align: start">
         <div class="video-title">
-          {{ props.videoCardInfo.title }}
+          {{ videoCardInfo.title }}
         </div>
         <p class="video-author">
-          {{ props.videoCardInfo.authorName }}
+          {{ videoCardInfo.authorName }}
         </p>
       </div>
       <div class="toolbox-btn">

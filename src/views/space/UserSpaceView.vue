@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue'
 import { StarTwoTone, CloudTwoTone, SettingTwoTone } from '@ant-design/icons-vue'
 import UserInfoCard from '@/components/space/UserInfoCard.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import type { CollectionInfoType } from '@/utils/PropsType'
+import type { CollectionInfoType } from '@/types/PropsType'
 
 const isLoading = ref<boolean>(false)
 const activeKey = ref<string>('1')
