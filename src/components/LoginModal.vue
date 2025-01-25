@@ -3,10 +3,14 @@
   -->
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import type { LoginReqType } from '@/types/ApiRequestType'
+import { authAPI } from '@/api/auth/AuthAPI'
+import { message } from 'ant-design-vue'
+import Cookies from 'js-cookie'
 
 const visible = defineModel('visible', { required: true })
-defineEmits({
+const emit = defineEmits({
   /**
    * modal关闭事件
    */
@@ -17,6 +21,46 @@ defineEmits({
   commit: () => true,
 })
 const loading = ref<boolean>(false)
+
+const loginBody = reactive<LoginReqType>({
+  username: '',
+  password: '',
+})
+const loginFormRules = reactive({
+  username: {
+    required: true,
+    message: 'Username is required',
+    trigger: 'blur',
+  },
+  password: {
+    required: true,
+    message: 'Password is required',
+    trigger: 'blur',
+  },
+})
+
+function loginCommit() {
+  loading.value = true
+  authAPI.login(loginBody)
+    .then(({ data }) => {
+      localStorage.setItem("loginInfo", JSON.stringify(data))
+      localStorage.setItem("accessToken", data.accessToken)
+      localStorage.setItem("username", data.username)
+      Cookies.set("accessToken", data.accessToken,
+        { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
+      emit('commit')
+
+      message.success('login success')
+      console.log('login success', data)
+    })
+    .catch((error) => {
+      message.error('login error', error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+
+}
 </script>
 
 <template>
@@ -27,20 +71,33 @@ const loading = ref<boolean>(false)
   <!--  </div>-->
 
   <div>
-    <a-modal v-model:open="visible" title="Title">
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+    <a-modal v-model:open="visible" title="登录">
+      <!--      <a-skeleton/>-->
+      <a-form ref="loginFormRef" :model="loginBody" :rules="loginFormRules">
+        <a-form-item label="用户名" name="username">
+          <a-input
+            v-model:value="loginBody.username"
+            placeholder="输入用户UID..."
+          />
+        </a-form-item>
+        <a-form-item label="密码" name="password">
+          <a-input
+            type="password"
+            v-model:value="loginBody.password"
+            placeholder="输入密码..."
+          />
+        </a-form-item>
+      </a-form>
+
       <template #footer>
         <a-button key="back" @click="$emit('close')">Return</a-button>
         <a-button
           key="submit"
           type="primary"
           :loading="loading"
-          @click="$emit('commit')"
-          >Submit
+          @click="loginCommit"
+        >
+          Submit
         </a-button>
       </template>
     </a-modal>
@@ -48,7 +105,7 @@ const loading = ref<boolean>(false)
 </template>
 
 <style scoped>
-.modal-container {
+/*.modal-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -64,5 +121,5 @@ const loading = ref<boolean>(false)
   background: white;
   padding: 20px;
   border-radius: 5px;
-}
+}*/
 </style>

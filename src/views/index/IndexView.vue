@@ -8,6 +8,7 @@ import NavBar from '@/components/navbar/NavBar.vue'
 import { message } from 'ant-design-vue'
 import LoginModal from '@/components/LoginModal.vue'
 import { useUserStore } from '@/stores/user'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
 
 // 切换navbar背景
 const isNavBarTransparent = ref<boolean>(true)
@@ -36,15 +37,20 @@ function openLoginModal() {
 }
 
 function handleCancel() {
-  message.info('handleCancel')
-  user.clearUserInfo()
+  // message.info('handleCancel')
+  // user.clearUserInfo()
   loginModalVisible.value = false
 }
 
 function handleOk() {
-  message.info('handleOk')
-  user.fetchDemoUserInfo()
+  // message.info('handleOk')
+  // user.fetchDemoUserInfo()
   loginModalVisible.value = false
+  userInfoAPI.getUserInfo(localStorage.getItem('username') || '')
+    .then(({ data }) => {
+      message.success('getUserInfo success')
+      console.log('userInfo', data)
+    })
 }
 
 // defineExpose({
