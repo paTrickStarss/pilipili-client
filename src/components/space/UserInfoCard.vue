@@ -16,7 +16,6 @@ const userInfo = reactive(userStore.userInfo)
   <div class="container">
     <div class="top-container">
       <a-avatar
-        @click="$emit('openLoginModal')"
         :size="64"
         style="background-color: #66ccff"
       >

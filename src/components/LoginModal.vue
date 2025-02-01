@@ -8,6 +8,7 @@ import type { LoginReqType } from '@/types/ApiRequestType'
 import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
 import Cookies from 'js-cookie'
+import { useTokenStore } from '@/stores/token'
 
 const visible = defineModel('visible', { required: true })
 const emit = defineEmits({
@@ -43,14 +44,12 @@ function loginCommit() {
   loading.value = true
   authAPI.login(loginBody)
     .then(({ data }) => {
-      localStorage.setItem("loginInfo", JSON.stringify(data))
-      localStorage.setItem("accessToken", data.accessToken)
-      localStorage.setItem("username", data.username)
-      Cookies.set("accessToken", data.accessToken,
-        { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
+      useTokenStore().saveTokenInfo(data)
+      // Cookies.set("accessToken", data.accessToken,
+      //   { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
       emit('commit')
 
-      message.success('login success')
+      message.success('登录成功！欢迎回来。')
       console.log('login success', data)
     })
     .catch((error) => {
@@ -59,8 +58,18 @@ function loginCommit() {
     .finally(() => {
       loading.value = false
     })
-
 }
+// function logout() {
+//   authAPI.logout(user.uid.toString())
+//     .then(({message}) => {
+//       user.clearUserInfo()
+//       message.success(message)
+//     })
+//     .catch((err) => {
+//       message.error(err)
+//     })
+// }
+
 </script>
 
 <template>
@@ -72,9 +81,8 @@ function loginCommit() {
 
   <div>
     <a-modal v-model:open="visible" title="登录">
-      <!--      <a-skeleton/>-->
       <a-form ref="loginFormRef" :model="loginBody" :rules="loginFormRules">
-        <a-form-item label="用户名" name="username">
+        <a-form-item label="账号" name="username">
           <a-input
             v-model:value="loginBody.username"
             placeholder="输入用户UID..."
@@ -90,14 +98,14 @@ function loginCommit() {
       </a-form>
 
       <template #footer>
-        <a-button key="back" @click="$emit('close')">Return</a-button>
+<!--        <a-button key="back" @click="$emit('close')">Return</a-button>-->
         <a-button
           key="submit"
           type="primary"
           :loading="loading"
           @click="loginCommit"
         >
-          Submit
+          登录
         </a-button>
       </template>
     </a-modal>
