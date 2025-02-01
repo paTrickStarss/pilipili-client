@@ -5,10 +5,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import NavBar from '@/components/navbar/NavBar.vue'
-import { message } from 'ant-design-vue'
-import LoginModal from '@/components/LoginModal.vue'
-import { useUserStore } from '@/stores/user'
-import { userInfoAPI } from '@/api/user/UserInfoAPI'
 
 // 切换navbar背景
 const isNavBarTransparent = ref<boolean>(true)
@@ -27,36 +23,6 @@ function switchNavBarBackground(isTransparent: boolean) {
     : '0 5px 8px rgba(255, 255, 255, 0.5)'
   // console.log('switchNavBarBackground', isTransparent, headerStyle)
 }
-
-const user = useUserStore()
-// 登录弹窗
-const loginModalVisible = ref<boolean>(false)
-
-function openLoginModal() {
-  loginModalVisible.value = true
-}
-
-function handleCancel() {
-  // message.info('handleCancel')
-  // user.clearUserInfo()
-  loginModalVisible.value = false
-}
-
-function handleOk() {
-  // message.info('handleOk')
-  // user.fetchDemoUserInfo()
-  loginModalVisible.value = false
-  userInfoAPI.getUserInfo(localStorage.getItem('username') || '')
-    .then(({ data }) => {
-      message.success('getUserInfo success')
-      console.log('userInfo', data)
-    })
-}
-
-// defineExpose({
-//   isNavBarTransparent,
-//   switchNavBarBackground
-// })
 
 const controller = new AbortController()
 onMounted(() => {
@@ -86,7 +52,7 @@ onUnmounted(() => {
     <a-flex class="parent" vertical>
       <!--      顶栏-->
       <div ref="headerRef" class="header">
-        <NavBar :style="headerStyle" @openLoginModal="openLoginModal" />
+        <NavBar :style="headerStyle" />
       </div>
 
       <!--      内容主体-->
@@ -95,13 +61,6 @@ onUnmounted(() => {
       <!--      页脚-->
       <div class="footer">footer</div>
     </a-flex>
-
-    <!--    登录弹窗-->
-    <LoginModal
-      v-model:visible="loginModalVisible"
-      @close="handleCancel"
-      @commit="handleOk"
-    />
   </div>
 </template>
 

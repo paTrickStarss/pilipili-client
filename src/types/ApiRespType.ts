@@ -7,6 +7,81 @@
  */
 
 /**
+ * 登录信息
+ */
+export interface LoginInfoType {
+  username: string
+  accessToken: string
+  expires: number
+}
+
+/**
+ * 用户信息
+ */
+export interface UserInfoType {
+  /**
+   * 用户ID
+   */
+  uid: number
+  /**
+   * 用户名
+   */
+  nickname: string
+  /**
+   * 性别 1男 2女 0未知
+   */
+  gender: number
+  /**
+   * 头像URL
+   */
+  avatarUrl: string
+  /**
+   * 背景图URL
+   */
+  backgroundUrl: string
+  /**
+   * 邮箱
+   */
+  email: string
+  /**
+   * 个人介绍
+   */
+  description: string
+  /**
+   * 会员状态：0普通用户 1月度大会员 2季度大会员 3年度大会员 4云视听月度大会员 5云视听季度大会员 6云视听年度大会员
+   */
+  vipStatus: number
+  /**
+   * 小闪电认证：0无认证 1名人认证 2机构认证
+   */
+  authority: number
+  /**
+   * 小闪电认证说明
+   */
+  authorityDesc: string
+  /**
+   * 账号状态：0已注销 1正常 2封禁中
+   */
+  validStatus: number
+  /**
+   * 账号类型：0普通账号 1管理员账号
+   */
+  role: number
+  /**
+   * 等级经验值
+   */
+  exp: number
+  /**
+   * 硬币（普通代币）
+   */
+  hcoin: number
+  /**
+   * P币（充值代币）
+   */
+  pcoin: number
+}
+
+/**
  * 视频详情信息
  */
 export interface VideoDTOType {
@@ -84,71 +159,6 @@ export interface VideoStatisticsDTOType {
 }
 
 
-/**
- * 用户信息
- */
-export interface UserInfoType {
-  /**
-   * 用户ID
-   */
-  uid: number
-  /**
-   * 用户名
-   */
-  nickname: string
-  /**
-   * 性别 1男 2女 0未知
-   */
-  gender: number
-  /**
-   * 头像URL
-   */
-  avatarUrl: string
-  /**
-   * 背景图URL
-   */
-  backgroundUrl: string
-  /**
-   * 邮箱
-   */
-  email: string
-  /**
-   * 个人介绍
-   */
-  description: string
-  /**
-   * 会员状态：0普通用户 1月度大会员 2季度大会员 3年度大会员 4云视听月度大会员 5云视听季度大会员 6云视听年度大会员
-   */
-  vipStatus: number
-  /**
-   * 小闪电认证：0无认证 1名人认证 2机构认证
-   */
-  authority: number
-  /**
-   * 小闪电认证说明
-   */
-  authorityDesc: string
-  /**
-   * 账号状态：0已注销 1正常 2封禁中
-   */
-  validStatus: number
-  /**
-   * 账号类型：0普通账号 1管理员账号
-   */
-  role: number
-  /**
-   * 等级经验值
-   */
-  exp: number
-  /**
-   * 硬币（普通代币）
-   */
-  hcoin: number
-  /**
-   * P币（充值代币）
-   */
-  pcoin: number
-}
 
 export interface CommentDTOType {
   /**

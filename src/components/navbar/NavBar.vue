@@ -10,6 +10,14 @@ import { UserOutlined } from '@ant-design/icons-vue'
 import type { MenuItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+import UserInfoPopout from '@/components/navbar/UserInfoPopout.vue'
+import LoginPopout from '@/components/navbar/LoginPopout.vue'
+import LoginModal from '@/components/LoginModal.vue'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
+import { message } from 'ant-design-vue'
+import { authAPI } from '@/api/auth/AuthAPI'
+import { clearTokenInfo, getTokenInfo, isLogin } from '@/utils/LocalStorageUtil'
+import { useTokenStore } from '@/stores/token'
 
 // Menu
 const menuLeftItems = ref<MenuItemType[]>([
@@ -75,17 +83,35 @@ const menuRightItems = ref<MenuItemType[]>([
 
 // Avatar
 const user = useUserStore()
-const userInfo = reactive(user.userInfo)
-const avatarStyle = reactive({
-  transform: 'translate(0, 0) scale(1)',
-  transition: 'transform 0.3s',
-})
-const avatarMouseEnter = () => {
-  avatarStyle.transform = 'translate(0, 13px) scale(1.5)'
+const token = useTokenStore()
+
+// 登录弹窗
+const loginModalVisible = ref<boolean>(false)
+
+function openLoginModal() {
+  loginModalVisible.value = true
 }
-const avatarMouseLeave = () => {
-  avatarStyle.transform = 'translate(0, 0) scale(1)'
+
+function handleCancel() {
+  // message.info('handleCancel')
+  // user.clearUserInfo()
+  loginModalVisible.value = false
 }
+
+function handleOk() {
+  // message.info('handleOk')
+  // user.fetchDemoUserInfo()
+  loginModalVisible.value = false
+  userInfoAPI.getUserInfo(localStorage.getItem('username') || '')
+    .then(({ data }) => {
+      user.saveUserInfo(data)
+      message.success('getUserInfo success')
+      console.log('userInfo', data)
+    })
+}
+
+
+
 </script>
 
 <template>
@@ -112,33 +138,20 @@ const avatarMouseLeave = () => {
       <a-col :span="8" class="flex-col">
         <a-flex class="header-col">
           <div class="user-info">
-            <a-popover placement="bottom">
-              <template #content>
-                <p>uid: {{ userInfo.uid }}</p>
-                <p>username: {{ userInfo.username }}</p>
-                <p>spaceUrl: {{ userInfo.spaceUrl }}</p>
-                <p>desc: {{ userInfo.desc }}</p>
-              </template>
-              <template #title>
-                <span>Title</span>
-              </template>
-              <a-avatar
-                :style="avatarStyle"
-                @mouseenter="avatarMouseEnter"
-                @mouseleave="avatarMouseLeave"
-                @click="$emit('openLoginModal')"
-                style="background-color: #66ccff"
-              >
-                <template #icon>
-                  <UserOutlined />
-                </template>
-              </a-avatar>
-            </a-popover>
+            <UserInfoPopout v-if="token.isLogin" />
+            <LoginPopout v-else @openLoginModal="openLoginModal" />
           </div>
           <MenuBar :menu-items="menuRightItems" />
         </a-flex>
       </a-col>
     </a-row>
+
+    <!--    登录弹窗-->
+    <LoginModal
+      v-model:visible="loginModalVisible"
+      @close="handleCancel"
+      @commit="handleOk"
+    />
   </div>
 </template>
 
