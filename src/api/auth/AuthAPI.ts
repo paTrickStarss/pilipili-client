@@ -3,7 +3,7 @@
  */
 
 import axios from '@/api/axios'
-import type { LoginReqType } from '@/types/ApiRequestType'
+import type { LoginReq } from '@/types/ApiRequestType'
 
 export const authAPI = {
 
@@ -11,7 +11,7 @@ export const authAPI = {
    * 用户登录
    * @param body
    */
-  login(body: LoginReqType) {
+  login(body: LoginReq) {
     return axios.post('/auth/session/login', body, { withCredentials: false })
   },
 

@@ -5,6 +5,9 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { UserInfoType } from '@/types/ApiRespType'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
+import { message } from 'ant-design-vue'
+import { useTokenStore } from '@/stores/token'
 
 export const useUserStore = defineStore('user', () => {
   // const isLogin = ref(false)
@@ -75,6 +78,21 @@ export const useUserStore = defineStore('user', () => {
     desc.value = userInfo.description || ''
   }
 
+  /**
+   * 获取当前用户信息
+   */
+  async function fetchCurrentUserInfo() {
+    const token = useTokenStore()
+    if (token.isLogin) {
+      userInfoAPI.getUserInfo(token.username)
+        .then(({ data }) => {
+          saveUserInfo(data)
+          message.success('getUserInfo success')
+          console.log('userInfo', data)
+        })
+    }
+  }
+
   return {
     isLogin,
     uid,
@@ -87,5 +105,6 @@ export const useUserStore = defineStore('user', () => {
     clearUserInfo,
     fetchDemoUserInfo,
     saveUserInfo,
+    fetchCurrentUserInfo,
   }
 })

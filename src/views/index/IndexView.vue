@@ -21,7 +21,6 @@ function switchNavBarBackground(isTransparent: boolean) {
   headerStyle.boxShadow = isNavBarTransparent.value
     ? 'none'
     : '0 5px 8px rgba(255, 255, 255, 0.5)'
-  // console.log('switchNavBarBackground', isTransparent, headerStyle)
 }
 
 const controller = new AbortController()

@@ -5,18 +5,18 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { LoginInfoType } from '@/types/ApiRespType'
-import type { StorageLike } from 'pinia-plugin-persistedstate'
-import Cookies from 'js-cookie'
-
-const cookiesStorage: StorageLike = {
-  setItem(key: string, value: string) {
-    Cookies.set(key, value)
-      // { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
-  },
-  getItem(key: string) {
-    return Cookies.get(key) || null
-  }
-}
+// import type { StorageLike } from 'pinia-plugin-persistedstate'
+// import Cookies from 'js-cookie'
+//
+// const cookiesStorage: StorageLike = {
+//   setItem(key: string, value: string) {
+//     Cookies.set(key, value)
+//       // { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
+//   },
+//   getItem(key: string) {
+//     return Cookies.get(key) || null
+//   }
+// }
 
 export const useTokenStore = defineStore('tokenInfo', () => {
   const tokenInfo = ref<LoginInfoType>()

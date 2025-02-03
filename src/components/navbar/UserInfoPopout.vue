@@ -10,6 +10,10 @@ import { useUserStore } from '@/stores/user'
 import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
+import { jumpRoute } from '@/utils/RouterUtil'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const user = useUserStore()
 const userInfo = reactive(user.userInfo)
@@ -56,11 +60,13 @@ function handleLogout() {
       :style="avatarStyle"
       @mouseenter="avatarMouseEnter"
       @mouseleave="avatarMouseLeave"
-      @click="$emit('openLoginModal')"
-      style="background-color: #66ccff"
+      @click="jumpRoute(router, `/space/${userInfo.uid}`)"
+      style="background-color: #66ccff; width: 50px; height: 50px;"
     >
       <template #icon>
-        <UserOutlined />
+        <div style="padding-top: 0.5rem">
+          <UserOutlined />
+        </div>
       </template>
     </a-avatar>
   </a-popover>

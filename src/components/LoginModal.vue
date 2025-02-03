@@ -3,14 +3,18 @@
   -->
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import type { LoginReqType } from '@/types/ApiRequestType'
+import { reactive, ref, watch } from 'vue'
+import type { LoginReq, RegisterReq } from '@/types/ApiRequestType'
 import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
-import Cookies from 'js-cookie'
 import { useTokenStore } from '@/stores/token'
+import GlobalDialog from '@/components/GlobalDialog.vue'
+import { useUserStore } from '@/stores/user'
+import { CryptoUtil } from '@/utils/CryptoUtil'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
 
-const visible = defineModel('visible', { required: true })
+
+const visible = defineModel<boolean>('visible', { required: true })
 const emit = defineEmits({
   /**
    * modal关闭事件
@@ -22,8 +26,15 @@ const emit = defineEmits({
   commit: () => true,
 })
 const loading = ref<boolean>(false)
+const loginTab = ref<boolean>(true)
 
-const loginBody = reactive<LoginReqType>({
+watch(visible, (value) => {
+  if (value) {
+    loginTab.value = true
+  }
+})
+
+const loginBody = reactive<LoginReq>({
   username: '',
   password: '',
 })
@@ -39,67 +50,175 @@ const loginFormRules = reactive({
     trigger: 'blur',
   },
 })
+const loginFormRef = ref()
+
+const registerBody = reactive<RegisterReq>({
+  nickname: '',
+  password: '',
+  email: '',
+})
+const passwordGroup = reactive({
+  firstInput: '',
+  lastInput: '',
+})
+const registerFormRules = reactive({
+  // password: {
+  //   required: true,
+  //   message: '请输入密码',
+  // },
+  // passwordConfirm: {
+  //   required: true,
+  //   message: '请确认密码',
+  // },
+})
+const registerFormRef = ref()
 
 function loginCommit() {
-  loading.value = true
-  authAPI.login(loginBody)
-    .then(({ data }) => {
-      useTokenStore().saveTokenInfo(data)
-      // Cookies.set("accessToken", data.accessToken,
-      //   { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
-      emit('commit')
+  loginFormRef.value.validate()
+    .then(() => {
+      loading.value = true
 
-      message.success('登录成功！欢迎回来。')
-      console.log('login success', data)
-    })
-    .catch((error) => {
-      message.error('login error', error)
-    })
-    .finally(() => {
-      loading.value = false
+      const encryptedPassword = CryptoUtil.instance.encrypt(loginBody.password || '')
+      const signature = CryptoUtil.instance.sign(encryptedPassword)
+      const body: LoginReq = {
+        username: loginBody.username,
+        password: encryptedPassword,
+        signature,
+      }
+
+      authAPI
+        .login(body)
+        .then(({ data }) => {
+          useTokenStore().saveTokenInfo(data)
+          useUserStore().fetchCurrentUserInfo()
+          emit('commit')
+          message.success('登录成功！欢迎回来。')
+          console.log('login success', data)
+        })
+        .catch(error => {
+          message.error('login error', error)
+        })
+        .finally(() => {
+          loading.value = false
+        })
     })
 }
-// function logout() {
-//   authAPI.logout(user.uid.toString())
-//     .then(({message}) => {
-//       user.clearUserInfo()
-//       message.success(message)
-//     })
-//     .catch((err) => {
-//       message.error(err)
-//     })
-// }
+function registerCommit() {
+  if (passwordGroup.firstInput === '') {
+    message.warn('请输入密码')
+  } else if (passwordGroup.firstInput !== passwordGroup.lastInput) {
+    message.warn('请确认二次输入密码一致')
+  } else {
+    const encryptedPassword = CryptoUtil.instance.encrypt(passwordGroup.firstInput)
+    const signature = CryptoUtil.instance.sign(encryptedPassword)
+    const body: RegisterReq = {
+      nickname: registerBody.nickname,
+      password: encryptedPassword,
+      signature,
+      email: registerBody.email
+    }
 
+    userInfoAPI.register(body)
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('注册成功')
+          // 返回登录页面并填充账号密码
+          loginTab.value = true
+          loginBody.username = data.uid
+          loginBody.password = passwordGroup.firstInput
+        }
+        console.log('register success', data)
+      })
+  }
+}
+
+function goToRegister() {
+  passwordGroup.firstInput = passwordGroup.lastInput = ''
+  loginTab.value = false
+}
 </script>
 
 <template>
-  <!--  <div class="modal-container" v-if="visible">-->
-  <!--    <div class="modal-body">-->
-  <!--      <a-button @click="$emit('close')">关闭</a-button>-->
-  <!--    </div>-->
-  <!--  </div>-->
+  <GlobalDialog v-model:visible="visible" @close-dialog="visible = false">
+    <a-form
+      ref="loginFormRef"
+      :model="loginBody"
+      :rules="loginFormRules"
+      v-if="loginTab"
+    >
+      <a-form-item label="账号" name="username">
+        <a-input
+          v-model:value="loginBody.username"
+          placeholder="输入用户UID..."
+        />
+      </a-form-item>
+      <a-form-item label="密码" name="password">
+        <a-input
+          type="password"
+          v-model:value="loginBody.password"
+          placeholder="输入密码..."
+        />
+      </a-form-item>
+    </a-form>
+    <a-form
+      ref="registerFormRef"
+      :model="registerBody"
+      :rules="registerFormRules"
+      v-else
+    >
+      <a-form-item label="昵称" name="nickname">
+        <a-input
+          v-model:value="registerBody.nickname"
+          placeholder="输入昵称..."
+          autoComplete="new-password"
+        />
+      </a-form-item>
+      <a-form-item label="密码" name="password">
+        <a-input
+          type="password"
+          v-model:value="passwordGroup.firstInput"
+          placeholder="输入密码..."
+          autoComplete="new-password"
+        />
+      </a-form-item>
+      <a-form-item
+        label="确认密码"
+        name="passwordConfirm"
+        v-if="passwordGroup.firstInput !== ''"
+      >
+        <a-input
+          type="password"
+          v-model:value="passwordGroup.lastInput"
+          placeholder="请再次输入密码..."
+          autoComplete="new-password"
+        />
+      </a-form-item>
+      <a-form-item label="邮箱" name="email">
+        <a-input
+          type="email"
+          v-model:value="registerBody.email"
+          placeholder="输入邮箱..."
+          autoComplete="new-password"
+        />
+      </a-form-item>
+    </a-form>
 
-  <div>
-    <a-modal v-model:open="visible" title="登录">
-      <a-form ref="loginFormRef" :model="loginBody" :rules="loginFormRules">
-        <a-form-item label="账号" name="username">
-          <a-input
-            v-model:value="loginBody.username"
-            placeholder="输入用户UID..."
-          />
-        </a-form-item>
-        <a-form-item label="密码" name="password">
-          <a-input
-            type="password"
-            v-model:value="loginBody.password"
-            placeholder="输入密码..."
-          />
-        </a-form-item>
-      </a-form>
+    <template #header>
+      <div>{{ loginTab? '密码登录' : '注册' }}</div>
+    </template>
 
-      <template #footer>
-<!--        <a-button key="back" @click="$emit('close')">Return</a-button>-->
+    <template #footer>
+      <div class="footer-container" v-if="loginTab">
         <a-button
+          class="footer-button"
+          key=""
+          type="dashed"
+          @click="goToRegister"
+        >
+          注册
+        </a-button>
+        <a-button
+          class="footer-button submit-button"
           key="submit"
           type="primary"
           :loading="loading"
@@ -107,27 +226,40 @@ function loginCommit() {
         >
           登录
         </a-button>
-      </template>
-    </a-modal>
-  </div>
+      </div>
+      <div class="footer-container" v-else>
+        <a-button
+          class="footer-button"
+          key=""
+          type="dashed"
+          @click="loginTab = true"
+        >
+          返回登录
+        </a-button>
+        <a-button
+          class="footer-button submit-button"
+          key="submit"
+          type="primary"
+          :loading="loading"
+          @click="registerCommit"
+        >
+          注册
+        </a-button>
+      </div>
+    </template>
+  </GlobalDialog>
 </template>
 
 <style scoped>
-/*.modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+.footer-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 }
-
-.modal-body {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-}*/
+.footer-button {
+  width: 200px;
+  height: 40px;
+}
+.submit-button {
+  background: #66ccff;
+}
 </style>

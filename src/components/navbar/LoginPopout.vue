@@ -22,20 +22,22 @@ const avatarMouseLeave = () => {
 <template>
   <a-popover placement="bottom">
     <template #content>
-      <p>请登录或注册</p>
+      <h3>请登录或注册</h3>
     </template>
     <template #title>
-      <span>Title</span>
+<!--      <span>Title</span>-->
     </template>
     <a-avatar
       :style="avatarStyle"
       @mouseenter="avatarMouseEnter"
       @mouseleave="avatarMouseLeave"
       @click="$emit('openLoginModal')"
-      style="background-color: #66ccff"
+      style="background-color: #66ccff; width: 50px; height: 50px;"
     >
       <template #icon>
-        登录
+        <div style="padding-top: 0.5rem; font-size: .85em">
+          登录
+        </div>
       </template>
     </a-avatar>
   </a-popover>

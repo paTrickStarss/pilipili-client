@@ -4,6 +4,7 @@
 
 import axios from 'axios'
 import { useTokenStore } from '@/stores/token'
+import { message } from 'ant-design-vue'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -28,6 +29,29 @@ axiosInstance.interceptors.response.use((response) => {
   return response.data
 }, (error) => {
   // HttpStatus 3xx 4xx 5xx
+
+  let msg = 'API error'
+  switch (error.response.status) {
+    case 401 : {
+      msg += ': Token invalid!'
+      // 清除登录状态
+      useTokenStore().clearTokenInfo()
+      break
+    }
+    case 403 : {
+      msg += ': Forbidden!'
+      break
+    }
+    case 404: {
+      msg += ': Not Found!'
+      break
+    }
+    default: {
+      msg += '!'
+    }
+  }
+  message.error(msg)
+  // console.error(error.response)
 
   return Promise.reject(error)
 })

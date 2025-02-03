@@ -5,15 +5,13 @@
 <script setup lang="ts">
 import SearchBar from '@/components/navbar/SearchBar.vue'
 import MenuBar from '@/components/navbar/MenuBar.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { MenuItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import UserInfoPopout from '@/components/navbar/UserInfoPopout.vue'
 import LoginPopout from '@/components/navbar/LoginPopout.vue'
 import LoginModal from '@/components/LoginModal.vue'
-import { userInfoAPI } from '@/api/user/UserInfoAPI'
-import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
 
 // Menu
@@ -51,7 +49,7 @@ const menuRightItems = ref<MenuItemType[]>([
   {
     id: 100,
     label: '会员',
-    routePath: '/space/472980323',
+    routePath: '/',
     url: 'https://space.bilibili.com/472980323',
     desc: 'PiliPili',
   },
@@ -87,6 +85,7 @@ const loginModalVisible = ref<boolean>(false)
 
 function openLoginModal() {
   loginModalVisible.value = true
+
 }
 
 function handleCancel() {
@@ -99,15 +98,11 @@ function handleOk() {
   // message.info('handleOk')
   // user.fetchDemoUserInfo()
   loginModalVisible.value = false
-  userInfoAPI.getUserInfo(token.username)
-    .then(({ data }) => {
-      user.saveUserInfo(data)
-      message.success('getUserInfo success')
-      console.log('userInfo', data)
-    })
 }
 
-
+onMounted(() => {
+  user.fetchCurrentUserInfo()
+})
 
 </script>
 
@@ -145,6 +140,7 @@ function handleOk() {
 
     <!--    登录弹窗-->
     <LoginModal
+      ref="loginModalRef"
       v-model:visible="loginModalVisible"
       @close="handleCancel"
       @commit="handleOk"
