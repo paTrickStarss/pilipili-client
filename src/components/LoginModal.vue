@@ -8,7 +8,7 @@ import type { LoginReq, RegisterReq } from '@/types/ApiRequestType'
 import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
-import GlobalDialog from '@/components/GlobalDialog.vue'
+import GlobalDialog from '@/components/global/GlobalDialog.vue'
 import { useUserStore } from '@/stores/user'
 import { CryptoUtil } from '@/utils/CryptoUtil'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
@@ -95,8 +95,8 @@ function loginCommit() {
           message.success('登录成功！欢迎回来。')
           console.log('login success', data)
         })
-        .catch(error => {
-          message.error('login error', error)
+        .catch((msg) => {
+          message.error(msg)
         })
         .finally(() => {
           loading.value = false

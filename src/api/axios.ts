@@ -25,8 +25,20 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use((response) => {
   // HttpStatus 2xx
+  const { data } = response
+  console.log('response', data)
+  if (data == null) {
+    return Promise.reject(response)
+  }
 
-  return response.data
+  const { code, msg } = data
+  switch (code) {
+    case 400:
+    case 500:
+      return Promise.reject(msg)
+  }
+
+  return data
 }, (error) => {
   // HttpStatus 3xx 4xx 5xx
 

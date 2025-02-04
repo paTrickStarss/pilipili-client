@@ -94,7 +94,7 @@ defineEmits({
   height: 32px;
   right: 20px;
   top: 20px;
-  background: url("../assets/icons/close.svg");
+  background: url("../../assets/icons/close.svg");
   background-size: contain;
   cursor: pointer;
   z-index: 2;
