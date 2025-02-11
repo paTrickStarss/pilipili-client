@@ -110,7 +110,7 @@ onMounted(() => {
   <div class="header">
     <a-row>
       <a-col :span="8" class="flex-col">
-        <a-flex class="header-col">
+        <div class="header-col">
           <div class="logo">
             <img
               width="100%"
@@ -120,21 +120,21 @@ onMounted(() => {
             />
           </div>
           <MenuBar :menu-items="menuLeftItems" />
-        </a-flex>
+        </div>
       </a-col>
       <a-col :span="8" class="flex-col">
-        <a-flex class="header-col">
+        <div class="header-col">
           <SearchBar />
-        </a-flex>
+        </div>
       </a-col>
       <a-col :span="8" class="flex-col">
-        <a-flex class="header-col">
+        <div class="header-col">
           <div class="user-info">
             <UserInfoPopout v-if="token.isLogin" />
             <LoginPopout v-else @openLoginModal="openLoginModal" />
           </div>
           <MenuBar :menu-items="menuRightItems" />
-        </a-flex>
+        </div>
       </a-col>
     </a-row>
 
@@ -156,7 +156,9 @@ onMounted(() => {
 }
 
 .header-col {
+  display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .flex-col {

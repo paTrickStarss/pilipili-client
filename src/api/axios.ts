@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use((response) => {
   let msg = 'API error'
   switch (error.response.status) {
     case 401 : {
-      msg += ': Token invalid!'
+      msg += ': 登录状态失效! 请重新登录'
       // 清除登录状态
       useTokenStore().clearTokenInfo()
       break

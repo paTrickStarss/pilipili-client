@@ -23,11 +23,11 @@ const userInfo = reactive(userStore.userInfo)
           <UserOutlined />
         </template>
       </a-avatar>
-      <div class="username-item"><b>{{ userInfo.username }}</b></div>
+      <div class="username-item"><b>{{ userInfo.nickname }}</b></div>
     </div>
     <div class="info-container">
       <div class="info-item"><span class="info-label">uid: </span>{{ userInfo.uid }}</div>
-      <div class="info-item"><span class="info-label">个人介绍: </span>{{ userInfo.desc }}</div>
+      <div class="info-item"><span class="info-label">个人介绍: </span>{{ userInfo.description }}</div>
       <div class="info-item"><span class="info-label">空间URL: </span>{{ userInfo.spaceUrl }}</div>
     </div>
   </div>

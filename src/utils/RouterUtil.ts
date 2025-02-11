@@ -9,13 +9,11 @@ import { type Router } from 'vue-router'
  * @param url 链接
  * @param newPage 是否在新标签页打开
  */
-export function openLink(url: string, newPage: boolean = false): void {
+export function openLink(url: string, newPage: boolean = true): void {
   window.open(url, newPage? '_blank':'_self')
 }
 
 export function jumpRoute(router: Router, path: string): void {
-  // console.log('jumpRoute: ', path)
-
   router.push(path)
     .then(r => {
       console.log('router.push', path, r)

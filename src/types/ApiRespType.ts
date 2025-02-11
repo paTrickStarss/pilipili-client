@@ -24,6 +24,10 @@ export interface UserInfoType {
    */
   uid: number
   /**
+   * UUID
+   */
+  uuid: string
+  /**
    * 用户名
    */
   nickname: string

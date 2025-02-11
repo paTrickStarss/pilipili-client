@@ -12,23 +12,46 @@ import { useTokenStore } from '@/stores/token'
 export const useUserStore = defineStore('user', () => {
   // const isLogin = ref(false)
   const uid = ref<number>(0)
-  const username = ref<string>('')
+  const uuid = ref<string>('')
   const nickname = ref<string>('')
-  const spaceUrl = ref<string>('')
   const gender = ref<number>(0)
-  const desc = ref<string>('')
-  const password = ref<string>('')
   const avatarUrl = ref<string>('')
+  const backgroundUrl = ref<string>('')
+  const email = ref<string>('')
+  const description = ref<string>('')
+  const vipStatus = ref<number>(0)
+  const authority = ref<number>(0)
+  const authorityDesc = ref<string>('')
+  const validStatus = ref<number>(0)
+  const role = ref<number>(0)
+  const exp = ref<number>(0)
+  const hcoin = ref<number>(0)
+  const pcoin = ref<number>(0)
 
   const userInfo = computed(() => {
     return {
       uid,
-      username,
+      uuid,
       nickname,
-      spaceUrl,
       gender,
-      desc,
+      avatarUrl,
+      backgroundUrl,
+      email,
+      description,
+      vipStatus,
+      authority,
+      authorityDesc,
+      validStatus,
+      role,
+      exp,
+      hcoin,
+      pcoin,
+      spaceUrl,
     }
+  })
+
+  const spaceUrl = computed(() => {
+    return `/space/${uid.value}`
   })
 
   const isLogin = computed(() => {
@@ -41,12 +64,9 @@ export const useUserStore = defineStore('user', () => {
   function clearUserInfo() {
     // isLogin.value = false
     uid.value = 0
-    username.value = ''
     nickname.value = ''
-    spaceUrl.value = ''
     gender.value = 0
-    desc.value = ''
-    password.value = ''
+    description.value = ''
     avatarUrl.value = ''
   }
 
@@ -55,12 +75,9 @@ export const useUserStore = defineStore('user', () => {
    */
   function fetchDemoUserInfo() {
     uid.value = 233
-    username.value = 'Bubble'
     nickname.value = 'Bubble'
-    spaceUrl.value = 'https://space.bilibili.com/472980323'
     gender.value = 1
-    desc.value = 'This is Bubble speaking.'
-    password.value = 'xxx'
+    description.value = 'This is Bubble speaking.'
     avatarUrl.value = 'hhh'
   }
 
@@ -71,11 +88,21 @@ export const useUserStore = defineStore('user', () => {
   function saveUserInfo(userInfo: UserInfoType) {
     // isLogin.value = true
     uid.value = userInfo.uid
-    username.value = userInfo.nickname
+    uuid.value = userInfo.uuid
     nickname.value = userInfo.nickname
-    spaceUrl.value = userInfo.uid.toString()
     gender.value = userInfo.gender
-    desc.value = userInfo.description || ''
+    avatarUrl.value = userInfo.avatarUrl
+    backgroundUrl.value = userInfo.backgroundUrl
+    email.value = userInfo.email
+    description.value = userInfo.description
+    vipStatus.value = userInfo.vipStatus
+    authority.value = userInfo.authority
+    authorityDesc.value = userInfo.authorityDesc
+    validStatus.value = userInfo.validStatus
+    role.value = userInfo.role
+    exp.value = userInfo.exp
+    hcoin.value = userInfo.hcoin
+    pcoin.value = userInfo.pcoin
   }
 
   /**
@@ -96,11 +123,11 @@ export const useUserStore = defineStore('user', () => {
   return {
     isLogin,
     uid,
-    username,
     nickname,
     spaceUrl,
-    desc,
+    description,
     avatarUrl,
+    vipStatus,
     userInfo,
     clearUserInfo,
     fetchDemoUserInfo,
