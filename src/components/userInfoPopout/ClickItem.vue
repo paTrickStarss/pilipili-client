@@ -18,7 +18,7 @@ const linkItemStyle = reactive({
   backgroundColor: '#fff',
 })
 const linkItemMouseEnter = () => {
-  linkItemStyle.backgroundColor = '#a6a6a6'
+  linkItemStyle.backgroundColor = '#d5d5d5'
 }
 const linkItemMouseLeave = () => {
   linkItemStyle.backgroundColor = '#fff'
@@ -39,7 +39,7 @@ const linkItemMouseLeave = () => {
 
 <style scoped>
 .link-title__text {
-  margin-left: 8px;
+  margin-left: 10px;
 }
 .click-item {
   display: flex;
