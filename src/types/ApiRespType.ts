@@ -83,6 +83,10 @@ export interface UserInfoType {
    * P币（充值代币）
    */
   pcoin: number
+  /**
+   * 用户等级
+   */
+  level: number
 }
 
 /**

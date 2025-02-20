@@ -27,6 +27,7 @@ export const useUserStore = defineStore('user', () => {
   const exp = ref<number>(0)
   const hcoin = ref<number>(0)
   const pcoin = ref<number>(0)
+  const level = ref<number>(0)
 
   const userInfo = computed(() => {
     return {
@@ -46,6 +47,7 @@ export const useUserStore = defineStore('user', () => {
       exp,
       hcoin,
       pcoin,
+      level,
       spaceUrl,
     }
   })
@@ -103,6 +105,7 @@ export const useUserStore = defineStore('user', () => {
     exp.value = userInfo.exp
     hcoin.value = userInfo.hcoin
     pcoin.value = userInfo.pcoin
+    level.value = userInfo.level
   }
 
   /**

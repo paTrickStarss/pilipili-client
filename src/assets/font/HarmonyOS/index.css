@@ -1,0 +1,18 @@
+/*@import './harmonyos_sans.css';*/
+/*@import './harmonyos_sans_sc.css';*/
+/*@import './harmonyos_sans_tc.css';*/
+/*@import './harmonyos_sans_condensed.css';*/
+/*@import './harmonyos_sans_naskh_arabic.css';*/
+
+@font-face {
+    font-family: 'HarmonyOS_Regular';
+    src: url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.eot');
+    src: url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.eot?#iefix') format('embedded-opentype'),
+    url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.woff2') format('woff2'),
+    url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.woff') format('woff'),
+    url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.ttf') format('truetype'),
+    url('./HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Regular.svg#HarmonyOS_Sans_SC') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

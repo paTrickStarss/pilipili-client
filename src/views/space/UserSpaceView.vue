@@ -5,24 +5,23 @@
 <script setup lang="ts">
 import IndexView from '@/views/index/IndexView.vue'
 import { onMounted, ref } from 'vue'
-import {
-  StarTwoTone,
-  CloudTwoTone,
-  SettingTwoTone,
-} from '@ant-design/icons-vue'
-import UserInfoCard from '@/components/space/UserInfoCard.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import type { CollectionInfoType } from '@/types/PropsType'
+import { useUserStore } from '@/stores/user'
 
 const isLoading = ref<boolean>(false)
 const activeKey = ref<string>('1')
 const collectionList = ref<Array<CollectionInfoType>>([])
+
+const userInfo = useUserStore().userInfo
 
 onMounted(() => {
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
   }, 2000)
+
+  console.log('userInfo', userInfo)
 
   collectionList.value = [
     {
@@ -48,7 +47,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <IndexView>
+  <IndexView :fixed="false">
     <div class="header">
 
 <!--      背景-->
@@ -93,27 +92,82 @@ onMounted(() => {
               <a href="#" class="change-btn">更换头像</a>
             </div>
           </div>
+          <div class="userinfo-detail">
+            <div class="userinfo-detail__top">
+              <div class="nickname">{{ userInfo.nickname }}</div>
+              <a class="level" target="_blank" href="#">
+                <i class="vui_icon level-icon" :class="`sic-BDC_svg-user_level_${userInfo.level.value}`" style="font-size: 28px;"></i>
+              </a>
+              <div class="gender" :style="{'background-color': `var(--brand_${userInfo.gender.value === 1? 'blue':'pink'})`}">
+                <i class="vui_icon" :class="`sic-BDC-${userInfo.gender.value === 1? 'male':'female'}_line`" style="font-variation-settings: 'strk' 2; font-size: 12px;"></i>
+              </div>
+              <div class="vip">
+                <a href="/vip-center" target="_blank" class="img-label">
+                  <img class="img-label-pic" :src="`${ASSETS_BASE_URL}/icons/vip_2.png`" alt="vip img">
+                </a>
+              </div>
+            </div>
+            <div class="userinfo-detail__bottom">
+              <div class="sign header-sign">
+                <div class="editable">
+                  <input class="editable-input" type="text" placeholder="编辑个人介绍">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="operation">
         </div>
       </div>
 
     </div>
+
+    <div class="nav-bar">
+      <div class="nav-bar__main">
+        <div class="nav-bar__main-left">
+          <div class="nav-tab">
+            <a href="#" class="nav-tab__item active">
+<!--              <img src="" alt="tab icon" class="nav-tab__item-icon">-->
+              <i class="vui_icon sic-BDC-house_home_line nav-tab__item-icon" style="color: var(--Gr6_u);"></i>
+              <span class="nav-tab__item-text">主页</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/dynamic`" class="nav-tab__item">
+              <i class="vui_icon sic-BDC-windmill_moments_line nav-tab__item-icon" style="color: var(--Pi5_u);"></i>
+              <span class="nav-tab__item-text">动态</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/upload`" class="nav-tab__item">
+              <i class="vui_icon sic-fsp-submission_line nav-tab__item-icon" style="color: var(--Lb5_u);"></i>
+              <span class="nav-tab__item-text">投稿</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/lists`" class="nav-tab__item">
+              <i class="vui_icon sic-BDC-video_archive_line nav-tab__item-icon" style="color: var(--Lb4_u);"></i>
+              <span class="nav-tab__item-text">合集</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/collections`" class="nav-tab__item">
+              <i class="vui_icon sic-fsp-fav_line nav-tab__item-icon" style="color: var(--Ye5_u);"></i>
+              <span class="nav-tab__item-text">收藏</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/bangumi`" class="nav-tab__item">
+              <i class="vui_icon sic-BDC-heart_collect_line nav-tab__item-icon" style="color: var(--Re5_u);"></i>
+              <span class="nav-tab__item-text">追番追剧</span>
+            </a>
+            <a :href="`/space/${userInfo.uid.value}/setting`" class="nav-tab__item">
+              <i class="vui_icon sic-BDC-nut_setting_line nav-tab__item-icon" style="color: var(--Lb5_u);"></i>
+              <span class="nav-tab__item-text">设置</span>
+            </a>
+            <div class="nav-tab-cursor" style="width: 56px; left: 0"></div>
+          </div>
+          <label class="nav-search nav-bar-search"></label>
+        </div>
+        <div class="nav-bar__main-right">
+          <div class="nav-statistics"></div>
+        </div>
+      </div>
+    </div>
   </IndexView>
 </template>
 
 <style scoped>
-/*.body-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 100px;
-}
-.body-width {
-  width: 100%;
-}*/
-
 .header {
   display: flex;
   height: 200px;
@@ -140,7 +194,7 @@ onMounted(() => {
   background-size: cover;
   background-position: center;
 }
-.header-userinfo-bg-shadow {
+.header .header-userinfo-bg-shadow {
   position: relative;
   left: 0;
   right: 0;
@@ -149,7 +203,7 @@ onMounted(() => {
   z-index: -1;
   pointer-events: none;
 }
-.header-userinfo-bg-shadow .top {
+.header .header-userinfo-bg-shadow .top {
   position: absolute;
   top: 0;
   left: 0;
@@ -157,7 +211,7 @@ onMounted(() => {
   height: 106px;
   background: linear-gradient(180deg, rgba(0,0,0, .7) 0%, rgba(0,0,0, 0) 100%);
 }
-.header-userinfo-bg-shadow .bottom {
+.header .header-userinfo-bg-shadow .bottom {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -170,7 +224,23 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
 }
+@media (min-width: 1560px) {
+  .header-userinfo {
+    --side-padding: 140px;
+  }
+}
+@media (max-width: 1560px) {
+  .header-userinfo {
+    --side-padding: 80px;
+  }
+}
+@media (min-width: 1100px) {
+  .header-userinfo {
+    min-width: 1100px;
+  }
+}
 .header-userinfo {
+  --side-padding: 80px;
   max-width: 2260px;
   margin: 0 auto;
   padding: 0 var(--side-padding);
@@ -180,16 +250,6 @@ onMounted(() => {
   padding-bottom: 22px;
 }
 
-@media (min-width: 1560px) {
-  .header-userinfo {
-    --side-padding: 140px;
-  }
-}
-@media (min-width: 1100px) {
-  .header-userinfo {
-    min-width: 1100px;
-  }
-}
 
 .userinfo__main {
   display: flex;
@@ -222,12 +282,48 @@ onMounted(() => {
 .userinfo__main .userinfo-detail__top>* {
   margin-right: 4px;
 }
+.userinfo__main .userinfo-detail__bottom .header-sign {
+  margin-top: 10px;
+}
+.sign {
+  height: 17px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+.sign .editable {
+  flex: 1;
+  height: 100%;
+}
+.sign .editable .editable-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 4px;
+  background-color: transparent;
+  transition: background-color .3s, color .3s;
+  color: white;
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.sign .editable .editable-input:focus {
+  background-color: white;
+  color: #18191c;
+}
 .level {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 25px;
   height: 20px;
+}
+.level .level-img {
+  height: 25px;
+  /*background-color: white;*/
 }
 i.vui_icon {
   speak: none;
@@ -250,9 +346,24 @@ i.vui_icon {
   width: 16px;
   height: 16px;
   border-radius: 50%;
+  background-color: white;
   color: white;
 }
-
+.gender .gender-img {
+  height: 16px;
+}
+.vip {
+  display: flex;
+}
+.vip .img-label {
+  cursor: pointer;
+  display: flex;
+  height: 20px;
+  width: auto;
+}
+.vip .img-label-pic {
+  height: 100%;
+}
 .space-avatar {
   position: relative;
   border: 2px solid rgba(255, 255, 255, 0.4);
@@ -331,23 +442,181 @@ i.vui_icon {
   height: 100%;
 }
 
-/*.banner-wrapper {
+@media (min-width: 1340px) {
+  .nav-bar {
+    --search-margin-left: 30px;
+  }
+}
+@media (min-width: 1100px) {
+  .nav-bar {
+    --search-margin-left: 30px;
+  }
+}
+@media (min-width: 0) {
+  .nav-bar {
+    --search-margin-left: 20px;
+  }
+}
+.nav-bar {
+  --search-margin-left: 20px;
+  position: sticky;
+  z-index: 99;
+  top: 0;
+  background-color: var(--bg1);
+  box-shadow: 0 0 0 1px var(--bg2_float);
+}
+.nav-bar__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 2260px;
+  margin: 0 auto;
+  padding: 0 60px;
+}
+.nav-bar__main-left {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+.nav-tab {
+  --item-margin-left: 18px;
+  --item-font-size: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 0) {
+  .nav-tab {
+    --item-margin-left: 18px;
+  }
+}
+@media (min-width: 1100px) {
+  .nav-tab {
+    --item-margin-left: 20px;
+  }
+}
+@media (min-width: 1340px) {
+  .nav-tab {
+    --item-margin-left: 30px;
+    --item-font-size: 16px;
+  }
+}
+.nav-tab__item:first-child {
+  margin-left: 0;
+}
+.nav-tab__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  margin-left: var(--item-margin-left);
+}
+.nav-tab__item * {
+  transition: color .3s;
+}
+.nav-tab__item-icon {
+  font-variation-settings: 'strk' 3;
+  font-size: 20px;
+  color: var(--graph_icon);
+}
+.nav-tab__item-text {
+  margin-left: 4px;
+  font-size: var(--item-font-size);
+  color: var(--text1);
+}
+.nav-tab__item-text:hover {
+  color: var(--brand_blue)
+}
+.nav-tab__item.active .nav-tab__item-text,
+.nav-tab__item.active .nav-tab__item-num {
+  font-weight: 700;
+  color: var(--brand_blue)
+}
+.nav-tab-cursor {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px;
+  background-color: var(--brand_blue);
+  transition: all .3s ease-in-out;
+}
+.nav-bar__main-left .nav-bar-search {
+  margin-left: var(--search-margin-left);
+}
+@media (min-width: 1340px) {
+  .nav-search {
+    --search-width: 150px;
+  }
+}
+@media (min-width: 1100px) {
+  .nav-search {
+    --search-width: 150px;
+  }
+}
+@media (min-width: 0) {
+  .nav-search {
+    --search-width: 142px;
+  }
+}
+.nav-search {
+  --search-width: 142px;
   position: relative;
 }
-.banner-inner {
-  background-position: 50%;
-  background-size: cover;
-  padding-top: 116px;
-  position: relative;
+.nav-search-input {
+  width: var(--search-width);
+  height: 30px;
+  padding: 0 45px 0 10px;
+  background-color: transparent;
+  line-height: 16px;
+  font-size: 12px;
+  color: var(--text1);
+  border-radius: 6px;
+  border: 1px solid var(--line_regular);
+  transition: border-color .3s;
+}
+.nav-search .action {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
 }
 
-.infoCard {
-  height: 200px;
+.nav-bar__main-right {
+  flex-shrink: 0;
 }
-.content {
-  height: 600px;
+@media (min-width: 1340px) {
+  .nav-statistics {
+    --item-margin-right: 16px;
+  }
 }
-.tab-header {
-  margin-inline: 30px;
-}*/
+@media (min-width: 1100px) {
+  .nav-statistics {
+    --item-margin-right: 16px;
+  }
+}
+@media (min-width: 0) {
+  .nav-statistics {
+    --item-margin-right: 8px;
+  }
+}
+.nav-statistics {
+  --item-margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+.nav-statistics__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: var(--item-margin-left);
+  min-width: 52px;
+}
+.nav-statistics__item.jumpable {
+  cursor: pointer;
+}
+.nav-statistics__item:first-child {
+  margin-left: 0;
+}
+
 </style>

@@ -1,42 +1,45 @@
 @import './base.css';
+@import './font/HarmonyOS/index.css';
+@import './font/freshspace-kzimajpr1/index.css';
+@import './font/Helvetica-Neue/index.css';
 
-body {
-    font-family: "Harmony Font", sans-serif;
-}
+/*body {*/
+/*    font-family: "Harmony Font", sans-serif;*/
+/*}*/
 :where(.css-dev-only-do-not-override-1p3hq3p)[class^="ant-"] {
     font-family: inherit;
 }
+html body {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    text-size-adjust: none;
+    margin: 0;
+    padding: 0;
+    font-family: PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif!important
+}
 
-/*#app {*/
-  /*max-width: 1280px;*/
-  /*margin: 0 auto;*/
-  /*padding: 2rem;*/
-  /*font-weight: normal;*/
-/*}*/
+body ul {
+    list-style-type: none ;
+}
+body span, body svg {
+    color: inherit;
+}
+body a {
+    text-decoration: none;
+    background-color: transparent;
+    color: inherit;
+}
 
-/*a,*/
-/*.green {*/
-/*  text-decoration: none;*/
-/*  color: hsla(160, 100%, 37%, 1);*/
-/*  transition: 0.4s;*/
-/*  padding: 3px;*/
-/*}*/
-
-/*@media (hover: hover) {*/
-/*  a:hover {*/
-/*    background-color: hsla(160, 100%, 37%, 0.2);*/
-/*  }*/
-/*}*/
-
-/*@media (min-width: 1024px) {*/
-/*  body {*/
-/*    display: flex;*/
-/*    place-items: center;*/
-/*  }*/
-
-/*  #app {*/
-/*    display: grid;*/
-/*    grid-template-columns: 1fr 1fr;*/
-/*    padding: 0 2rem;*/
-/*  }*/
-/*}*/
+button, input, select textarea {
+    outline: 0;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+}
