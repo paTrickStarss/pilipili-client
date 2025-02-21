@@ -64,11 +64,12 @@ function mouseContentLeave() {
     hidePopover()
   }
 }
+// style="--text-color: var(--text2); --icon-color: var(--text1);"
 
 </script>
 
 <template>
-  <div class="v-popover-wrap" :class="wrapClass">
+  <li class="v-popover-wrap" :class="wrapClass" style="--text-color: var(--text_white); --icon-color: var(--text_white);">
     <div
       class="trigger"
       ref="triggerRef"
@@ -93,28 +94,13 @@ function mouseContentLeave() {
       </div>
 
     </transition>
-  </div>
+  </li>
 </template>
 
-<style scoped>
-/*.popover-container {
-  position: relative;
-  !*display: inline-block;*!
-}
-
+<style>
 .trigger {
-  cursor: pointer;
+  position: relative;
 }
-
-.popover {
-  position: absolute;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-}*/
-
 .v-popover-wrap {
   position: relative;
 }
@@ -131,10 +117,10 @@ function mouseContentLeave() {
   position: relative;
   z-index: 2;
 }
-.bili-header .right-entry--message {
+.pili-header .right-entry--message {
   position: relative;
 }
-.right-entry__outside {
+.trigger .right-entry__outside {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -144,9 +130,21 @@ function mouseContentLeave() {
   text-align: center;
   font-size: 13px;
 }
-.bili-header .red-point--message {
+.trigger .right-entry-text {
+  word-break: keep-all;
+  line-height: 1.25;
+}
+.pili-header .right-entry__outside .right-entry-text {
+  color: var(--text-color);
+}
+.trigger .right-entry__outside .right-entry-icon {
+  margin-bottom: 2px;
+  color: var(--icon-color);
+  -webkit-font-smoothing: antialiased;
+}
+.pili-header .red-point--message {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 35px;
   z-index: 1;
   width: 6px;
@@ -155,6 +153,20 @@ function mouseContentLeave() {
   background-color: #fa5a57;
   color: #fff;
 }
+.pili-header .red-num--message {
+  position: absolute;
+  top: -6px;
+  left: 25px;
+  z-index: 1;
+  padding: 0 3px;
+  min-width: 15px;
+  border-radius: 10px;
+  background-color: #fa5a57;
+  color: #fff;
+  font-size: 12px;
+  line-height: 15px;
+}
+
 
 .v-popover {
   position: absolute;

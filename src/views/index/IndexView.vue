@@ -8,6 +8,9 @@ import NavBar from '@/components/navbar/NavBar.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import UserInfoPopover from '@/components/navbar/UserInfoPopover.vue'
 import VipPopover from '@/components/navbar/VipPopover.vue'
+import MessagePopover from '@/components/navbar/MessagePopover.vue'
+import DynamicPopover from '@/components/navbar/DynamicPopover.vue'
+import CollectionPopover from '@/components/navbar/CollectionPopover.vue'
 
 defineProps({
   fixed: {
@@ -276,39 +279,32 @@ onUnmounted(() => {
 <!--            <UserInfoPopover/>-->
             <UserInfoPopover/>
             <VipPopover/>
+            <MessagePopover/>
+            <DynamicPopover/>
+            <CollectionPopover/>
             <li class="v-popover-wrap">
               <a href="#" class="default-entry">
-                <span>功能</span>
+                <span>历史</span>
               </a>
             </li>
             <li class="v-popover-wrap">
               <a href="#" class="default-entry">
-                <span>功能</span>
+                <span>创作中心</span>
               </a>
             </li>
             <li class="v-popover-wrap">
               <a href="#" class="default-entry">
-                <span>功能</span>
-              </a>
-            </li>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>功能</span>
-              </a>
-            </li>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>功能</span>
-              </a>
-            </li>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>功能</span>
+                <span>投稿</span>
               </a>
             </li>
           </ul>
         </div>
-        <div class="pili-header__banner"></div>
+        <div class="pili-header__banner">
+          <picture class="v-img banner-img" id="pili-header-banner-img">
+            <source :srcset="`${ASSETS_BASE_URL}/image/banner.png@3840w_360h_1c.avif`" type="image/avif">
+            <img src="" alt="">
+          </picture>
+        </div>
         <div class="pili-header__channel"></div>
       </div>
     </div>
@@ -578,6 +574,10 @@ onUnmounted(() => {
   background-position: center 0;
   background-size: cover;
   background-repeat: no-repeat;
+}
+.pili-header .pili-header__banner .banner-img {
+  position: absolute;
+  object-fit: cover;
 }
 .pili-header .pili-header__channel {
   display: flex;
