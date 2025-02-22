@@ -18,6 +18,10 @@ defineProps({
   },
   contentStyle: {
     default: {}
+  },
+  popProhibit: {
+    type: Boolean,
+    default: false
   }
 })
 const emit = defineEmits({
@@ -83,7 +87,7 @@ function mouseContentLeave() {
       <div
         class="v-popover"
         ref="popoverRef"
-        v-show="visible"
+        v-show="!popProhibit && visible"
         @mouseenter="mouseContentEnter"
         @mouseleave="mouseContentLeave"
         :class="`position-${position}`"
@@ -101,10 +105,23 @@ function mouseContentLeave() {
 .trigger {
   position: relative;
 }
+.trigger a svg {
+  transition: all .3s;
+}
+.trigger a svg:hover {
+  transform: translate(0, -5px);
+}
 .v-popover-wrap {
   position: relative;
 }
-
+.pili-header .right-entry .right-entry-item {
+  display: block;
+  flex-shrink: 0;
+  margin-right: 4px;
+  min-width: 50px;
+  text-align: center;
+  cursor: pointer;
+}
 .header-avatar-wrap {
   position: relative;
   box-sizing: content-box;
@@ -116,6 +133,9 @@ function mouseContentLeave() {
 .header-avatar-wrap .header-avatar-wrap--container {
   position: relative;
   z-index: 2;
+}
+.pili-header .right-entry .right-entry-item--upload {
+  margin: 0;
 }
 .pili-header .right-entry--message {
   position: relative;
@@ -134,7 +154,7 @@ function mouseContentLeave() {
   word-break: keep-all;
   line-height: 1.25;
 }
-.pili-header .right-entry__outside .right-entry-text {
+.trigger .right-entry__outside .right-entry-text {
   color: var(--text-color);
 }
 .trigger .right-entry__outside .right-entry-icon {

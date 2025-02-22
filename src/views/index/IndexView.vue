@@ -11,6 +11,12 @@ import VipPopover from '@/components/navbar/VipPopover.vue'
 import MessagePopover from '@/components/navbar/MessagePopover.vue'
 import DynamicPopover from '@/components/navbar/DynamicPopover.vue'
 import CollectionPopover from '@/components/navbar/CollectionPopover.vue'
+import HistoryPopover from '@/components/navbar/HistoryPopover.vue'
+import GlobalPopover from '@/components/global/GlobalPopover.vue'
+import IconBulb from '@/components/icons/IconBulb.vue'
+import IconUpload from '@/components/icons/IconUpload.vue'
+import { useTokenStore } from '@/stores/token'
+import UserLoginPopver from '@/components/navbar/UserLoginPopver.vue'
 
 defineProps({
   fixed: {
@@ -18,6 +24,8 @@ defineProps({
     default: true,
   },
 })
+
+const tokenStore = useTokenStore()
 
 const searchFormFocus = ref<boolean>(false)
 
@@ -276,27 +284,36 @@ onUnmounted(() => {
           </div>
           <!--          右侧菜单-->
           <ul class="right-entry">
-<!--            <UserInfoPopover/>-->
-            <UserInfoPopover/>
+            <UserLoginPopver v-if="!tokenStore.isLogin"/>
+            <UserInfoPopover v-else/>
             <VipPopover/>
             <MessagePopover/>
             <DynamicPopover/>
             <CollectionPopover/>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>历史</span>
-              </a>
-            </li>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>创作中心</span>
-              </a>
-            </li>
-            <li class="v-popover-wrap">
-              <a href="#" class="default-entry">
-                <span>投稿</span>
-              </a>
-            </li>
+            <HistoryPopover/>
+
+            <GlobalPopover
+              wrap-class="right-entry-item"
+              :pop-prohibit="true">
+              <template #trigger>
+                <a href="#" target="_blank" class="right-entry__outside">
+                  <IconBulb/>
+                  <span class="right-entry-text">创作中心</span>
+                </a>
+              </template>
+            </GlobalPopover>
+            <GlobalPopover
+              wrap-class="right-entry-item right-entry-item--upload"
+              :pop-prohibit="true">
+              <template #trigger>
+                <a href="#" target="_blank">
+                  <div class="header-upload-entry">
+                    <IconUpload/>
+                    <span class="header-upload-entry__text">投稿</span>
+                  </div>
+                </a>
+              </template>
+            </GlobalPopover>
           </ul>
         </div>
         <div class="pili-header__banner">
@@ -304,6 +321,7 @@ onUnmounted(() => {
             <source :srcset="`${ASSETS_BASE_URL}/image/banner.png@3840w_360h_1c.avif`" type="image/avif">
             <img src="" alt="">
           </picture>
+          <div class="taper-line"></div>
         </div>
         <div class="pili-header__channel"></div>
       </div>
@@ -312,29 +330,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/*.parent {
-  width: 100%;
-  height: 100%;
-  font-family: inherit;
-}
-
-.header {
-  display: flex;
-  !*position: fixed;*!
-  width: 100%;
-  z-index: 1000;
-  transition: all 0.3s;
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: grey;
-  height: 100px;
-}*/
-
 .pili-wrap {
   position: relative;
 }
@@ -604,24 +599,33 @@ onUnmounted(() => {
   max-width: calc(1980px + 2 * 64px);
 }
 
-.v-popover-wrap {
-  position: relative;
-}
-.v-popover {
+.pili-header .pili-header__banner .taper-line {
   position: absolute;
-  transition: 0.3s;
-  z-index: 1;
-}
-.v-popover.is-bottom-start {
-  top: 100%;
+  top: 0;
   left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(rgba(0,0,0,.4),transparent);
+  pointer-events: none;
 }
-.v-popover-content {
-  position: relative;
-  background-color: var(--bg1_float);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+.pili-header .header-upload-entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+  width: 90px;
+  height: 34px;
   border-radius: 8px;
-  border: 1px solid var(--line_regular);
-  color: var(--text1);
+  background: #fb7299;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background-color .3s;
+}
+.pili-header .header-upload-entry:hover {
+  background-color: #ff92ae;
 }
 </style>

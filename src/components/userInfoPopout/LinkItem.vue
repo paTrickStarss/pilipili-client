@@ -50,7 +50,7 @@ const linkItemMouseLeave = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   padding: 0 14px;
   height: 38px;
   border-radius: 8px;

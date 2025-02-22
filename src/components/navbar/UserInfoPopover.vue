@@ -223,7 +223,7 @@ onMounted(() => {
 .count-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin: 12px;
   padding: 0 20px;
 }
 .single-count-item {
