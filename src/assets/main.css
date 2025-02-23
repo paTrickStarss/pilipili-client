@@ -17,7 +17,7 @@ html body {
     text-size-adjust: none;
     margin: 0;
     padding: 0;
-    font-family: PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif!important
+    font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif!important
 }
 
 body ul {
@@ -36,6 +36,12 @@ button, input, select textarea {
     border: none;
     font-size: inherit;
     font-family: inherit;
+}
+button, input, optgroup, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
 }
 p {
     margin: 0;
@@ -81,6 +87,17 @@ p {
 .history-panel-popover .header-tabs-panel__content--date,
 .history-panel-popover .header-history-card__info--title,
 .dynamic-panel-popover .header-tabs-panel__content--date {
-    font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+    font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
     font-weight: 500;
+}
+
+i.vui_icon {
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: baseline;
+    display: inline-block;
 }

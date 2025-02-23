@@ -48,7 +48,7 @@ function mouseTriggerEnter() {
     if (triggerEnter && !contentEnter) {
       showPopover()
     }
-  }, 200)
+  }, 300)
 
 }
 function mouseTriggerLeave() {
@@ -73,7 +73,7 @@ function mouseContentLeave() {
 </script>
 
 <template>
-  <li class="v-popover-wrap" :class="wrapClass" style="--text-color: var(--text_white); --icon-color: var(--text_white);">
+  <li class="v-popover-wrap" :class="wrapClass" style="">
     <div
       class="trigger"
       ref="triggerRef"
@@ -113,6 +113,12 @@ function mouseContentLeave() {
 }
 .v-popover-wrap {
   position: relative;
+  --text-color: var(--text_white);
+  --icon-color: var(--text_white);
+}
+.pili-header .slide-down .v-popover-wrap {
+  --text-color: var(--text1);
+  --icon-color: var(--text1);
 }
 .pili-header .right-entry .right-entry-item {
   display: block;
@@ -178,7 +184,7 @@ function mouseContentLeave() {
   top: -6px;
   left: 25px;
   z-index: 1;
-  padding: 0 3px;
+  padding: 0 4px;
   min-width: 15px;
   border-radius: 10px;
   background-color: #fa5a57;

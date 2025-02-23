@@ -195,7 +195,7 @@ import IconVipPrivilege4 from '@/components/icons/IconVipPrivilege4.vue'
   margin-left: 11px;
 }
 .vip-panel-popover .panel-v2 .btn-wrap .renew-btn, .vip-panel-popover .panel-v2 .btn-wrap .btn-desc-title {
-  font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+  font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
   font-weight: 500;
 }
 .vip-panel-popover .panel-v2 .btn-wrap .btn-desc-title {

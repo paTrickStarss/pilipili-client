@@ -38,7 +38,7 @@ defineProps({
 .favorite-panel-popover__nav .tab-item__title {
   font-family:
     PingFang SC,
-    HarmonyOS_Medium,
+    HarmonyOS Sans SC,
     Helvetica Neue,
     Microsoft YaHei,
     sans-serif;

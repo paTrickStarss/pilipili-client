@@ -18,14 +18,14 @@ import ClickItem from '@/components/userInfoPopout/ClickItem.vue'
 
 const router = useRouter()
 
-const showPop = ref<boolean>(false)
+const showPop = ref<number>(-1)
 const user = useUserStore()
 const userInfo = reactive(user.userInfo)
 const avatarMouseEnter = () => {
-  showPop.value = true
+  showPop.value = 1
 }
 const avatarMouseLeave = () => {
-  showPop.value = false
+  showPop.value = 0
 }
 
 function handleLogout() {
@@ -54,7 +54,7 @@ onMounted(() => {
                  content-class="avatar-popover"
   >
       <template #trigger>
-        <div class="header-avatar-wrap--container" :class="`mini-avatar--${showPop? 'large':'small'}`">
+        <div class="header-avatar-wrap--container" :class="`mini-avatar--${showPop == 1? 'large': showPop == 0? 'small':'init'}`">
 <!--          小头像-->
           <a
             href="//space.bilibili.com/472980323"
@@ -106,7 +106,9 @@ onMounted(() => {
               alt="vip item label image."
             />
           </a>
-          <a href="#" target="_blank">level: {{ userInfo.exp }}(exp)</a>
+          <a class="level" target="_blank" href="#">
+            <i class="vui_icon level-icon" :class="`sic-BDC_svg-user_level_${userInfo.level}`" style="font-size: 28px;"></i>
+          </a>
         </div>
         <!--      硬币 P币-->
         <div class="coin-item">
@@ -171,7 +173,7 @@ onMounted(() => {
 }
 .big-avatar {
   width: 50px;
-  height: 80px;
+  height: 60px;
   opacity: 0;
 }
 .nickname-item {
@@ -232,6 +234,9 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   transition: color .2s;
+}
+.single-count-item * {
+  margin-bottom: 5px;
 }
 .count-item__text {
   color: grey;
@@ -326,6 +331,9 @@ onMounted(() => {
   display: block;
   border-radius: 50%;
   transform-origin: top left;
+}
+.mini-avatar--init .header-entry-avatar {
+  display: none;
 }
 .mini-avatar--small .header-entry-avatar {
   animation: avatarFadeSmall .35s both;

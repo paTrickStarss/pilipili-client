@@ -325,20 +325,7 @@ onMounted(() => {
   height: 25px;
   /*background-color: white;*/
 }
-i.vui_icon {
-  speak: none;
-  font-style: normal;
-  font-weight: 400;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  vertical-align: baseline;
-  display: inline-block;
-}
-.sic-BDC_svg-user_level_6::after {
-  content: '\e048';
-  text-rendering: geometricPrecision;
-}
+
 .gender {
   display: flex;
   align-items: center;

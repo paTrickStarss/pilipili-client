@@ -77,7 +77,7 @@ defineProps({
   transform-origin: center top;
 }
 .pili-header .header-fav-card__info--title {
-  font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+  font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
   font-weight: 500;
 }
 .pili-header .header-fav-card__info--title {
