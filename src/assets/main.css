@@ -1,8 +1,15 @@
 @import './base.css';
 @import './color.css';
+@import './font/PingFangSC-main/index.css';
 @import './font/HarmonyOS/index.css';
 @import './font/freshspace-kzimajpr1/index.css';
 @import './font/Helvetica-Neue/index.css';
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+    :root {
+        --layout-padding: 60px;
+    }
+}
 
 html body {
     -webkit-box-sizing: border-box;

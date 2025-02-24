@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainPageViewDeprecated from '@/views/main/MainPageViewDeprecated.vue'
+import MainPageView from '@/views/main/MainPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'MainPageViewDeprecated',
-      component: MainPageViewDeprecated,
+      name: 'MainPageView',
+      component: MainPageView,
     },
     {
       path: '/space/:id?',

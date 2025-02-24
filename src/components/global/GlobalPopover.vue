@@ -108,7 +108,7 @@ function mouseContentLeave() {
 .trigger a svg {
   transition: all .3s;
 }
-.trigger a svg:hover {
+.trigger:hover a svg {
   transform: translate(0, -5px);
 }
 .v-popover-wrap {
@@ -193,7 +193,6 @@ function mouseContentLeave() {
   line-height: 15px;
 }
 
-
 .v-popover {
   position: absolute;
   transition: .3s;
@@ -240,7 +239,7 @@ function mouseContentLeave() {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s;
+  transition: all 0.3s;
 }
 
 .fade-enter-from,

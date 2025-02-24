@@ -46,6 +46,7 @@ function switchNavBarBackground(isTransparent: boolean) {
     ? 'none'
     : '0 5px 8px rgba(255, 255, 255, 0.5)'
 }
+const slideDown = ref<boolean>(false)
 
 const controller = new AbortController()
 onMounted(() => {
@@ -53,10 +54,12 @@ onMounted(() => {
     const scrollTop = document.documentElement.scrollTop
 
     // 触发navbar背景切换事件
-    if (isNavBarTransparent.value && scrollTop >= 150) {
+    if (isNavBarTransparent.value && scrollTop >= 10) {
       switchNavBarBackground(false)
-    } else if (!isNavBarTransparent.value && scrollTop <= 130) {
+      slideDown.value = true
+    } else if (!isNavBarTransparent.value && scrollTop <= 5) {
       switchNavBarBackground(true)
+      slideDown.value = false
     }
   }
   window.addEventListener('scroll', scrollEventHandler, {
@@ -73,7 +76,7 @@ onUnmounted(() => {
   <div>
     <div class="pili-wrap">
       <div class="pili-header large-header">
-        <HeaderBar/>
+        <HeaderBar :slide-down="slideDown"/>
         <div class="pili-header__banner" v-if="fixed">
           <picture class="v-img banner-img" id="pili-header-banner-img">
             <source :srcset="`${ASSETS_BASE_URL}/image/banner.png@3840w_360h_1c.avif`" type="image/avif">
@@ -83,6 +86,11 @@ onUnmounted(() => {
         </div>
         <HeaderChannel v-if="fixed"/>
       </div>
+
+      <main class="pili-wrap-layout">
+        <div class="fixed-channel-shim"></div>
+        <slot>Main Content...</slot>
+      </main>
     </div>
   </div>
 </template>
@@ -94,11 +102,11 @@ onUnmounted(() => {
 .pili-wrap-layout,
 .pili-wrap .pili-header .pili-header__channel {
   margin: 0 auto;
-  padding: 0 64px;
+  padding: 0 var(--layout-padding);
 }
 .pili-wrap-layout,
 .pili-wrap .pili-header .pili-header__channel {
-  max-width: calc(1980px + 2 * 64px);
+  max-width: calc(1980px + 2 * var(--layout-padding));
 }
 .pili-header {
   position: relative;

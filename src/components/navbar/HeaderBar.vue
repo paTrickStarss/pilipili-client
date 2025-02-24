@@ -13,13 +13,21 @@ import IconBulb from '@/components/icons/IconBulb.vue'
 import MessagePopover from '@/components/navbar/MessagePopover.vue'
 import UserInfoPopover from '@/components/navbar/UserInfoPopover.vue'
 import { useTokenStore } from '@/stores/token'
+import { ref } from 'vue'
 
+defineProps({
+  slideDown: {
+    type: Boolean,
+    default: false,
+  }
+})
 
 const tokenStore = useTokenStore()
+// const slideDown = ref<boolean>(false)
 </script>
 
 <template>
-  <div class="pili-header__bar">
+  <div class="pili-header__bar" :class="{'slide-down': slideDown}">
     <!--          左侧菜单-->
     <ul class="left-entry">
       <li>
@@ -106,8 +114,7 @@ const tokenStore = useTokenStore()
 </template>
 
 <style scoped>
-
-.pili-header .slide-down {
+.pili-header .pili-header__bar.slide-down {
   position: fixed;
   top: 0;
   animation: headerSlideDown .3s linear forwards;
@@ -181,13 +188,23 @@ const tokenStore = useTokenStore()
   cursor: pointer;
 }
 .pili-header .left-entry .default-entry {
-  display: inline-block;
+  display: flex;
 }
 .pili-header .slide-down .left-entry .entry-title,
 .pili-header .slide-down .left-entry .download-entry,
 .pili-header .slide-down .left-entry .default-entry,
 .pili-header .slide-down .left-entry .loc-entry {
   color: var(--text1);
+}
+.pili-header .left-entry .entry-title span,
+.pili-header .left-entry .download-entry span,
+.pili-header .left-entry .default-entry span {
+  transition: all .3s;
+}
+.pili-header .left-entry .entry-title:hover span,
+.pili-header .left-entry .download-entry:hover span,
+.pili-header .left-entry .default-entry:hover span {
+  transform: translate(0, -5px);
 }
 .pili-header .right-entry {
   display: flex;
