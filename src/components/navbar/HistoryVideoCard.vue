@@ -3,7 +3,7 @@
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import IconDevicePC from '@/components/icons/IconDevicePC.vue'
 import IconDeviceMobile from '@/components/icons/IconDeviceMobile.vue'
-import IconUpUser from '@/components/icons/IconUpUser.vue'
+import IconUpUserWhite from '@/components/icons/IconUpUserWhite.vue'
 
 defineProps({
   title: String,
@@ -41,7 +41,7 @@ defineProps({
         <span>{{ dateTime }}</span>
       </div>
       <div class="header-history-card__info--name">
-        <IconUpUser/>
+        <IconUpUserWhite/>
         <span>{{ userName }}</span>
       </div>
     </div>

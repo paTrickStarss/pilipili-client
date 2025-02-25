@@ -57,7 +57,7 @@ onMounted(() => {
         <div class="header-avatar-wrap--container" :class="`mini-avatar--${showPop == 1? 'large': showPop == 0? 'small':'init'}`">
 <!--          小头像-->
           <a
-            href="//space.bilibili.com/472980323"
+            :href="`/space/${userInfo.uid}`"
             target="_blank"
             class="header-entry-mini"
           >
@@ -68,7 +68,7 @@ onMounted(() => {
           </a>
 <!--          大头像-->
           <a
-            href="//space.bilibili.com/472980323"
+            :href="`/space/${userInfo.uid}`"
             target="_blank"
             class="header-entry-avatar"
           >

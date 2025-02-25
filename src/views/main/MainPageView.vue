@@ -2,6 +2,7 @@
 
 import IndexView from '@/views/index/IndexView.vue'
 import RecommendedSwipe from '@/components/main/RecommendedSwipe.vue'
+import VideoCard from '@/components/video/VideoCard.vue'
 </script>
 
 <template>
@@ -12,7 +13,10 @@ import RecommendedSwipe from '@/components/main/RecommendedSwipe.vue'
         <div class="container is-version8">
           <RecommendedSwipe/>
 
-          <div style="height: 1200px"></div>
+          <div class="feed-card" v-for="i in 20" :key="i">
+            <VideoCard class="enable-no-interest" style="--cover-radio: 56.25%" />
+          </div>
+
         </div>
       </div>
     </div>

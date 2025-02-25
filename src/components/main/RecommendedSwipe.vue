@@ -5,6 +5,9 @@ import VideoCard from '@/components/video/VideoCard.vue'
 import { onMounted, ref } from 'vue'
 import type { CarouselInfoType } from '@/types/PropsType'
 import { deepCopy } from '@/utils/CommonUtil'
+import CarouselFooterDot from '@/components/main/CarouselFooterDot.vue'
+import IconArrowLeft from '@/components/icons/IconArrowLeft.vue'
+import IconArrowRight from '@/components/icons/IconArrowRight.vue'
 
 const props = defineProps({
   interval: {
@@ -50,6 +53,12 @@ let quartz: number = 0
 
 function nextSlide() {
   current.value = (current.value + 1) % slidesItems.value.length
+}
+function prevSlide() {
+  current.value = (current.value - 1) % slidesItems.value.length
+  if (current.value < 0) {
+    current.value = slidesItems.value.length - 2
+  }
 }
 
 function autoPlay() {
@@ -107,16 +116,21 @@ onMounted(() => {
                   </div>
                   <div class="carousel-dots">
                     <ul class="carousel-dots-list">
-                      <li
-                        class="carousel-dots-dot"
+                      <CarouselFooterDot
                         v-for="i in slidesItems.length"
-                        :key="i"
-                      >
-                        <div class="before"></div>
-                        <div class="after"></div>
-                      </li>
+                        :key="i" :index="i-1"
+                        v-model:current="current"
+                      />
                     </ul>
                   </div>
+                </div>
+                <div class="carousel-arrows">
+                  <button @click="prevSlide">
+                    <IconArrowLeft/>
+                  </button>
+                  <button @click="nextSlide">
+                    <IconArrowRight/>
+                  </button>
                 </div>
               </div>
             </div>
@@ -305,71 +319,6 @@ onMounted(() => {
 .carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-list {
   display: flex;
 }
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot {
-  position: relative;
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin: 4px;
-  border-radius: 50%;
-  background-color: rgba(255,255,255,.4);
-  overflow: hidden;
-  cursor: pointer;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot.is-active {
-  width: 14px;
-  height: 14px;
-  margin: 1px;
-  background-color: transparent;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot.is-active .before {
-  background-color: #fff;
-  animation: eat-haha-up-0d1b8730 .8s;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot.is-active .after {
-  background-color: #fff;
-  animation: eat-haha-down-0d1b8730 .8s;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot.is-active .before:after,
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot.is-active .after:before {
-  background-color: #fff;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot .before {
-  position: absolute;
-  top: 0;
-  width: 14px;
-  height: 7px;
-  border-radius: 7px 7px 0 0;
-  transform-origin: center bottom;
-  will-change: transform;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot .before:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  width: 100%;
-  height: 1px;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot .after {
-  position: absolute;
-  bottom: 0;
-  width: 14px;
-  height: 7px;
-  border-radius: 0 0 7px 7px;
-  transform-origin: center top;
-  will-change: transform;
-}
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-dot .after:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -1px;
-  width: 100%;
-  height: 1px;
-}
 
 .carousel .carousel-container .vui_carousel .carousel-arrows {
   position: absolute;
@@ -396,50 +345,6 @@ onMounted(() => {
   color: #fff;
   width: 12px;
   height: 12px;
-}
-
-
-@keyframes eat-haha-up-0d1b8730 {
-  0% {
-    transform: rotate(0)
-  }
-
-  25% {
-    transform: rotate(-45deg)
-  }
-
-  50% {
-    transform: rotate(0)
-  }
-
-  75% {
-    transform: rotate(-45deg)
-  }
-
-  to {
-    transform: rotate(0)
-  }
-}
-@keyframes eat-haha-down-0d1b8730 {
-  0% {
-    transform: rotate(0)
-  }
-
-  25% {
-    transform: rotate(45deg)
-  }
-
-  50% {
-    transform: rotate(0)
-  }
-
-  75% {
-    transform: rotate(45deg)
-  }
-
-  to {
-    transform: rotate(0)
-  }
 }
 
 </style>

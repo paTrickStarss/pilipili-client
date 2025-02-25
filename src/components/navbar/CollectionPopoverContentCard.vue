@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import IconUpUser from '@/components/icons/IconUpUser.vue'
+import IconUpUserWhite from '@/components/icons/IconUpUserWhite.vue'
 
 defineProps({
   title: String,
@@ -25,7 +25,7 @@ defineProps({
     <div class="header-fav-card__info">
       <div class="header-fav-card__info--title">{{ title }}</div>
       <span class="header-fav-card__info--name">
-        <IconUpUser/>
+        <IconUpUserWhite/>
         <span>{{ name }}</span>
       </span>
     </div>

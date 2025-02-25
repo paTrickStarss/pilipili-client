@@ -3,23 +3,8 @@
   -->
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from 'vue'
-import NavBar from '@/components/navbar/NavBar.vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import UserInfoPopover from '@/components/navbar/UserInfoPopover.vue'
-import VipPopover from '@/components/navbar/VipPopover.vue'
-import MessagePopover from '@/components/navbar/MessagePopover.vue'
-import DynamicPopover from '@/components/navbar/DynamicPopover.vue'
-import CollectionPopover from '@/components/navbar/CollectionPopover.vue'
-import HistoryPopover from '@/components/navbar/HistoryPopover.vue'
-import GlobalPopover from '@/components/global/GlobalPopover.vue'
-import IconBulb from '@/components/icons/IconBulb.vue'
-import IconUpload from '@/components/icons/IconUpload.vue'
-import { useTokenStore } from '@/stores/token'
-import UserLoginPopver from '@/components/navbar/UserLoginPopver.vue'
-import SearchBar from '@/components/navbar/SearchBar.vue'
-import IconTV from '@/components/icons/IconTV.vue'
-import IconDownload from '@/components/icons/IconDownload.vue'
 import HeaderBar from '@/components/navbar/HeaderBar.vue'
 import HeaderChannel from '@/components/navbar/HeaderChannel.vue'
 
@@ -30,35 +15,16 @@ defineProps({
   },
 })
 
-// 切换navbar背景
-const isNavBarTransparent = ref<boolean>(true)
-const headerStyle = reactive({
-  backgroundColor: 'transparent',
-  boxShadow: 'none',
-})
-
-function switchNavBarBackground(isTransparent: boolean) {
-  isNavBarTransparent.value = isTransparent
-  headerStyle.backgroundColor = isNavBarTransparent.value
-    ? 'transparent'
-    : '#ffffff'
-  headerStyle.boxShadow = isNavBarTransparent.value
-    ? 'none'
-    : '0 5px 8px rgba(255, 255, 255, 0.5)'
-}
-const slideDown = ref<boolean>(false)
-
 const controller = new AbortController()
+const slideDown = ref<boolean>(false)
 onMounted(() => {
   const scrollEventHandler = () => {
     const scrollTop = document.documentElement.scrollTop
 
     // 触发navbar背景切换事件
-    if (isNavBarTransparent.value && scrollTop >= 10) {
-      switchNavBarBackground(false)
+    if (!slideDown.value && scrollTop >= 10) {
       slideDown.value = true
-    } else if (!isNavBarTransparent.value && scrollTop <= 5) {
-      switchNavBarBackground(true)
+    } else if (slideDown.value && scrollTop <= 5) {
       slideDown.value = false
     }
   }
@@ -74,17 +40,17 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div class="pili-wrap">
+    <div class="pili-wrap" v-if="fixed">
       <div class="pili-header large-header">
         <HeaderBar :slide-down="slideDown"/>
-        <div class="pili-header__banner" v-if="fixed">
+        <div class="pili-header__banner">
           <picture class="v-img banner-img" id="pili-header-banner-img">
             <source :srcset="`${ASSETS_BASE_URL}/image/banner.png@3840w_360h_1c.avif`" type="image/avif">
             <img src="" alt="">
           </picture>
           <div class="taper-line"></div>
         </div>
-        <HeaderChannel v-if="fixed"/>
+        <HeaderChannel/>
       </div>
 
       <main class="pili-wrap-layout">
@@ -92,10 +58,27 @@ onUnmounted(() => {
         <slot>Main Content...</slot>
       </main>
     </div>
+
+    <div v-else>
+      <header>
+        <div class="pili-header">
+          <HeaderBar class="transparent-header" :slide-down="slideDown"/>
+        </div>
+      </header>
+      <div id="app" style="margin-top: -64px">
+        <slot>Main Content...</slot>
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
+#app {
+  position: relative;
+  margin: 0 auto;
+  min-width: 1100px;
+  max-width: 2560px;
+}
 .pili-wrap {
   position: relative;
 }

@@ -53,7 +53,7 @@ onMounted(() => {
 <!--      背景-->
       <div class="bg header-bg">
         <div class="formal-bg"
-             :style="{ backgroundImage: `url(${ASSETS_BASE_URL}/image/user-bg-1.png)`, backgroundPosition: 'center top' }">
+             :style="{ backgroundImage: `url(${ASSETS_BASE_URL}/image/user-bg-2.png@1920w_200h_1c.webp)`, backgroundPosition: 'center top' }">
         </div>
       </div>
 

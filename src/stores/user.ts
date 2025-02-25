@@ -117,7 +117,6 @@ export const useUserStore = defineStore('user', () => {
       userInfoAPI.getUserInfo(token.username)
         .then(({ data }) => {
           saveUserInfo(data)
-          message.success('getUserInfo success')
           console.log('userInfo', data)
         })
     }

@@ -13,7 +13,6 @@ import IconBulb from '@/components/icons/IconBulb.vue'
 import MessagePopover from '@/components/navbar/MessagePopover.vue'
 import UserInfoPopover from '@/components/navbar/UserInfoPopover.vue'
 import { useTokenStore } from '@/stores/token'
-import { ref } from 'vue'
 
 defineProps({
   slideDown: {
@@ -23,7 +22,6 @@ defineProps({
 })
 
 const tokenStore = useTokenStore()
-// const slideDown = ref<boolean>(false)
 </script>
 
 <template>
@@ -151,6 +149,9 @@ const tokenStore = useTokenStore()
   max-width: 2560px;
   width: 100%;
   height: 64px;
+}
+.transparent-header {
+  background: linear-gradient(rgba(14,14,14,.3),rgba(0,0,0,0));
 }
 .pili-header .left-entry {
   display: flex;
