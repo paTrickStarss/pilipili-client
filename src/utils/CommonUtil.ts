@@ -2,6 +2,8 @@
  * Copyright (c) 2024. Bubble
  */
 
+import moment from 'moment'
+
 /**
  * 生成一个随机整数（范围左闭右开）
  * @param min 最小值（包含）
@@ -41,4 +43,10 @@ export function deepCopy<T>(obj: T): T {
   }
 
   return obj
+}
+
+
+export function getDate(): string {
+  const now = moment()
+  return now.format('YYYY-MM-DD')
 }

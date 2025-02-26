@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
-import LoginModal from '@/components/LoginModal.vue'
+import LoginModal from '@/components/navbar/user/LoginModal.vue'
 import { ref } from 'vue'
 
 const loginModalVisible = ref<boolean>(false)

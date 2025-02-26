@@ -4,7 +4,7 @@ import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import IconHistory from '@/components/icons/IconHistory.vue'
 import { ref } from 'vue'
 import TabItem from '@/components/navbar/TabItem.vue'
-import HistoryVideoCard from '@/components/navbar/HistoryVideoCard.vue'
+import HistoryVideoCard from '@/components/navbar/history/HistoryVideoCard.vue'
 
 const activeTab = ref<number>(1)
 </script>

@@ -2,8 +2,8 @@
 
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import IconCollection from '@/components/icons/IconCollection.vue'
-import CollectionPopoverTabItem from '@/components/navbar/CollectionPopoverTabItem.vue'
-import CollectionPopoverContentCard from '@/components/navbar/CollectionPopoverContentCard.vue'
+import CollectionPopoverTabItem from '@/components/navbar/collection/CollectionPopoverTabItem.vue'
+import CollectionPopoverContentCard from '@/components/navbar/collection/CollectionPopoverContentCard.vue'
 import IconVideoPlay from '@/components/icons/IconVideoPlay.vue'
 </script>
 

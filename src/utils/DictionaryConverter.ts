@@ -57,4 +57,21 @@ export class DictionaryConverter {
     }
     return msg
   }
+
+  /**
+   * 获取 个人空间当前路由指向的Tab索引
+   * @param mode
+   */
+  public getSpaceNavTabIndex(mode: string): number {
+    let index: number = 0
+    switch (mode) {
+      case 'dynamic': index = 1; break;
+      case 'upload': index = 2; break;
+      case 'list': index = 3; break;
+      case 'collection': index = 4; break;
+      case 'bangumi': index = 5; break;
+      case 'settings': index = 6; break;
+    }
+    return index
+  }
 }

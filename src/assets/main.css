@@ -57,7 +57,18 @@ p {
     margin: 0;
     padding: 0;
 }
+i, em {
+    font-style: normal;
+}
 
+.b-img {
+    position: relative;
+    background-color: var(--bg3);
+    height: 100%;
+}
+.b-img img, .b-img picture {
+    border-radius: inherit;
+}
 .v-img {
     position: relative;
     display: inline-block;
@@ -100,7 +111,20 @@ p {
     font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
     font-weight: 500;
 }
-
+.vui_button {
+    height: 34px;
+    min-width: 100px;
+    padding: 0 var(--v_xsm);
+    border-radius: var(--v_radius_md);
+    font-size: var(--v_fs_4);
+    line-height: 1;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
 i.vui_icon {
     speak: none;
     font-style: normal;

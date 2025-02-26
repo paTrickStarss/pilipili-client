@@ -117,3 +117,16 @@ export interface CarouselInfoType {
   linkUrl: string
   desc?: string
 }
+
+/**
+ * Tab图标样式
+ */
+export interface NavTabItemType {
+  id: number
+  label: string
+  linkUrl: string
+  styleClass: string
+  color: string
+  countShow?: boolean
+  countNum?: number
+}

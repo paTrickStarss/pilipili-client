@@ -13,8 +13,8 @@ import { openLink } from '@/utils/RouterUtil'
 import { useRouter } from 'vue-router'
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import LinkItem from '@/components/userInfoPopout/LinkItem.vue'
-import ClickItem from '@/components/userInfoPopout/ClickItem.vue'
+import LinkItem from '@/components/navbar/user/LinkItem.vue'
+import ClickItem from '@/components/navbar/user/ClickItem.vue'
 
 const router = useRouter()
 

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import IconTV from '@/components/icons/IconTV.vue'
-import CollectionPopover from '@/components/navbar/CollectionPopover.vue'
-import HistoryPopover from '@/components/navbar/HistoryPopover.vue'
+import CollectionPopover from '@/components/navbar/collection/CollectionPopover.vue'
+import HistoryPopover from '@/components/navbar/history/HistoryPopover.vue'
 import IconUpload from '@/components/icons/IconUpload.vue'
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
-import SearchBar from '@/components/navbar/SearchBar.vue'
+import SearchBar from '@/components/navbar/search/SearchBar.vue'
 import IconDownload from '@/components/icons/IconDownload.vue'
-import VipPopover from '@/components/navbar/VipPopover.vue'
-import UserLoginPopver from '@/components/navbar/UserLoginPopver.vue'
-import DynamicPopover from '@/components/navbar/DynamicPopover.vue'
+import VipPopover from '@/components/navbar/vip/VipPopover.vue'
+import UserLoginPopver from '@/components/navbar/user/UserLoginPopver.vue'
+import DynamicPopover from '@/components/navbar/dynamic/DynamicPopover.vue'
 import IconBulb from '@/components/icons/IconBulb.vue'
-import MessagePopover from '@/components/navbar/MessagePopover.vue'
-import UserInfoPopover from '@/components/navbar/UserInfoPopover.vue'
+import MessagePopover from '@/components/navbar/message/MessagePopover.vue'
+import UserInfoPopover from '@/components/navbar/user/UserInfoPopover.vue'
 import { useTokenStore } from '@/stores/token'
 
 defineProps({
@@ -151,7 +151,7 @@ const tokenStore = useTokenStore()
   height: 64px;
 }
 .transparent-header {
-  background: linear-gradient(rgba(14,14,14,.3),rgba(0,0,0,0));
+  background: linear-gradient(rgba(14,14,14, .3),rgba(0,0,0,0));
 }
 .pili-header .left-entry {
   display: flex;

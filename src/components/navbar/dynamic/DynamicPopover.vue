@@ -3,7 +3,7 @@
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import IconDynamic from '@/components/icons/IconDynamic.vue'
 import IconArrowMoreRight from '@/components/icons/IconArrowMoreRight.vue'
-import DynamicPopoverListItem from '@/components/navbar/DynamicPopoverListItem.vue'
+import DynamicPopoverListItem from '@/components/navbar/dynamic/DynamicPopoverListItem.vue'
 </script>
 
 <template>

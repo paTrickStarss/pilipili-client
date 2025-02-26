@@ -79,6 +79,16 @@ onUnmounted(() => {
   min-width: 1100px;
   max-width: 2560px;
 }
+#app::before {
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: var(--bg1);
+  z-index: -10;
+}
 .pili-wrap {
   position: relative;
 }

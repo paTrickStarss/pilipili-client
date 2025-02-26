@@ -3,15 +3,15 @@
   -->
 
 <script setup lang="ts">
-import SearchBar from '@/components/navbar/SearchBar.vue'
-import MenuBar from '@/components/navbar/MenuBar.vue'
+import SearchBar from '@/components/navbar/search/SearchBar.vue'
+import MenuBar from '@/deprecated/MenuBar.vue'
 import { onMounted, ref } from 'vue'
 import type { MenuItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import UserInfoPopout from '@/components/navbar/UserInfoPopover.vue'
-import LoginPopout from '@/components/navbar/LoginPopout.vue'
-import LoginModal from '@/components/LoginModal.vue'
+import UserInfoPopout from '@/components/navbar/user/UserInfoPopover.vue'
+import LoginPopout from '@/deprecated/LoginPopout.vue'
+import LoginModal from '@/components/navbar/user/LoginModal.vue'
 import { useTokenStore } from '@/stores/token'
 
 // Menu

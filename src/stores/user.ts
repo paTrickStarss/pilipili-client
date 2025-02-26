@@ -10,7 +10,7 @@ import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
 
 export const useUserStore = defineStore('user', () => {
-  // const isLogin = ref(false)
+  const isFetching = ref(true)
   const uid = ref<number>(0)
   const uuid = ref<string>('')
   const nickname = ref<string>('')
@@ -112,14 +112,25 @@ export const useUserStore = defineStore('user', () => {
    * 获取当前用户信息
    */
   async function fetchCurrentUserInfo() {
+    isFetching.value = true
     const token = useTokenStore()
-    if (token.isLogin) {
-      userInfoAPI.getUserInfo(token.username)
-        .then(({ data }) => {
-          saveUserInfo(data)
-          console.log('userInfo', data)
-        })
-    }
+    return new Promise((resolve, reject) => {
+      if (token.isLogin) {
+        userInfoAPI.getUserInfo(token.username)
+          .then(({ data }) => {
+            saveUserInfo(data)
+            // message.success('getUserInfo successfully logged in')
+            console.log('userInfo', data)
+            return resolve(data)
+          })
+          .catch((err) => {
+            reject(err)
+          })
+          .finally(() => {
+            isFetching.value = false
+          })
+      }
+    })
   }
 
   return {

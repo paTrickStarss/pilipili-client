@@ -7,7 +7,7 @@ import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import IconInputClean from '@/components/icons/IconInputClean.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
-import SearchBarTrendingItem from '@/components/navbar/SearchBarTrendingItem.vue'
+import SearchBarTrendingItem from '@/components/navbar/search/SearchBarTrendingItem.vue'
 
 const searchInputRef = ref()
 const searchPanelEnter = ref<boolean>(false)

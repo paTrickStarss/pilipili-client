@@ -12,15 +12,103 @@ const router = createRouter({
     {
       path: '/space/:id?',
       name: 'space',
+      meta: {
+        metaParam: 'ofd3'
+      },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/space/UserSpaceView.vue')
+      component: () => import(
+        /* webpackChunkName: "UserSpaceView" */
+        '@/views/space/UserSpaceView.vue'
+      ),
+      children: [
+        {
+          path: '/space/:id?',
+          name: 'space-main',
+          meta: {
+            mode: 'main'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceMainFrag" */
+            '@/components/space/SpaceMainFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/dynamic',
+          name: 'space-dynamic',
+          meta: {
+            mode: 'dynamic'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceDynamicFrag" */
+            '@/components/space/SpaceDynamicFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/upload',
+          name: 'space-upload',
+          meta: {
+            mode: 'upload'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceUploadFrag" */
+            '@/components/space/SpaceUploadFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/list',
+          name: 'space-list',
+          meta: {
+            mode: 'list'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceListFrag" */
+            '@/components/space/SpaceListFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/collection',
+          name: 'space-collection',
+          meta: {
+            mode: 'collection'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceCollectionFrag" */
+            '@/components/space/SpaceCollectionFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/bangumi',
+          name: 'space-bangumi',
+          meta: {
+            mode: 'bangumi'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceBangumiFrag" */
+            '@/components/space/SpaceBangumiFrag.vue'
+          )
+        },
+        {
+          path: '/space/:id?/settings',
+          name: 'space-settings',
+          meta: {
+            mode: 'settings'
+          },
+          component: () => import(
+            /* webpackChunkName: "SpaceSettingsFrag" */
+            '@/components/space/SpaceSettingsFrag.vue'
+          )
+        },
+      ]
     },
     {
       path: '/video/:id?',
       name: 'video',
-      component: () => import('@/views/video/VideoPageView.vue')
+      component: () => import(
+        /* webpackChunkName: "VideoPageView" */
+        '@/views/video/VideoPageView.vue'
+      )
     }
   ],
 })

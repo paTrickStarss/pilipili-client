@@ -4,45 +4,139 @@
 
 <script setup lang="ts">
 import IndexView from '@/views/index/IndexView.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import type { CollectionInfoType } from '@/types/PropsType'
+import type { NavTabItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
+import NavTabItem from '@/components/space/NavTabItem.vue'
+import { message } from 'ant-design-vue'
+import { useRoute } from 'vue-router'
+import { DictionaryConverter } from '@/utils/DictionaryConverter'
+import { getDate } from '@/utils/CommonUtil'
 
-const isLoading = ref<boolean>(false)
-const activeKey = ref<string>('1')
-const collectionList = ref<Array<CollectionInfoType>>([])
+const route = useRoute()
+const user = useUserStore()
+const userInfo = ref(user.userInfo)
+const spaceUrl = ref<string>('')
 
-const userInfo = useUserStore().userInfo
+// tab信息
+const navTabItemList = ref<NavTabItemType[]>([])
+
+// 当前tab索引
+const currentTab = ref<number>(getSpaceNavTabIndex())
+
+//todo: 光标的对齐长度需要根据当前的tabItem元素宽度动态计算
+const tabCursorLocationList = ref([
+  {
+    width: 56,
+    left: 0,
+  },
+  {
+    width: 56,
+    left: 86,
+  },
+  {
+    width: 67,
+    left: 172,
+  },
+  {
+    width: 56,
+    left: 269,
+  },
+  {
+    width: 70,
+    left: 355,
+  },
+  {
+    width: 88,
+    left: 459,
+  },
+  {
+    width: 56,
+    left: 577,
+  },
+])
+
+const searchInput = ref<string>('')
+function handleSearch() {
+  message.info(`search: ${searchInput.value}`)
+}
+
+const nowDate = ref(getDate())
+
+watch(() => route.path, () => {
+  init()
+  currentTab.value = getSpaceNavTabIndex()
+})
+
+function init() {
+  user.fetchCurrentUserInfo().then(() => {
+    spaceUrl.value = userInfo.value.spaceUrl
+    // message.info(`spaceUrl: ${spaceUrl.value}`)
+    navTabItemList.value = [
+      {
+        id: 0,
+        label: '主页',
+        linkUrl: `${spaceUrl.value}`,
+        styleClass: 'sic-BDC-house_home_line',
+        color: '--Gr6_u',
+      },
+      {
+        id: 1,
+        label: '动态',
+        linkUrl: `${spaceUrl.value}/dynamic`,
+        styleClass: 'sic-BDC-windmill_moments_line',
+        color: '--Pi5_u',
+      },
+      {
+        id: 2,
+        label: '投稿',
+        linkUrl: `${spaceUrl.value}/upload`,
+        styleClass: 'sic-fsp-submission_line',
+        color: '--Lb5_u',
+        countShow: true,
+        countNum: 8
+      },
+      {
+        id: 3,
+        label: '合集',
+        linkUrl: `${spaceUrl.value}/list`,
+        styleClass: 'sic-BDC-video_archive_line',
+        color: '--Lb4_u',
+      },
+      {
+        id: 4,
+        label: '收藏',
+        linkUrl: `${spaceUrl.value}/collection`,
+        styleClass: 'sic-fsp-fav_line',
+        color: '--Ye5_u',
+        countShow: true,
+        countNum: 23
+      },
+      {
+        id: 5,
+        label: '追番追剧',
+        linkUrl: `${spaceUrl.value}/bangumi`,
+        styleClass: 'sic-BDC-heart_collect_line',
+        color: '--Re5_u',
+      },
+      {
+        id: 6,
+        label: '设置',
+        linkUrl: `${spaceUrl.value}/settings`,
+        styleClass: 'sic-BDC-nut_setting_line',
+        color: '--Lb5_u',
+      },
+    ]
+  })
+}
+function getSpaceNavTabIndex() {
+  return DictionaryConverter.instance.getSpaceNavTabIndex(route.meta.mode as string)
+}
 
 onMounted(() => {
-  isLoading.value = true
-  setTimeout(() => {
-    isLoading.value = false
-  }, 2000)
-
-  console.log('userInfo', userInfo)
-
-  collectionList.value = [
-    {
-      id: 1,
-      name: '收藏夹1',
-      size: 2,
-      desc: 'demo collection 1',
-    },
-    {
-      id: 2,
-      name: '收藏夹2',
-      size: 0,
-      desc: 'demo collection 2',
-    },
-    {
-      id: 3,
-      name: '收藏夹3',
-      size: 6,
-      desc: 'demo collection 1',
-    },
-  ]
+  // console.log('route', route, route.meta)
+  init()
 })
 </script>
 
@@ -66,6 +160,7 @@ onMounted(() => {
 <!--      用户资料-->
       <div class="userinfo header-userinfo">
         <div class="userinfo__main">
+<!--          头像-->
           <div class="userinfo-avatar">
             <div class="space-avatar">
               <div class="avatar">
@@ -96,10 +191,10 @@ onMounted(() => {
             <div class="userinfo-detail__top">
               <div class="nickname">{{ userInfo.nickname }}</div>
               <a class="level" target="_blank" href="#">
-                <i class="vui_icon level-icon" :class="`sic-BDC_svg-user_level_${userInfo.level.value}`" style="font-size: 28px;"></i>
+                <i class="vui_icon level-icon" :class="`sic-BDC_svg-user_level_${userInfo.level}`" style="font-size: 28px;"></i>
               </a>
-              <div class="gender" :style="{'background-color': `var(--brand_${userInfo.gender.value === 1? 'blue':'pink'})`}">
-                <i class="vui_icon" :class="`sic-BDC-${userInfo.gender.value === 1? 'male':'female'}_line`" style="font-variation-settings: 'strk' 2; font-size: 12px;"></i>
+              <div class="gender" :style="{'background-color': `var(--brand_${userInfo.gender === 1? 'blue':'pink'})`}">
+                <i class="vui_icon" :class="`sic-BDC-${userInfo.gender === 1? 'male':'female'}_line`" style="font-variation-settings: 'strk' 2; font-size: 12px;"></i>
               </div>
               <div class="vip">
                 <a href="/vip-center" target="_blank" class="img-label">
@@ -110,7 +205,11 @@ onMounted(() => {
             <div class="userinfo-detail__bottom">
               <div class="sign header-sign">
                 <div class="editable">
-                  <input class="editable-input" type="text" placeholder="编辑个人介绍">
+                  <input
+                    class="editable-input"
+                    type="text" placeholder="编辑个人介绍"
+                    v-model="userInfo.description"
+                  >
                 </div>
               </div>
             </div>
@@ -126,44 +225,58 @@ onMounted(() => {
       <div class="nav-bar__main">
         <div class="nav-bar__main-left">
           <div class="nav-tab">
-            <a href="#" class="nav-tab__item active">
-<!--              <img src="" alt="tab icon" class="nav-tab__item-icon">-->
-              <i class="vui_icon sic-BDC-house_home_line nav-tab__item-icon" style="color: var(--Gr6_u);"></i>
-              <span class="nav-tab__item-text">主页</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/dynamic`" class="nav-tab__item">
-              <i class="vui_icon sic-BDC-windmill_moments_line nav-tab__item-icon" style="color: var(--Pi5_u);"></i>
-              <span class="nav-tab__item-text">动态</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/upload`" class="nav-tab__item">
-              <i class="vui_icon sic-fsp-submission_line nav-tab__item-icon" style="color: var(--Lb5_u);"></i>
-              <span class="nav-tab__item-text">投稿</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/lists`" class="nav-tab__item">
-              <i class="vui_icon sic-BDC-video_archive_line nav-tab__item-icon" style="color: var(--Lb4_u);"></i>
-              <span class="nav-tab__item-text">合集</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/collections`" class="nav-tab__item">
-              <i class="vui_icon sic-fsp-fav_line nav-tab__item-icon" style="color: var(--Ye5_u);"></i>
-              <span class="nav-tab__item-text">收藏</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/bangumi`" class="nav-tab__item">
-              <i class="vui_icon sic-BDC-heart_collect_line nav-tab__item-icon" style="color: var(--Re5_u);"></i>
-              <span class="nav-tab__item-text">追番追剧</span>
-            </a>
-            <a :href="`/space/${userInfo.uid.value}/setting`" class="nav-tab__item">
-              <i class="vui_icon sic-BDC-nut_setting_line nav-tab__item-icon" style="color: var(--Lb5_u);"></i>
-              <span class="nav-tab__item-text">设置</span>
-            </a>
-            <div class="nav-tab-cursor" style="width: 56px; left: 0"></div>
+            <NavTabItem
+              v-for="item in navTabItemList" :key="item.id"
+              :current="currentTab" :info="item" :count-num="item.countNum || 0"
+            />
+            <div
+              class="nav-tab-cursor"
+              :style="{width: `${tabCursorLocationList[currentTab].width}px`,
+                       left: `${tabCursorLocationList[currentTab].left}px`}"
+            ></div>
           </div>
-          <label class="nav-search nav-bar-search"></label>
+          <label class="nav-search nav-bar-search">
+            <input
+              class="nav-search-input"
+              type="text"
+              placeholder="搜索视频、动态"
+              v-model="searchInput"
+            >
+            <div class="actions">
+              <i
+                class="vui_icon sic-BDC-xmark_close_circle_fill clear"
+                v-show="searchInput !== ''"
+                @click="searchInput = ''"
+              />
+              <i class="vui_icon sic-BDC-magnifier_search_line search"
+                @click="handleSearch"
+              />
+            </div>
+          </label>
         </div>
         <div class="nav-bar__main-right">
-          <div class="nav-statistics"></div>
+          <div class="nav-statistics">
+            <a href="#" class="nav-statistics__item jumpable">
+              <span class="nav-statistics__item-text">关注数</span>
+              <span class="nav-statistics__item-num" title="200">200</span>
+            </a>
+            <a href="#" class="nav-statistics__item jumpable">
+              <span class="nav-statistics__item-text">粉丝数</span>
+              <span class="nav-statistics__item-num" title="28">28</span>
+            </a>
+            <div class="nav-statistics__item">
+              <span class="nav-statistics__item-text">获赞数</span>
+              <span class="nav-statistics__item-num" :title="`截至${nowDate}，视频、动态累计获赞71`">71</span>
+            </div>
+            <div class="nav-statistics__item">
+              <span class="nav-statistics__item-text">播放数</span>
+              <span class="nav-statistics__item-num" :title="`截至${nowDate}，视频、动态累计播放1409`">1409</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <RouterView />
   </IndexView>
 </template>
 
@@ -172,7 +285,6 @@ onMounted(() => {
   display: flex;
   height: 200px;
   position: relative;
-  z-index: 10;
 }
 .header .header-bg {
   position: absolute;
@@ -195,7 +307,7 @@ onMounted(() => {
   background-position: center;
 }
 .header .header-userinfo-bg-shadow {
-  position: relative;
+  position: absolute;
   left: 0;
   right: 0;
   top: 0;
@@ -429,21 +541,6 @@ onMounted(() => {
   height: 100%;
 }
 
-@media (min-width: 1340px) {
-  .nav-bar {
-    --search-margin-left: 30px;
-  }
-}
-@media (min-width: 1100px) {
-  .nav-bar {
-    --search-margin-left: 30px;
-  }
-}
-@media (min-width: 0) {
-  .nav-bar {
-    --search-margin-left: 20px;
-  }
-}
 .nav-bar {
   --search-margin-left: 20px;
   position: sticky;
@@ -451,6 +548,21 @@ onMounted(() => {
   top: 0;
   background-color: var(--bg1);
   box-shadow: 0 0 0 1px var(--bg2_float);
+}
+@media (min-width: 0) {
+  .nav-bar {
+    --search-margin-left: 20px;
+  }
+}
+@media (min-width: 1100px) {
+  .nav-bar {
+    --search-margin-left: 30px;
+  }
+}
+@media (min-width: 1340px) {
+  .nav-bar {
+    --search-margin-left: 30px;
+  }
 }
 .nav-bar__main {
   display: flex;
@@ -489,37 +601,6 @@ onMounted(() => {
     --item-font-size: 16px;
   }
 }
-.nav-tab__item:first-child {
-  margin-left: 0;
-}
-.nav-tab__item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 64px;
-  margin-left: var(--item-margin-left);
-}
-.nav-tab__item * {
-  transition: color .3s;
-}
-.nav-tab__item-icon {
-  font-variation-settings: 'strk' 3;
-  font-size: 20px;
-  color: var(--graph_icon);
-}
-.nav-tab__item-text {
-  margin-left: 4px;
-  font-size: var(--item-font-size);
-  color: var(--text1);
-}
-.nav-tab__item-text:hover {
-  color: var(--brand_blue)
-}
-.nav-tab__item.active .nav-tab__item-text,
-.nav-tab__item.active .nav-tab__item-num {
-  font-weight: 700;
-  color: var(--brand_blue)
-}
 .nav-tab-cursor {
   position: absolute;
   bottom: 0;
@@ -531,9 +612,13 @@ onMounted(() => {
 .nav-bar__main-left .nav-bar-search {
   margin-left: var(--search-margin-left);
 }
-@media (min-width: 1340px) {
+.nav-search {
+  --search-width: 142px;
+  position: relative;
+}
+@media (min-width: 0) {
   .nav-search {
-    --search-width: 150px;
+    --search-width: 142px;
   }
 }
 @media (min-width: 1100px) {
@@ -541,14 +626,10 @@ onMounted(() => {
     --search-width: 150px;
   }
 }
-@media (min-width: 0) {
+@media (min-width: 1340px) {
   .nav-search {
-    --search-width: 142px;
+    --search-width: 150px;
   }
-}
-.nav-search {
-  --search-width: 142px;
-  position: relative;
 }
 .nav-search-input {
   width: var(--search-width);
@@ -562,19 +643,40 @@ onMounted(() => {
   border: 1px solid var(--line_regular);
   transition: border-color .3s;
 }
-.nav-search .action {
+.nav-search-input:focus {
+  border-color: var(--brand_blue);
+}
+.nav-search .actions {
   position: absolute;
   top: 50%;
   right: 7px;
   transform: translateY(-50%);
 }
+.nav-search .actions .clear {
+  cursor: pointer;
+  color: var(--graph_weak);
+  margin-right: 7px;
+  font-size: 16px;
+}
+.nav-search .actions .search {
+  cursor: pointer;
+  color: var(--graph_weak);
+  font-size: 16px;
+  font-variation-settings: 'strk' 1.5;
+  transition: color .3s;
+}
 
 .nav-bar__main-right {
   flex-shrink: 0;
 }
-@media (min-width: 1340px) {
+.nav-statistics {
+  --item-margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 0) {
   .nav-statistics {
-    --item-margin-right: 16px;
+    --item-margin-right: 8px;
   }
 }
 @media (min-width: 1100px) {
@@ -582,15 +684,10 @@ onMounted(() => {
     --item-margin-right: 16px;
   }
 }
-@media (min-width: 0) {
+@media (min-width: 1340px) {
   .nav-statistics {
-    --item-margin-right: 8px;
+    --item-margin-right: 16px;
   }
-}
-.nav-statistics {
-  --item-margin-right: 8px;
-  display: flex;
-  align-items: center;
 }
 .nav-statistics__item {
   display: flex;
@@ -602,8 +699,26 @@ onMounted(() => {
 .nav-statistics__item.jumpable {
   cursor: pointer;
 }
+.nav-statistics__item.jumpable:hover span {
+  color: var(--brand_blue);
+}
 .nav-statistics__item:first-child {
   margin-left: 0;
+}
+.nav-statistics__item.jumpable * {
+  transition: color .3s;
+}
+.nav-statistics__item-text {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text2);
+}
+.nav-statistics__item-num {
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--text1);
 }
 
 </style>
