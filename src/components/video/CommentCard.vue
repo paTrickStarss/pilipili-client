@@ -1,12 +1,18 @@
 <!--
-  - Copyright (c) 2024. Bubble
+  - Copyright (c) 2024-2025.  Bubble
   -->
 
 <script setup lang="ts">
-import { UserOutlined, LikeOutlined, DislikeOutlined, CommentOutlined, LikeFilled, DislikeFilled } from '@ant-design/icons-vue'
+import {
+  CommentOutlined,
+  DislikeFilled,
+  DislikeOutlined,
+  LikeFilled,
+  LikeOutlined,
+  UserOutlined,
+} from '@ant-design/icons-vue'
 import type { CommentCardInfoType } from '@/types/PropsType'
-import { onMounted, reactive, ref } from 'vue'
-import type { CommentDTOType } from '@/types/ApiRespType'
+import { onMounted, reactive } from 'vue'
 
 const props = defineProps<CommentCardInfoType>()
 
@@ -22,6 +28,7 @@ const loadingStatus = reactive({
   like: false,
   dislike: false,
 })
+
 async function onLikeClick() {
   loadingStatus.like = true
   setTimeout(() => {
@@ -29,6 +36,7 @@ async function onLikeClick() {
     loadingStatus.like = false
   }, 500)
 }
+
 async function onDisLikeClick() {
   loadingStatus.dislike = true
   setTimeout(() => {
@@ -36,25 +44,23 @@ async function onDisLikeClick() {
     loadingStatus.dislike = false
   }, 500)
 }
-
 </script>
 
 <template>
   <div class="comment-card-container">
-<!--    评论用户信息-->
+    <!--    评论用户信息-->
     <div class="comment-user-container">
-      <a-avatar
-        :size="36"
-        style="background-color: #66ccff"
-      >
+      <a-avatar :size="36" style="background-color: #66ccff">
         <template #icon>
           <UserOutlined />
         </template>
       </a-avatar>
-      <span style="margin-inline: 10px; font-size: 1.2em;">{{commentInfo.username}}</span>
+      <span style="margin-inline: 10px; font-size: 1.2em">{{
+        commentInfo.username
+      }}</span>
     </div>
 
-<!--    评论内容-->
+    <!--    评论内容-->
     <div class="comment-content">
       <a-typography-paragraph
         :ellipsis="{ rows: 3, expandable: true, symbol: 'more' }"
@@ -62,7 +68,7 @@ async function onDisLikeClick() {
       />
     </div>
 
-<!--    功能区-->
+    <!--    功能区-->
     <div class="interact-area">
       <a-button
         :loading="loadingStatus.like"
@@ -73,8 +79,8 @@ async function onDisLikeClick() {
         @click="onLikeClick"
       >
         <template #icon>
-          <LikeFilled v-if="interactStatus.like"/>
-          <LikeOutlined v-else/>
+          <LikeFilled v-if="interactStatus.like" />
+          <LikeOutlined v-else />
         </template>
       </a-button>
       <a-button
@@ -86,18 +92,13 @@ async function onDisLikeClick() {
         @click="onDisLikeClick"
       >
         <template #icon>
-          <DislikeFilled v-if="interactStatus.dislike"/>
-          <DislikeOutlined v-else/>
+          <DislikeFilled v-if="interactStatus.dislike" />
+          <DislikeOutlined v-else />
         </template>
       </a-button>
-      <a-button
-        class="interact-btn"
-        type="link"
-        shape="circle"
-        title="评论"
-      >
+      <a-button class="interact-btn" type="link" shape="circle" title="评论">
         <template #icon>
-          <CommentOutlined/>
+          <CommentOutlined />
         </template>
       </a-button>
     </div>
@@ -108,6 +109,7 @@ async function onDisLikeClick() {
 .comment-card-container {
   margin: 30px 20px;
 }
+
 .comment-user-container {
   display: flex;
   align-items: flex-end;
@@ -120,6 +122,7 @@ async function onDisLikeClick() {
 .interact-area {
   margin: 10px 45px;
 }
+
 .interact-btn {
   color: grey;
 }

@@ -1,17 +1,16 @@
 <!--
-  - Copyright (c) 2025. Bubble
+  - Copyright (c) 2025.  Bubble
   -->
 
 <script setup lang="ts">
-
 import { LogoutOutlined } from '@ant-design/icons-vue'
 import { reactive } from 'vue'
 
 defineProps({
   title: {
     type: String,
-    default: 'Title'
-  }
+    default: 'Title',
+  },
 })
 
 const linkItemStyle = reactive({
@@ -26,9 +25,11 @@ const linkItemMouseLeave = () => {
 </script>
 
 <template>
-  <div class="click-item"
-       @mouseenter="linkItemMouseEnter" @mouseleave="linkItemMouseLeave"
-       :style="linkItemStyle"
+  <div
+    class="click-item"
+    @mouseenter="linkItemMouseEnter"
+    @mouseleave="linkItemMouseLeave"
+    :style="linkItemStyle"
   >
     <slot name="icon">
       <LogoutOutlined />
@@ -41,6 +42,7 @@ const linkItemMouseLeave = () => {
 .link-title__text {
   margin-left: 10px;
 }
+
 .click-item {
   display: flex;
   align-items: center;
@@ -49,6 +51,6 @@ const linkItemMouseLeave = () => {
   color: grey;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
 </style>

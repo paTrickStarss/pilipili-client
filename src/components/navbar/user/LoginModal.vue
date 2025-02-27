@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2024. Bubble
+  - Copyright (c) 2024-2025.  Bubble
   -->
 
 <script setup lang="ts">
@@ -12,7 +12,6 @@ import GlobalDialog from '@/components/global/GlobalDialog.vue'
 import { useUserStore } from '@/stores/user'
 import { CryptoUtil } from '@/utils/CryptoUtil'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
-
 
 const visible = defineModel<boolean>('visible', { required: true })
 const emit = defineEmits({
@@ -28,7 +27,7 @@ const emit = defineEmits({
 const loading = ref<boolean>(false)
 const loginTab = ref<boolean>(true)
 
-watch(visible, (value) => {
+watch(visible, value => {
   if (value) {
     loginTab.value = true
   }
@@ -74,61 +73,64 @@ const registerFormRules = reactive({
 const registerFormRef = ref()
 
 function loginCommit() {
-  loginFormRef.value.validate()
-    .then(() => {
-      loading.value = true
+  loginFormRef.value.validate().then(() => {
+    loading.value = true
 
-      const encryptedPassword = CryptoUtil.instance.encrypt(loginBody.password || '')
-      const signature = CryptoUtil.instance.sign(encryptedPassword)
-      const body: LoginReq = {
-        username: loginBody.username,
-        password: encryptedPassword,
-        signature,
-      }
+    const encryptedPassword = CryptoUtil.instance.encrypt(
+      loginBody.password || '',
+    )
+    const signature = CryptoUtil.instance.sign(encryptedPassword)
+    const body: LoginReq = {
+      username: loginBody.username,
+      password: encryptedPassword,
+      signature,
+    }
 
-      authAPI
-        .login(body)
-        .then(({ data }) => {
-          useTokenStore().saveTokenInfo(data)
-          useUserStore().fetchCurrentUserInfo()
-          emit('commit')
-          message.success('登录成功！欢迎回来。')
-          console.log('login success', data)
-        })
-        .catch((msg) => {
-          message.error(msg)
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    })
+    authAPI
+      .login(body)
+      .then(({ data }) => {
+        useTokenStore().saveTokenInfo(data)
+        useUserStore().fetchCurrentUserInfo()
+        emit('commit')
+        message.success('登录成功！欢迎回来。')
+        console.log('login success', data)
+      })
+      .catch(msg => {
+        message.error(msg)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  })
 }
+
 function registerCommit() {
   if (passwordGroup.firstInput === '') {
     message.warn('请输入密码')
   } else if (passwordGroup.firstInput !== passwordGroup.lastInput) {
     message.warn('请确认二次输入密码一致')
   } else {
-    const encryptedPassword = CryptoUtil.instance.encrypt(passwordGroup.firstInput)
+    const encryptedPassword = CryptoUtil.instance.encrypt(
+      passwordGroup.firstInput,
+    )
     const signature = CryptoUtil.instance.sign(encryptedPassword)
     const body: RegisterReq = {
       nickname: registerBody.nickname,
       password: encryptedPassword,
       signature,
-      email: registerBody.email
+      email: registerBody.email,
     }
 
-    userInfoAPI.register(body)
-      .then(({ data }) => {
-        if (data.success) {
-          message.success('注册成功')
-          // 返回登录页面并填充账号密码
-          loginTab.value = true
-          loginBody.username = data.uid
-          loginBody.password = passwordGroup.firstInput
-        }
-        console.log('register success', data)
-      })
+    userInfoAPI.register(body).then(({ data }) => {
+      if (data.success) {
+        message.success('注册成功')
+        // 返回登录页面并填充账号密码
+        loginTab.value = true
+        loginBody.username = data.uid
+        loginBody.password = passwordGroup.firstInput
+      }
+      console.log('register success', data)
+    })
   }
 }
 
@@ -204,7 +206,7 @@ function goToRegister() {
     </a-form>
 
     <template #header>
-      <div>{{ loginTab? '密码登录' : '注册' }}</div>
+      <div>{{ loginTab ? '密码登录' : '注册' }}</div>
     </template>
 
     <template #footer>
@@ -255,10 +257,12 @@ function goToRegister() {
   display: flex;
   justify-content: space-evenly;
 }
+
 .footer-button {
   width: 200px;
   height: 40px;
 }
+
 .submit-button {
   background: #66ccff;
 }

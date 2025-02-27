@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2025. Bubble
+ * Copyright (c) 2025.  Bubble
  */
 
 import axios from '@/api/axios'
 import type { RegisterReq } from '@/types/ApiRequestType'
 
 export const userInfoAPI = {
-
   /**
    * 注册用户
    * @param req
@@ -21,5 +20,5 @@ export const userInfoAPI = {
    */
   getUserInfo(uid: string) {
     return axios.get('/api/user/getUser', { params: { uid: uid } })
-  }
+  },
 }

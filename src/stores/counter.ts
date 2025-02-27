@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2025.  Bubble
+ */
+
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 

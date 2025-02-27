@@ -85,7 +85,6 @@ const loginModalVisible = ref<boolean>(false)
 
 function openLoginModal() {
   loginModalVisible.value = true
-
 }
 
 function handleCancel() {
@@ -103,7 +102,6 @@ function handleOk() {
 onMounted(() => {
   user.fetchCurrentUserInfo()
 })
-
 </script>
 
 <template>

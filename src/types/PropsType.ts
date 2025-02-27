@@ -39,36 +39,32 @@ export interface CollectionInfoType {
 /**
  * 视频卡片信息
  */
-export interface VideoCardInfoType {
-  /**
-   * ID
-   */
-  id: number
-  /**
-   * 封面URL
-   */
-  coverUrl: string
-  /**
-   * 详情页URL
-   */
-  linkUrl: string
-  /**
-   * 标题
-   */
-  title: string
-  /**
-   * 作者名称
-   */
-  authorName: string
-  /**
-   * 作者个人空间URL
-   */
-  authorSpaceUrl: string
-  /**
-   * 发布日期
-   */
-  date: string
-}
+// export interface VideoCardInfoType {
+//   /**
+//    * ID
+//    */
+//   id: number
+//   /**
+//    * 封面URL
+//    */
+//   coverUrl: string
+//   /**
+//    * 详情页URL
+//    */
+//   linkUrl: string
+//   /**
+//    * 标题
+//    */
+//   title: string
+//   /**
+//    * 作者名称
+//    */
+//   authorName: string
+//   /**
+//    * 发布日期
+//    */
+//   date: string
+// }
 
 export interface VideoCardFlowInfoType {
   /**
@@ -129,4 +125,24 @@ export interface NavTabItemType {
   color: string
   countShow?: boolean
   countNum?: number
+}
+
+export interface RadioListType {
+  id: number
+  label: string
+}
+
+/**
+ * 视频卡片信息
+ */
+export interface VideoCardInfoType {
+  id: number
+  coverUrl: string
+  linkUrl: string
+  title: string
+  duration: string
+  date: string
+  playCount: number
+  danmakuCount: number
+  progress: number
 }

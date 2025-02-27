@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import { ref } from 'vue'
 
 defineProps({
@@ -17,9 +20,9 @@ const imgRef = ref()
         <div class="extension-tips-v2"></div>
         <a class="carousel-item" href="#" target="_blank">
           <picture class="v-img carousel-inner__img">
-            <source :srcset="imageUrl" type="image/avif">
-            <source srcset="" type="image/webp">
-            <img src="" :alt="desc" ref="imgRef">
+            <source :srcset="imageUrl" type="image/avif" />
+            <source srcset="" type="image/webp" />
+            <img src="" :alt="desc" ref="imgRef" />
           </picture>
         </a>
       </div>
@@ -36,10 +39,21 @@ const imgRef = ref()
   overflow: hidden;
   outline: none;
 }
-.carousel .carousel-container .vui_carousel__slides .vui_carousel__slide .carousel-area {
+
+.carousel
+  .carousel-container
+  .vui_carousel__slides
+  .vui_carousel__slide
+  .carousel-area {
   position: relative;
 }
-.carousel .carousel-container .vui_carousel__slides .vui_carousel__slide .carousel-area .extension-tips-v2 {
+
+.carousel
+  .carousel-container
+  .vui_carousel__slides
+  .vui_carousel__slide
+  .carousel-area
+  .extension-tips-v2 {
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -51,29 +65,48 @@ const imgRef = ref()
   font-size: 14px;
   color: var(--text4);
   white-space: nowrap;
-  display: block!important;
+  display: block !important;
 }
-.carousel .carousel-container .vui_carousel__slides .vui_carousel__slide .carousel-area .extension-tips-v2:before {
+
+.carousel
+  .carousel-container
+  .vui_carousel__slides
+  .vui_carousel__slide
+  .carousel-area
+  .extension-tips-v2:before {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-100%);
-  content: "\8be5\5185\5bb9\88ab AdBlock\7c7b\63d2\4ef6\5c4f\853d";
+  transform: translate(-50%, -100%);
+  content: '\8be5\5185\5bb9\88ab AdBlock\7c7b\63d2\4ef6\5c4f\853d';
 }
-.carousel .carousel-container .vui_carousel__slides .vui_carousel__slide .carousel-area .extension-tips-v2:after {
+
+.carousel
+  .carousel-container
+  .vui_carousel__slides
+  .vui_carousel__slide
+  .carousel-area
+  .extension-tips-v2:after {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%);
-  content: "\8bf7\68c0\67e5\63d2\4ef6\4ee5\6062\590d\6b63\5e38\5185\5bb9\5c55\793a";
+  content: '\8bf7\68c0\67e5\63d2\4ef6\4ee5\6062\590d\6b63\5e38\5185\5bb9\5c55\793a';
 }
-.carousel .carousel-container .vui_carousel__slides .vui_carousel__slide .carousel-area .carousel-item {
+
+.carousel
+  .carousel-container
+  .vui_carousel__slides
+  .vui_carousel__slide
+  .carousel-area
+  .carousel-item {
   display: block;
   width: 100%;
   height: 100%;
   position: relative;
   background-color: var(--graph_bg_regular);
 }
+
 .vui_carousel .vui_carousel__slide img {
   width: 100%;
   height: 100%;

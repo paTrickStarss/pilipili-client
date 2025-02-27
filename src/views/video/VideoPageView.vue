@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2024. Bubble
+  - Copyright (c) 2024-2025.  Bubble
   -->
 
 <script setup lang="ts">
@@ -63,6 +63,7 @@ const interactBtnStatus = reactive({
   share: false,
   dew: false,
 })
+
 function onLikeClick() {
   interactBtnLoading.like = true
   setTimeout(() => {
@@ -71,6 +72,7 @@ function onLikeClick() {
     interactBtnLoading.like = false
   }, 1000)
 }
+
 function onCoinClick() {
   interactBtnLoading.coin = true
   setTimeout(() => {
@@ -79,6 +81,7 @@ function onCoinClick() {
     interactBtnLoading.coin = false
   }, 1000)
 }
+
 function onCollectClick() {
   interactBtnLoading.collect = true
   setTimeout(() => {
@@ -87,6 +90,7 @@ function onCollectClick() {
     interactBtnLoading.collect = false
   }, 1000)
 }
+
 function onShareClick() {
   interactBtnLoading.share = true
   setTimeout(() => {
@@ -94,6 +98,7 @@ function onShareClick() {
     interactBtnLoading.share = false
   }, 1000)
 }
+
 function onDewClick() {
   interactBtnLoading.dew = true
   setTimeout(() => {
@@ -105,6 +110,7 @@ function onDewClick() {
 // comment area
 const commentText = ref<string>('')
 const publishCommentBtnLoading = ref<boolean>(false)
+
 function onPublishCommentClick() {
   publishCommentBtnLoading.value = true
   setTimeout(() => {
@@ -239,8 +245,8 @@ const demoUserInfo = reactive<UserInfoType>({
               @click="onLikeClick"
             >
               <template #icon>
-                <LikeFilled v-if="interactBtnStatus.like"/>
-                <LikeOutlined v-else/>
+                <LikeFilled v-if="interactBtnStatus.like" />
+                <LikeOutlined v-else />
               </template>
               Like
             </a-button>
@@ -260,8 +266,8 @@ const demoUserInfo = reactive<UserInfoType>({
               @click="onCoinClick"
             >
               <template #icon>
-                <DollarCircleFilled v-if="interactBtnStatus.coin"/>
-                <DollarCircleOutlined v-else/>
+                <DollarCircleFilled v-if="interactBtnStatus.coin" />
+                <DollarCircleOutlined v-else />
               </template>
               Coin
             </a-button>
@@ -281,8 +287,8 @@ const demoUserInfo = reactive<UserInfoType>({
               @click="onCollectClick"
             >
               <template #icon>
-                <HeartFilled v-if="interactBtnStatus.collect"/>
-                <HeartOutlined v-else/>
+                <HeartFilled v-if="interactBtnStatus.collect" />
+                <HeartOutlined v-else />
               </template>
               Collect
             </a-button>
@@ -322,8 +328,8 @@ const demoUserInfo = reactive<UserInfoType>({
               @click="onDewClick"
             >
               <template #icon>
-                <DislikeFilled v-if="interactBtnStatus.dew"/>
-                <DislikeOutlined v-else/>
+                <DislikeFilled v-if="interactBtnStatus.dew" />
+                <DislikeOutlined v-else />
               </template>
               Dew!
             </a-button>
@@ -402,34 +408,43 @@ const demoUserInfo = reactive<UserInfoType>({
   margin: 50px 30px;
   height: 100%;
 }
+
 .main-content {
   margin-top: 20px;
   padding: 0 30px;
   width: 1000px;
 }
+
 .title-area {
   padding: 15px 0;
 }
+
 .main-title {
   font-size: 1.4em;
 }
+
 .subtitle-area {
   color: grey;
 }
+
 .video-player {
 }
+
 .interact-area {
   display: flex;
   padding: 10px 20px;
 }
+
 .interact-btn-container {
   display: flex;
   flex-direction: column;
 }
+
 .interact-btn {
   margin-inline-end: 52px;
   color: grey;
 }
+
 .video-statistics-number {
   color: grey;
   margin-inline-start: 10px;
@@ -442,6 +457,7 @@ const demoUserInfo = reactive<UserInfoType>({
 .comment-area {
   margin: 20px 10px;
 }
+
 .comment-publish-area {
   display: flex;
 }

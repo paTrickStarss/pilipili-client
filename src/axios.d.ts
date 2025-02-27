@@ -3,11 +3,11 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios'
 
 declare module 'axios' {
   interface AxiosResponse<> {
-    code?: number;
-    msg?: string;
+    code?: number
+    msg?: string
   }
 }

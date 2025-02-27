@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
+
 <script setup lang="ts">
 import CarouselSlide from '@/components/main/CarouselSlide.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
@@ -13,7 +17,7 @@ const props = defineProps({
   interval: {
     type: Number,
     default: 3,
-  }
+  },
 })
 
 const slidesItems = ref<CarouselInfoType[]>([
@@ -54,6 +58,7 @@ let quartz: number = 0
 function nextSlide() {
   current.value = (current.value + 1) % slidesItems.value.length
 }
+
 function prevSlide() {
   current.value = (current.value - 1) % slidesItems.value.length
   if (current.value < 0) {
@@ -66,6 +71,7 @@ function autoPlay() {
     nextSlide()
   }, props.interval * 1000)
 }
+
 function pauseAutoPlay() {
   clearInterval(quartz)
 }
@@ -77,11 +83,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="recommended-swipe grid-anchor" style="--cover-radio: 56.25%;">
-    <div class="recommended-swipe-core" @mouseenter="pauseAutoPlay" @mouseleave="autoPlay">
+  <div class="recommended-swipe grid-anchor" style="--cover-radio: 56.25%">
+    <div
+      class="recommended-swipe-core"
+      @mouseenter="pauseAutoPlay"
+      @mouseleave="autoPlay"
+    >
       <div class="recommended-swipe-shim">
-        <VideoCard empty style="--cover-radio: 56.25%;"/>
-        <VideoCard empty style="--cover-radio: 56.25%;"/>
+        <VideoCard empty style="--cover-radio: 56.25%" />
+        <VideoCard empty style="--cover-radio: 56.25%" />
         <div class="shim-card"></div>
         <div class="shim-card"></div>
       </div>
@@ -92,21 +102,26 @@ onMounted(() => {
             <div class="carousel-container">
               <div
                 class="vui_carousel vui_carousel--bottom vui_carousel--show-arrow"
-                :style="{'--duration--time': `0.3s`}"
+                :style="{ '--duration--time': `0.3s` }"
               >
                 <div
                   class="vui_carousel__slides"
-                  :class="{'last-item': current === 0}"
-                  :style="{'--translate-x-slides': `-${current * 100}%`}"
+                  :class="{ 'last-item': current === 0 }"
+                  :style="{ '--translate-x-slides': `-${current * 100}%` }"
                 >
                   <CarouselSlide
-                    v-for="item in slidesItems" :key="item.id"
-                    :image-url="item.imageUrl" :desc="item.desc"
+                    v-for="item in slidesItems"
+                    :key="item.id"
+                    :image-url="item.imageUrl"
+                    :desc="item.desc"
                   />
                 </div>
                 <div class="carousel-footer">
-<!--                  <div class="carousel-footer-mask blur" :style="{'background-image': `url(${slidesItems[current].imageUrl})`}"></div>-->
-                  <div class="carousel-footer-mask" style="background-color: rgb(158,158,158)"></div>
+                  <!--                  <div class="carousel-footer-mask blur" :style="{'background-image': `url(${slidesItems[current].imageUrl})`}"></div>-->
+                  <div
+                    class="carousel-footer-mask"
+                    style="background-color: rgb(158, 158, 158)"
+                  ></div>
                   <div class="carousel-footer-text">
                     <div class="carousel-footer-title">
                       <a href="#" target="_blank">
@@ -118,7 +133,8 @@ onMounted(() => {
                     <ul class="carousel-dots-list">
                       <CarouselFooterDot
                         v-for="i in slidesItems.length"
-                        :key="i" :index="i-1"
+                        :key="i"
+                        :index="i - 1"
                         v-model:current="current"
                       />
                     </ul>
@@ -126,10 +142,10 @@ onMounted(() => {
                 </div>
                 <div class="carousel-arrows">
                   <button @click="prevSlide">
-                    <IconArrowLeft/>
+                    <IconArrowLeft />
                   </button>
                   <button @click="nextSlide">
-                    <IconArrowRight/>
+                    <IconArrowRight />
                   </button>
                 </div>
               </div>
@@ -148,10 +164,12 @@ onMounted(() => {
   grid-column: 1/3;
   grid-row: 1/3;
 }
+
 .recommended-swipe-core {
   position: relative;
   width: 100%;
 }
+
 .recommended-swipe-shim {
   width: 100%;
   display: grid;
@@ -162,17 +180,18 @@ onMounted(() => {
   pointer-events: none;
   grid-column: span 2;
   grid-row: span 2;
-  grid-template-columns: repeat(2,1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
+
 .recommended-container_floor-aside .recommended-swipe-shim {
   grid-gap: 20px;
 }
+
 .recommended-swipe-shim .shim-card {
   width: 100%;
   height: 0;
   padding-top: var(--cover-radio);
 }
-
 
 .recommended-swipe-body {
   position: absolute;
@@ -186,6 +205,7 @@ onMounted(() => {
   overflow: hidden;
   background-color: var(--graph_bg_regular);
 }
+
 .recommended-swipe-body-normal,
 .recommended-swipe-body-error,
 .recommended-swipe-body-loading,
@@ -201,19 +221,22 @@ onMounted(() => {
   align-items: center;
   background-color: var(--graph_bg_regular);
 }
+
 .carousel {
   position: relative;
   width: 100%;
   height: 100%;
   z-index: 0;
 }
+
 .carousel .carousel-container {
   position: relative;
   width: 100%;
   height: 100%;
 }
+
 .vui_carousel {
-  --duration--time: .3s;
+  --duration--time: 0.3s;
   position: relative;
   width: 100%;
   height: 100%;
@@ -221,6 +244,7 @@ onMounted(() => {
   touch-action: pan-y;
   overflow: hidden;
 }
+
 .vui_carousel .vui_carousel__slides {
   --translate-x: 0%;
   --translate-x-slides: 0%;
@@ -238,18 +262,22 @@ onMounted(() => {
   transition-timing-function: ease-in-out;
   -webkit-transition-property: -webkit-transform;
   transition-property: -webkit-transform;
-  transition-property: transform,-webkit-transform;
+  transition-property:
+    transform,
+    -webkit-transform;
   -webkit-transition-duration: var(--duration--time);
   transition-duration: var(--duration--time);
   -webkit-transform: translateX(var(--translate-x-slides));
   transform: translate(var(--translate-x-slides));
 }
+
 .carousel .carousel-container .vui_carousel .vui_carousel__slides {
   will-change: transform;
 }
+
 .carousel .carousel-container .vui_carousel .vui_carousel__slides.last-item {
-/*  -webkit-transition-duration: 0s;
-  transition-duration: 0s;*/
+  /*  -webkit-transition-duration: 0s;
+    transition-duration: 0s;*/
   transition-property: none;
 }
 
@@ -262,17 +290,20 @@ onMounted(() => {
   z-index: 1;
   user-select: none;
   pointer-events: none;
-  mask-image: linear-gradient(0,#2f3238 11%,transparent 20%);
-  -webkit-mask-image: linear-gradient(0,#2f3238 11%,transparent 20%);
+  mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
+  -webkit-mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .carousel .carousel-container .vui_carousel .carousel-footer-mask {
     height: 810px;
   }
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-mask.blur {
   backdrop-filter: blur(8px);
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-text {
   position: absolute;
   z-index: 2;
@@ -280,22 +311,26 @@ onMounted(() => {
   left: 15px;
   width: calc(100% - 100px);
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-title {
   width: 100%;
   display: flex;
   align-items: center;
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-text a {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-title a {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer-text a span {
   display: block;
   line-height: 25px;
@@ -304,11 +339,13 @@ onMounted(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .carousel .carousel-container .vui_carousel .carousel-footer-text a span {
     font-size: 18px;
   }
 }
+
 .carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots {
   position: absolute;
   left: 15px;
@@ -316,7 +353,12 @@ onMounted(() => {
   margin: -1.5px;
   z-index: 2;
 }
-.carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots-list {
+
+.carousel
+  .carousel-container
+  .vui_carousel
+  .carousel-footer
+  .carousel-dots-list {
   display: flex;
 }
 
@@ -328,6 +370,7 @@ onMounted(() => {
   bottom: 42px;
   right: 15px;
 }
+
 .carousel .carousel-container .vui_carousel .carousel-arrows button {
   display: -webkit-flex;
   display: flex;
@@ -339,12 +382,12 @@ onMounted(() => {
   height: 28px;
   border-radius: 8px;
   margin-right: 12px;
-  background-color: rgba(255,255,255,.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
+
 .carousel .carousel-container .vui_carousel .carousel-arrows button svg {
   color: #fff;
   width: 12px;
   height: 12px;
 }
-
 </style>

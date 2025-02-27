@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. Bubble
+ * Copyright (c) 2024-2025.  Bubble
  */
 
 import { type Router } from 'vue-router'
@@ -10,11 +10,12 @@ import { type Router } from 'vue-router'
  * @param newPage 是否在新标签页打开
  */
 export function openLink(url: string, newPage: boolean = true): void {
-  window.open(url, newPage? '_blank':'_self')
+  window.open(url, newPage ? '_blank' : '_self')
 }
 
 export function jumpRoute(router: Router, path: string): void {
-  router.push(path)
+  router
+    .push(path)
     .then(r => {
       console.log('router.push', path, r)
     })

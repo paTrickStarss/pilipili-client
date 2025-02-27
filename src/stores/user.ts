@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. Bubble
+ * Copyright (c) 2024-2025.  Bubble
  */
 
 import { defineStore } from 'pinia'
@@ -116,14 +116,15 @@ export const useUserStore = defineStore('user', () => {
     const token = useTokenStore()
     return new Promise((resolve, reject) => {
       if (token.isLogin) {
-        userInfoAPI.getUserInfo(token.username)
+        userInfoAPI
+          .getUserInfo(token.username)
           .then(({ data }) => {
             saveUserInfo(data)
             // message.success('getUserInfo successfully logged in')
             console.log('userInfo', data)
             return resolve(data)
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err)
           })
           .finally(() => {

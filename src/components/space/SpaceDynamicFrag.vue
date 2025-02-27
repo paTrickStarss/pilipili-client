@@ -1,13 +1,11 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <main>
-    dynamic
-  </main>
+  <main>dynamic</main>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

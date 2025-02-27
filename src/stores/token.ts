@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. Bubble
+ * Copyright (c) 2025.  Bubble
  */
 
 import { defineStore } from 'pinia'
@@ -18,38 +18,42 @@ import type { LoginInfoType } from '@/types/ApiRespType'
 //   }
 // }
 
-export const useTokenStore = defineStore('tokenInfo', () => {
-  const tokenInfo = ref<LoginInfoType>()
+export const useTokenStore = defineStore(
+  'tokenInfo',
+  () => {
+    const tokenInfo = ref<LoginInfoType>()
 
-  const isLogin = computed(() => {
-    return tokenInfo.value != undefined
-  })
-  const accessToken = computed(() => {
-    return tokenInfo.value?.accessToken || ''
-  })
-  const username = computed(() => {
-    return tokenInfo.value?.username || ''
-  })
+    const isLogin = computed(() => {
+      return tokenInfo.value != undefined
+    })
+    const accessToken = computed(() => {
+      return tokenInfo.value?.accessToken || ''
+    })
+    const username = computed(() => {
+      return tokenInfo.value?.username || ''
+    })
 
-  function saveTokenInfo(tokenInfoSave: LoginInfoType) {
-    tokenInfo.value = tokenInfoSave
-  }
+    function saveTokenInfo(tokenInfoSave: LoginInfoType) {
+      tokenInfo.value = tokenInfoSave
+    }
 
-  function clearTokenInfo() {
-    tokenInfo.value = undefined
-  }
+    function clearTokenInfo() {
+      tokenInfo.value = undefined
+    }
 
-  return {
-    tokenInfo,
-    isLogin,
-    accessToken,
-    username,
-    saveTokenInfo,
-    clearTokenInfo,
-  }
-}, {
-  persist: {
-    key: 'tokenInfo',
-    storage: localStorage,
-  }
-})
+    return {
+      tokenInfo,
+      isLogin,
+      accessToken,
+      username,
+      saveTokenInfo,
+      clearTokenInfo,
+    }
+  },
+  {
+    persist: {
+      key: 'tokenInfo',
+      storage: localStorage,
+    },
+  },
+)

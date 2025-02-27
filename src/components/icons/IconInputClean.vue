@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
+
 <template>
   <svg
     width="16"

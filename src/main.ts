@@ -20,6 +20,6 @@ app.use(pinia)
 app.use(router)
 app.use(Antd)
 
-app.config.globalProperties.$api = axios;
+app.config.globalProperties.$api = axios
 
 app.mount('#app')

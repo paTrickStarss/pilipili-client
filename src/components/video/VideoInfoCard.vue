@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2024. Bubble
+  - Copyright (c) 2024-2025.  Bubble
   -->
 
 <script setup lang="ts">
@@ -26,15 +26,11 @@ const onCoverClick = () => {
   })
   jumpRoute(router, `/video/${videoCardInfo.id}`)
 }
-
 </script>
 
 <template>
   <div class="video-info-card">
-    <div
-      class="video-cover"
-      @click="onCoverClick"
-    >
+    <div class="video-cover" @click="onCoverClick">
       <img :src="videoCardInfo.coverUrl" alt="video cover" />
     </div>
     <div class="card-bottom">

@@ -166,8 +166,6 @@ export interface VideoStatisticsDTOType {
   repost: number
 }
 
-
-
 export interface CommentDTOType {
   /**
    * 评论ID

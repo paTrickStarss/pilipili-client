@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import IconDevicePC from '@/components/icons/IconDevicePC.vue'
 import IconDeviceMobile from '@/components/icons/IconDeviceMobile.vue'
@@ -19,9 +22,12 @@ defineProps({
   <a href="#" target="_blank" class="header-history-card header-history-video">
     <div class="header-history-video__image">
       <picture class="v-img">
-        <source :srcset="`${ASSETS_BASE_URL}/avatar/honkai-starrail-video-cover-1.avif`" type="image/avif">
-        <source srcset="" type="image/webp">
-        <img src="" alt="">
+        <source
+          :srcset="`${ASSETS_BASE_URL}/avatar/honkai-starrail-video-cover-1.avif`"
+          type="image/avif"
+        />
+        <source srcset="" type="image/webp" />
+        <img src="" alt="" />
       </picture>
       <div class="header-history-video__duration">
         <span class="header-history-video__duration--text">{{ duration }}</span>
@@ -29,19 +35,19 @@ defineProps({
       <div class="header-history-video__progress">
         <div
           class="header-history-video__progress--inner"
-          :style="{width: `${progress}%`, borderRadius: '0 0 4px'}"
+          :style="{ width: `${progress}%`, borderRadius: '0 0 4px' }"
         ></div>
       </div>
     </div>
     <div class="header-history-card__info">
       <div class="header-history-card__info--title">{{ title }}</div>
       <div class="header-history-card__info--date">
-        <IconDeviceMobile v-if="isMobile"/>
-        <IconDevicePC v-else/>
+        <IconDeviceMobile v-if="isMobile" />
+        <IconDevicePC v-else />
         <span>{{ dateTime }}</span>
       </div>
       <div class="header-history-card__info--name">
-        <IconUpUserWhite/>
+        <IconUpUserWhite />
         <span>{{ userName }}</span>
       </div>
     </div>
@@ -52,8 +58,9 @@ defineProps({
 .pili-header .header-history-video {
   display: flex;
   padding: 10px 20px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
+
 .pili-header .header-history-video__image,
 .pili-header .header-history-video__image .v-img {
   position: relative;
@@ -63,43 +70,49 @@ defineProps({
   height: 72px;
   border-radius: 4px;
 }
+
 .pili-header .header-history-video__duration {
   position: absolute;
   right: 4px;
   bottom: 4px;
   padding: 0;
   border-radius: 2px;
-  background: rgba(0,0,0,.4);
+  background: rgba(0, 0, 0, 0.4);
   line-height: 17px;
 }
+
 .pili-header .header-history-video__duration--text {
   display: inline-block;
   color: #fff;
   font-size: 12px;
   line-height: 14px;
-  transform: scale(.85);
+  transform: scale(0.85);
   transform-origin: center top;
 }
+
 .pili-header .header-history-video__progress {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 3px;
   border-radius: 0 0 4px 4px;
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
 }
+
 .pili-header .header-history-video__progress--inner {
   position: absolute;
   bottom: 0;
   height: 3px;
   background: #fb7199;
 }
+
 .history-panel-popover .header-history-card__info {
   display: flex;
   flex: 1 auto;
   flex-direction: column;
   justify-content: space-between;
 }
+
 .history-panel-popover .header-history-card__info--date,
 .history-panel-popover .header-history-card__info--name {
   display: flex;
@@ -108,5 +121,4 @@ defineProps({
   font-size: 12px;
   line-height: 16px;
 }
-
 </style>

@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import LoginModal from '@/components/navbar/user/LoginModal.vue'
 import { ref } from 'vue'
@@ -22,7 +25,7 @@ const loginModalVisible = ref<boolean>(false)
         <span>请登录或注册</span>
       </div>
     </GlobalPopover>
-    <LoginModal v-model:visible="loginModalVisible"/>
+    <LoginModal v-model:visible="loginModalVisible" />
   </div>
 </template>
 
@@ -32,16 +35,18 @@ const loginModalVisible = ref<boolean>(false)
   height: 36px;
   border-radius: 50%;
   color: #fff;
-  background: #00AEEC;
+  background: #00aeec;
   text-align: center;
   letter-spacing: 0;
   font-size: 14px;
   line-height: 36px;
 }
+
 .header-login-entry span {
   user-select: none;
   cursor: pointer;
 }
+
 .login-popover {
   display: flex;
   align-items: center;

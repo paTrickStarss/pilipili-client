@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import IconChannelHot from '@/components/icons/IconChannelHot.vue'
 import IconArrowDown from '@/components/icons/IconArrowDown.vue'
@@ -23,9 +26,9 @@ const showMoreEnter = ref<boolean>(false)
             <source
               :srcset="`${ASSETS_BASE_URL}/avatar/avatar-usagi.jpg@92w_92h.avif`"
               type="image/avif"
-            >
-            <source srcset="" type="image/webp">
-            <img src="" alt="" loading="lazy">
+            />
+            <source srcset="" type="image/webp" />
+            <img src="" alt="" loading="lazy" />
           </picture>
         </div>
         <i class="channel-notify" style="top: 0; bottom: initial"></i>
@@ -33,7 +36,7 @@ const showMoreEnter = ref<boolean>(false)
       </a>
       <a href="#" target="_blank" class="channel-icons__item">
         <div class="icon-bg icon-bg__popular">
-          <IconChannelHot/>
+          <IconChannelHot />
         </div>
         <span class="icon-title">热门</span>
       </a>
@@ -67,34 +70,32 @@ const showMoreEnter = ref<boolean>(false)
           @mouseleave="showMoreEnter = false"
         >
           <span>更多</span>
-          <IconArrowDown
-            class="channel-entry-more__link--arrow"
-          />
+          <IconArrowDown class="channel-entry-more__link--arrow" />
         </div>
       </div>
       <div class="channel-items__right">
         <a class="channel-link__right" href="#" target="_blank">
-          <IconSpecialColumn class="icon side-icon"/>
+          <IconSpecialColumn class="icon side-icon" />
           <span>专栏</span>
         </a>
         <a class="channel-link__right" href="#" target="_blank">
-          <IconLiveStream class="icon side-icon"/>
+          <IconLiveStream class="icon side-icon" />
           <span>直播</span>
         </a>
         <a class="channel-link__right" href="#" target="_blank">
-          <IconEvent class="icon side-icon"/>
+          <IconEvent class="icon side-icon" />
           <span>活动</span>
         </a>
         <a class="channel-link__right" href="#" target="_blank">
-          <IconClassroom class="icon side-icon"/>
+          <IconClassroom class="icon side-icon" />
           <span>课堂</span>
         </a>
         <a class="channel-link__right" href="#" target="_blank">
-          <IconCommunityCenter class="icon side-icon"/>
+          <IconCommunityCenter class="icon side-icon" />
           <span>社区中心</span>
         </a>
         <a class="channel-link__right" href="#" target="_blank">
-          <IconHotMusic class="icon side-icon"/>
+          <IconHotMusic class="icon side-icon" />
           <span>新歌热榜</span>
         </a>
       </div>
@@ -112,6 +113,7 @@ const showMoreEnter = ref<boolean>(false)
   max-width: 2078px;
   margin: 0 auto;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .pili-header__channel {
     padding: 0 64px;
@@ -119,18 +121,19 @@ const showMoreEnter = ref<boolean>(false)
   }
 }
 
-
 .pili-header .channel-icons {
   z-index: 0;
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .channel-icons {
     margin-right: 8px;
   }
 }
+
 .pili-header .channel-icons__item {
   position: relative;
   display: flex;
@@ -138,11 +141,13 @@ const showMoreEnter = ref<boolean>(false)
   margin-right: 16px;
   color: var(--text1);
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .channel-icons__item {
     margin-right: 24px;
   }
 }
+
 .pili-header .channel-icons .icon-bg {
   display: flex;
   align-items: center;
@@ -151,41 +156,49 @@ const showMoreEnter = ref<boolean>(false)
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  transition: background .3s;
+  transition: background 0.3s;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .channel-icons .icon-bg {
     width: 46px;
     height: 46px;
   }
 }
+
 .pili-header .channel-icons .icon-bg__dynamic {
   background: #ff9212;
 }
+
 .pili-header .channel-icons .channel-notify {
   position: absolute;
   right: 0;
   bottom: 24px;
   z-index: 1;
 }
+
 .pili-header .channel-icons .icon-title {
   text-align: center;
   font-size: 13px;
   line-height: 18px;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .channel-icons .icon-title {
     font-size: 14px;
     line-height: 20px;
   }
 }
+
 .pili-header .channel-icons .icon-bg--up {
   overflow: hidden;
   border-radius: 50%;
 }
-.pili-header .channel-icons .icon-bg--up>img {
+
+.pili-header .channel-icons .icon-bg--up > img {
   border-radius: 50%;
 }
+
 .pili-header .channel-icons .icon-bg__popular {
   background: #f07775;
 }
@@ -195,16 +208,18 @@ const showMoreEnter = ref<boolean>(false)
   display: flex;
   justify-content: space-between;
 }
+
 .pili-header .pili-header__channel .channel-items__left {
   display: grid;
   width: 100%;
   grid-auto-flow: column;
   grid-column: span 4;
   grid-gap: 10px;
-  grid-template-rows: repeat(2,1fr);
+  grid-template-rows: repeat(2, 1fr);
   border-right: 1px solid var(--line_regular);
   position: relative;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .pili-header__channel .channel-items__left {
     grid-template-columns: repeat(11, 1fr);
@@ -217,15 +232,17 @@ const showMoreEnter = ref<boolean>(false)
   grid-row-gap: 10px;
   grid-auto-flow: column;
   display: grid;
-  grid-template-rows: repeat(2,1fr);
+  grid-template-rows: repeat(2, 1fr);
   width: 168px;
   flex-shrink: 0;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .pili-header__channel .channel-items__right {
     width: 240px;
   }
 }
+
 .pili-header .pili-header__channel .channel-entry-more__link,
 .pili-header .pili-header__channel .channel-link {
   display: inline-block;
@@ -237,9 +254,12 @@ const showMoreEnter = ref<boolean>(false)
   background-color: var(--graph_bg_thin);
   color: var(--text2);
   text-align: center;
-  transition: background-color .3s,color .3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   letter-spacing: 2px;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .pili-header__channel .channel-entry-more__link,
   .pili-header .pili-header__channel .channel-link {
@@ -248,18 +268,25 @@ const showMoreEnter = ref<boolean>(false)
     font-size: 14px;
   }
 }
+
 .pili-header .pili-header__channel .channel-entry-more__link:hover,
 .pili-header .pili-header__channel .channel-link:hover {
   background-color: var(--graph_bg_thick);
   color: var(--text1);
 }
+
 .pili-header .pili-header__channel .channel-entry-more__link--arrow {
-  transition: transform .3s;
+  transition: transform 0.3s;
   transform: rotate(0);
 }
-.pili-header .pili-header__channel .channel-entry-more__link:hover .channel-entry-more__link--arrow {
+
+.pili-header
+  .pili-header__channel
+  .channel-entry-more__link:hover
+  .channel-entry-more__link--arrow {
   transform: rotate(180deg);
 }
+
 .pili-header .pili-header__channel .channel-entry-more__link span {
   user-select: none;
   cursor: pointer;
@@ -274,26 +301,32 @@ const showMoreEnter = ref<boolean>(false)
   color: var(--text2);
   text-align: center;
   font-weight: 400;
-  transition: background-color .3s,color .3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   letter-spacing: 2px;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .pili-header__channel .channel-link__right {
     height: 28px;
     font-size: 14px;
   }
 }
+
 .pili-header .pili-header__channel .channel-link__right:hover {
   color: var(--brand_blue);
 }
+
 .pili-header .pili-header__channel .channel-link__right:hover .side-icon {
   fill: var(--brand_blue);
 }
+
 .pili-header .pili-header__channel .channel-link__right .side-icon {
   margin-right: 4px;
   width: 20px;
   height: 20px;
   fill: var(--text2);
-  transition: fill .3s;
+  transition: fill 0.3s;
 }
 </style>

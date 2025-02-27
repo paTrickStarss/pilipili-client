@@ -1,13 +1,11 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <main>
-    bangumi
-  </main>
+  <main>bangumi</main>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

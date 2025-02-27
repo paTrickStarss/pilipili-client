@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. Bubble
+ * Copyright (c) 2024-2025.  Bubble
  */
 
 import { defineStore } from 'pinia'

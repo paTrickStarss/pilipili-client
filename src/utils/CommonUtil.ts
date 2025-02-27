@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024. Bubble
+ * Copyright (c) 2024-2025.  Bubble
  */
 
 import moment from 'moment'
@@ -44,7 +44,6 @@ export function deepCopy<T>(obj: T): T {
 
   return obj
 }
-
 
 export function getDate(): string {
   const now = moment()

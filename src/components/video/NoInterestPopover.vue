@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import IconTinyMenu from '@/components/icons/IconTinyMenu.vue'
 </script>
@@ -7,7 +10,11 @@ import IconTinyMenu from '@/components/icons/IconTinyMenu.vue'
 <template>
   <GlobalPopover
     class="popover-wrap"
-    :content-style="{ 'margin-top': '-10px', 'margin-left': '-100px', 'z-index': '1000' }"
+    :content-style="{
+      'margin-top': '-10px',
+      'margin-left': '-100px',
+      'z-index': '1000',
+    }"
   >
     <template #trigger>
       <IconTinyMenu class="pili-video-card__info--no-interest--icon" />
@@ -26,16 +33,19 @@ import IconTinyMenu from '@/components/icons/IconTinyMenu.vue'
 .popover-wrap {
   display: block;
 }
+
 .no-interest-popover {
   overflow: hidden;
   width: 142px;
   border-radius: 8px;
 }
+
 .no-interest-popover .no-interest-inner-list {
   display: flex;
   flex-direction: column;
   padding: 12px 0;
 }
+
 .no-interest-popover .no-interest-inner-list__item {
   position: relative;
   display: flex;
@@ -44,8 +54,9 @@ import IconTinyMenu from '@/components/icons/IconTinyMenu.vue'
   color: var(--text2);
   text-align: left;
   font-size: 14px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
+
 .no-interest-popover .no-interest-inner-list__item:hover {
   background-color: var(--Ga2);
 }

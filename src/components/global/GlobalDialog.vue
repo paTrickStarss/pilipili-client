@@ -1,9 +1,8 @@
 <!--
-  - Copyright (c) 2025. Bubble
+  - Copyright (c) 2025.  Bubble
   -->
 
 <script setup lang="ts">
-
 defineProps({
   visible: {
     type: Boolean,
@@ -21,8 +20,7 @@ defineEmits({
   <transition name="dialog-fade">
     <div class="dialog-container" v-if="visible">
       <div class="dialog-content">
-        <div class="close-icon" @click="$emit('closeDialog')">
-        </div>
+        <div class="close-icon" @click="$emit('closeDialog')"></div>
         <div class="dialog-header">
           <slot name="header">Title</slot>
         </div>
@@ -94,7 +92,7 @@ defineEmits({
   height: 32px;
   right: 20px;
   top: 20px;
-  background: url("../../assets/icons/close.svg");
+  background: url('../../assets/icons/close.svg');
   background-size: contain;
   cursor: pointer;
   z-index: 2;

@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2024. Bubble
+  - Copyright (c) 2024-2025.  Bubble
   -->
 
 <script setup lang="ts">
@@ -23,10 +23,7 @@ const onSearch = () => {
 
 <template>
   <div class="center-search__bar">
-    <form
-      id="nav-searchform"
-      :class="{'is-focus': searchFormFocus}"
-    >
+    <form id="nav-searchform" :class="{ 'is-focus': searchFormFocus }">
       <div class="nav-search-content">
         <input
           ref="searchInputRef"
@@ -37,18 +34,27 @@ const onSearch = () => {
           v-model="inputValue"
           :placeholder="inputPlaceholder"
           @focus="searchFormFocus = true"
-          @blur="() => { if (!searchPanelEnter) searchFormFocus = false }"
+          @blur="
+            () => {
+              if (!searchPanelEnter) searchFormFocus = false
+            }
+          "
         />
-        <div class="nav-search-clean" v-show="inputValue" @click="inputValue = ''">
-          <IconInputClean/>
+        <div
+          class="nav-search-clean"
+          v-show="inputValue"
+          @click="inputValue = ''"
+        >
+          <IconInputClean />
         </div>
       </div>
       <div class="nav-search-btn" @click="onSearch">
-        <IconSearch/>
+        <IconSearch />
       </div>
     </form>
     <div
-      class="search-panel" v-show="searchFormFocus"
+      class="search-panel"
+      v-show="searchFormFocus"
       @mouseenter="searchPanelEnter = true"
       @mouseleave="searchPanelEnter = false"
       @click="searchInputRef.focus()"
@@ -60,14 +66,19 @@ const onSearch = () => {
         <div class="trending-double">
           <div class="trending-col" style="max-width: 244px">
             <SearchBarTrendingItem
-              v-for="i in 5" :key="i"
-              :title="`热搜标题热搜标题${i*2-1}`" :rank="i*2-1" :is-hot="true"
+              v-for="i in 5"
+              :key="i"
+              :title="`热搜标题热搜标题${i * 2 - 1}`"
+              :rank="i * 2 - 1"
+              :is-hot="true"
             />
           </div>
           <div class="trending-col" style="max-width: 244px">
             <SearchBarTrendingItem
-              v-for="i in 5" :key="i"
-              :title="`热搜标题热搜标题${i*2}`" :rank="i*2"
+              v-for="i in 5"
+              :key="i"
+              :title="`热搜标题热搜标题${i * 2}`"
+              :rank="i * 2"
             />
           </div>
         </div>
@@ -83,6 +94,7 @@ const onSearch = () => {
   min-width: 181px;
   max-width: 500px;
 }
+
 .pili-header .center-search-container .center-search__bar #nav-searchform {
   display: flex;
   align-items: center;
@@ -98,15 +110,24 @@ const onSearch = () => {
   opacity: 0.9;
   transition: background-color 0.3s;
 }
-.pili-header .center-search-container .center-search__bar #nav-searchform.is-focus {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  #nav-searchform.is-focus {
   border: 1px solid var(--line_regular);
   border-bottom: none;
   background: var(--bg1);
   border-radius: 8px 8px 0 0;
 }
-.pili-header .center-search-container .center-search__bar #nav-searchform:hover {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  #nav-searchform:hover {
   background: var(--bg1);
 }
+
 .pili-header .center-search-container .center-search__bar .nav-search-btn {
   position: absolute;
   top: 3px;
@@ -123,8 +144,9 @@ const onSearch = () => {
   color: var(--text1);
   line-height: 32px;
   cursor: pointer;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
+
 .pili-header .center-search-container .center-search__bar .nav-search-content {
   display: flex;
   align-items: center;
@@ -136,7 +158,12 @@ const onSearch = () => {
   border: 2px solid transparent;
   border-radius: 6px;
 }
-.pili-header .center-search-container .center-search__bar .nav-search-content .nav-search-input {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  .nav-search-content
+  .nav-search-input {
   flex: 1;
   overflow: hidden;
   padding-right: 8px;
@@ -147,19 +174,36 @@ const onSearch = () => {
   font-size: 14px;
   line-height: 20px;
 }
-.pili-header .center-search-container .center-search__bar #nav-searchform.is-focus .nav-search-content {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  #nav-searchform.is-focus
+  .nav-search-content {
   background-color: var(--graph_bg_thick);
 }
-.pili-header .center-search-container .center-search__bar .nav-search-content .nav-search-clean {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  .nav-search-content
+  .nav-search-clean {
   width: 16px;
   height: 16px;
   right: 10px;
   cursor: pointer;
 }
-.pili-header .center-search-container .center-search__bar .nav-search-content .nav-search-clean svg {
+
+.pili-header
+  .center-search-container
+  .center-search__bar
+  .nav-search-content
+  .nav-search-clean
+  svg {
   position: absolute;
   color: var(--graph_weak);
 }
+
 .pili-header .search-panel {
   width: 100%;
   max-height: 612px;
@@ -172,22 +216,25 @@ const onSearch = () => {
   -webkit-font-smoothing: antialiased;
 }
 
-
 .pili-header .trending-double {
   display: flex;
 }
+
 .pili-header .trending-double .trending-col {
   flex: 1;
 }
+
 .pili-header .trending-double .trending-col:first-child {
   margin-right: 10px;
 }
+
 .pili-header .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
 }
+
 .pili-header .header .title {
   font-family:
     PingFang SC,
@@ -200,5 +247,4 @@ const onSearch = () => {
   font-size: 16px;
   line-height: 24px;
 }
-
 </style>

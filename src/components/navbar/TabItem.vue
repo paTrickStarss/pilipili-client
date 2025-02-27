@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 defineProps({
   title: String,
   index: {
@@ -8,15 +11,13 @@ defineProps({
   },
   active: Boolean,
 })
-const activeTab = defineModel('activeTab',
-  { type: Number, required: true })
-
+const activeTab = defineModel('activeTab', { type: Number, required: true })
 </script>
 
 <template>
   <div
     class="header-tabs-panel__item"
-    :class="{'header-tabs-panel__item--active': activeTab === index}"
+    :class="{ 'header-tabs-panel__item--active': activeTab === index }"
     @click="activeTab = index"
   >
     {{ title }}
@@ -32,6 +33,7 @@ const activeTab = defineModel('activeTab',
   font-size: 14px;
   cursor: pointer;
 }
+
 .header-tabs-panel__item--active {
   border-bottom: 3px solid var(--brand_blue);
   color: var(--brand_blue);

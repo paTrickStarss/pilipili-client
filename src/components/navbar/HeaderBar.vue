@@ -1,3 +1,7 @@
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
+
 <script setup lang="ts">
 import IconTV from '@/components/icons/IconTV.vue'
 import CollectionPopover from '@/components/navbar/collection/CollectionPopover.vue'
@@ -18,19 +22,19 @@ defineProps({
   slideDown: {
     type: Boolean,
     default: false,
-  }
+  },
 })
 
 const tokenStore = useTokenStore()
 </script>
 
 <template>
-  <div class="pili-header__bar" :class="{'slide-down': slideDown}">
+  <div class="pili-header__bar" :class="{ 'slide-down': slideDown }">
     <!--          左侧菜单-->
     <ul class="left-entry">
       <li>
         <a href="#" class="entry-title">
-          <IconTV/>
+          <IconTV />
           <span>首页</span>
         </a>
       </li>
@@ -66,42 +70,41 @@ const tokenStore = useTokenStore()
       </li>
       <li class="v-popover-wrap">
         <a href="#" class="download-entry download-client-trigger">
-          <IconDownload/>
+          <IconDownload />
           <span>下载客户端</span>
         </a>
       </li>
     </ul>
     <!--          搜索栏-->
     <div class="center-search-container offset-center-search">
-      <SearchBar/>
+      <SearchBar />
     </div>
     <!--          右侧菜单-->
     <ul class="right-entry">
-      <UserLoginPopver v-if="!tokenStore.isLogin"/>
-      <UserInfoPopover v-else/>
-      <VipPopover/>
-      <MessagePopover/>
-      <DynamicPopover/>
-      <CollectionPopover/>
-      <HistoryPopover/>
+      <UserLoginPopver v-if="!tokenStore.isLogin" />
+      <UserInfoPopover v-else />
+      <VipPopover />
+      <MessagePopover />
+      <DynamicPopover />
+      <CollectionPopover />
+      <HistoryPopover />
 
-      <GlobalPopover
-        wrap-class="right-entry-item"
-        :pop-prohibit="true">
+      <GlobalPopover wrap-class="right-entry-item" :pop-prohibit="true">
         <template #trigger>
           <a href="#" target="_blank" class="right-entry__outside">
-            <IconBulb/>
+            <IconBulb />
             <span class="right-entry-text">创作中心</span>
           </a>
         </template>
       </GlobalPopover>
       <GlobalPopover
         wrap-class="right-entry-item right-entry-item--upload"
-        :pop-prohibit="true">
+        :pop-prohibit="true"
+      >
         <template #trigger>
           <a href="#" target="_blank">
             <div class="header-upload-entry">
-              <IconUpload/>
+              <IconUpload />
               <span class="header-upload-entry__text">投稿</span>
             </div>
           </a>
@@ -115,18 +118,21 @@ const tokenStore = useTokenStore()
 .pili-header .pili-header__bar.slide-down {
   position: fixed;
   top: 0;
-  animation: headerSlideDown .3s linear forwards;
+  animation: headerSlideDown 0.3s linear forwards;
   background: var(--bg1);
-  box-shadow: 0 2px 4px rgba(0,0,0,.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   background: var(--bg1_float);
 }
+
 .pili-wrap .pili-header .slide-down {
-  animation: none!important;
-  box-shadow: inset 0 -1px 0 var(--line_regular)!important;
+  animation: none !important;
+  box-shadow: inset 0 -1px 0 var(--line_regular) !important;
 }
+
 .pili-header .slide-down .left-entry .entry-title .tv-icon {
   color: var(--brand_blue);
 }
+
 @keyframes headerSlideDown {
   0% {
     opacity: 0;
@@ -135,9 +141,11 @@ const tokenStore = useTokenStore()
     opacity: 1;
   }
 }
+
 .large-header {
   background-color: var(--bg1);
 }
+
 .pili-header .pili-header__bar {
   position: absolute;
   top: 0;
@@ -150,27 +158,32 @@ const tokenStore = useTokenStore()
   width: 100%;
   height: 64px;
 }
+
 .transparent-header {
-  background: linear-gradient(rgba(14,14,14, .3),rgba(0,0,0,0));
+  background: linear-gradient(rgba(14, 14, 14, 0.3), rgba(0, 0, 0, 0));
 }
+
 .pili-header .left-entry {
   display: flex;
   align-items: center;
   flex-shrink: 0;
   margin-right: 30px;
 }
+
 .pili-header .left-entry .download-client-trigger {
   display: flex;
   align-items: center;
   color: var(--text_white);
   cursor: pointer;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .left-entry .default-entry,
   .pili-header .left-entry .entry-title {
     margin-right: 15px;
   }
 }
+
 .pili-header .left-entry .entry-title {
   display: flex;
   align-items: center;
@@ -178,6 +191,7 @@ const tokenStore = useTokenStore()
   font-size: 14px;
   cursor: pointer;
 }
+
 .pili-header .left-entry .entry-title,
 .pili-header .left-entry .download-entry,
 .pili-header .left-entry .default-entry,
@@ -188,39 +202,47 @@ const tokenStore = useTokenStore()
   font-size: 14px;
   cursor: pointer;
 }
+
 .pili-header .left-entry .default-entry {
   display: flex;
 }
+
 .pili-header .slide-down .left-entry .entry-title,
 .pili-header .slide-down .left-entry .download-entry,
 .pili-header .slide-down .left-entry .default-entry,
 .pili-header .slide-down .left-entry .loc-entry {
   color: var(--text1);
 }
+
 .pili-header .left-entry .entry-title span,
 .pili-header .left-entry .download-entry span,
 .pili-header .left-entry .default-entry span {
-  transition: all .3s;
+  transition: all 0.3s;
 }
+
 .pili-header .left-entry .entry-title:hover span,
 .pili-header .left-entry .download-entry:hover span,
 .pili-header .left-entry .default-entry:hover span {
   transform: translate(0, -5px);
 }
+
 .pili-header .right-entry {
   display: flex;
   align-items: center;
   margin-left: 50px;
 }
+
 @media (min-width: 1367px) and (max-width: 1700px) {
   .pili-header .right-entry {
     margin-left: 10px;
   }
 }
+
 .pili-header .center-search-container {
   flex: 1 auto;
   height: 38px;
 }
+
 .pili-header .header-upload-entry {
   display: flex;
   align-items: center;
@@ -235,8 +257,9 @@ const tokenStore = useTokenStore()
   font-size: 14px;
   line-height: 20px;
   cursor: pointer;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
+
 .pili-header .header-upload-entry:hover {
   background-color: #ff92ae;
 }

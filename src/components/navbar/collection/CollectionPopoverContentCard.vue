@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import IconUpUserWhite from '@/components/icons/IconUpUserWhite.vue'
 
 defineProps({
@@ -15,8 +18,8 @@ defineProps({
   <a class="header-fav-card" :href="url" target="_blank">
     <div class="header-fav-card__image">
       <picture class="v-img">
-        <source :srcset="imgUrl" type="image/webp">
-        <img src="" alt="" loading="lazy">
+        <source :srcset="imgUrl" type="image/webp" />
+        <img src="" alt="" loading="lazy" />
       </picture>
       <div class="header-fav-card__duration">
         <span class="header-fav-card__duration--text">{{ duration }}</span>
@@ -25,7 +28,7 @@ defineProps({
     <div class="header-fav-card__info">
       <div class="header-fav-card__info--title">{{ title }}</div>
       <span class="header-fav-card__info--name">
-        <IconUpUserWhite/>
+        <IconUpUserWhite />
         <span>{{ name }}</span>
       </span>
     </div>
@@ -36,19 +39,22 @@ defineProps({
 .pili-header .header-fav-card {
   display: flex;
   padding: 10px 10px 10px 20px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
+
 .pili-header .header-fav-card__image {
   position: relative;
   margin-right: 10px;
   background: var(--bg3);
   border-radius: 4px;
 }
+
 .pili-header .header-fav-card__info {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+
 .pili-header .header-fav-card .v-img {
   position: relative;
   flex-shrink: 0;
@@ -56,30 +62,40 @@ defineProps({
   height: 72px;
   border-radius: 4px;
 }
+
 .pili-header .header-fav-card .v-img img {
   border-radius: 4px;
 }
+
 .pili-header .header-fav-card__duration {
   position: absolute;
   right: 4px;
   bottom: 4px;
   padding: 0;
   border-radius: 2px;
-  background: rgba(0,0,0,.4);
+  background: rgba(0, 0, 0, 0.4);
   line-height: 17px;
 }
+
 .pili-header .header-fav-card__duration--text {
   display: inline-block;
   color: #fff;
   font-size: 12px;
   line-height: 14px;
-  transform: scale(.85);
+  transform: scale(0.85);
   transform-origin: center top;
 }
+
 .pili-header .header-fav-card__info--title {
-  font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
+  font-family:
+    PingFang SC,
+    HarmonyOS Sans SC,
+    Helvetica Neue,
+    Microsoft YaHei,
+    sans-serif;
   font-weight: 500;
 }
+
 .pili-header .header-fav-card__info--title {
   height: 36px;
   color: var(--text1);
@@ -90,11 +106,12 @@ defineProps({
   -webkit-box-orient: vertical;
   text-overflow: -o-ellipsis-lastline;
   text-overflow: ellipsis;
-  word-break: break-word!important;
+  word-break: break-word !important;
   word-break: break-all;
   line-break: anywhere;
   -webkit-line-clamp: 2;
 }
+
 .pili-header .header-fav-card__info--name {
   color: var(--text3);
   font-size: 12px;

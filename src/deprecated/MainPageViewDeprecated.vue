@@ -4,10 +4,19 @@
 
 <script setup lang="ts">
 import { deepCopy, randomInt } from '@/utils/CommonUtil'
-import { LeftCircleOutlined, PlusOutlined, RedoOutlined, RightCircleOutlined } from '@ant-design/icons-vue'
+import {
+  LeftCircleOutlined,
+  PlusOutlined,
+  RedoOutlined,
+  RightCircleOutlined,
+} from '@ant-design/icons-vue'
 import VideoInfoCard from '@/components/video/VideoInfoCard.vue'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import type { CarouselInfoType, VideoCardFlowInfoType, VideoCardInfoType } from '@/types/PropsType'
+import type {
+  CarouselInfoType,
+  VideoCardFlowInfoType,
+  VideoCardInfoType,
+} from '@/types/PropsType'
 import IndexView from '@/views/index/IndexView.vue'
 import { openLink } from '@/utils/RouterUtil'
 
@@ -80,7 +89,6 @@ function resetFlowList() {
   isEnd.value = false
 }
 
-
 // useTemplateRef返回值 只有在生命周期钩子函数中才能获取到，这里是null
 const contentRef = useTemplateRef('contentRef')
 const controller = new AbortController()
@@ -106,7 +114,6 @@ onUnmounted(() => {
   // window.removeEventListener('scroll', scrollEventHandler)
   controller.abort()
 })
-
 </script>
 
 <template>

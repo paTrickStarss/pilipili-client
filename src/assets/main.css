@@ -24,39 +24,46 @@ html body {
     text-size-adjust: none;
     margin: 0;
     padding: 0;
-    font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif!important
+    font-family: PingFang SC, HarmonyOS Sans SC, Helvetica Neue, Microsoft YaHei, sans-serif !important
 }
 
 body ul {
-    list-style-type: none ;
+    list-style-type: none;
 }
+
 body span, body svg {
     color: inherit;
 }
+
 body a {
     text-decoration: none;
     background-color: transparent;
     color: inherit;
 }
+
 body a:hover {
     color: var(--brand_blue)
 }
+
 button, input, select textarea {
     outline: 0;
     border: none;
     font-size: inherit;
     font-family: inherit;
 }
+
 button, input, optgroup, select, textarea {
     font-family: inherit;
     font-size: 100%;
     line-height: 1.15;
     margin: 0;
 }
+
 p {
     margin: 0;
     padding: 0;
 }
+
 i, em {
     font-style: normal;
 }
@@ -66,9 +73,11 @@ i, em {
     background-color: var(--bg3);
     height: 100%;
 }
+
 .b-img img, .b-img picture {
     border-radius: inherit;
 }
+
 .v-img {
     position: relative;
     display: inline-block;
@@ -78,6 +87,7 @@ i, em {
     vertical-align: middle;
     background-color: var(--graph_bg_regular);
 }
+
 .v-img img {
     display: block;
     width: 100%;
@@ -94,13 +104,15 @@ i, em {
     margin: 0;
     padding: 0;
 }
+
 .pili-avatar * {
     margin: 0;
     padding: 0;
 }
+
 .pili-header .avatar-panel-popover .nickname-item,
 .pili-header .avatar-panel-popover .vip-item .level-max,
-.pili-header .avatar-panel-popover .level-item .level-item__bar--tag>span,
+.pili-header .avatar-panel-popover .level-item .level-item__bar--tag > span,
 .pili-header .avatar-panel-popover .counts-item .single-count-item .count-num,
 .pili-header .avatar-panel-popover .links-item .single-link-item,
 .pili-header .avatar-panel-popover .logout-item,
@@ -108,9 +120,10 @@ i, em {
 .history-panel-popover .header-tabs-panel__content--date,
 .history-panel-popover .header-history-card__info--title,
 .dynamic-panel-popover .header-tabs-panel__content--date {
-    font-family: PingFang SC,HarmonyOS Sans SC,Helvetica Neue,Microsoft YaHei,sans-serif;
+    font-family: PingFang SC, HarmonyOS Sans SC, Helvetica Neue, Microsoft YaHei, sans-serif;
     font-weight: 500;
 }
+
 .vui_button {
     height: 34px;
     min-width: 100px;
@@ -125,6 +138,7 @@ i, em {
     user-select: none;
     cursor: pointer;
 }
+
 i.vui_icon {
     speak: none;
     font-style: normal;
@@ -134,4 +148,14 @@ i.vui_icon {
     line-height: 1;
     vertical-align: baseline;
     display: inline-block;
+}
+
+.vui_button:hover {
+    background-color: var(--graph_bg_thick);
+}
+
+.vui_ellipsis.multi-mode {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

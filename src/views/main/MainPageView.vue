@@ -1,22 +1,26 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import IndexView from '@/views/index/IndexView.vue'
 import RecommendedSwipe from '@/components/main/RecommendedSwipe.vue'
 import VideoCard from '@/components/video/VideoCard.vue'
 </script>
 
 <template>
-  <IndexView>
+  <IndexView main>
     <div class="feed2">
-
       <div class="recommended-container_floor-aside">
         <div class="container is-version8">
-          <RecommendedSwipe/>
+          <RecommendedSwipe />
 
           <div class="feed-card" v-for="i in 20" :key="i">
-            <VideoCard class="enable-no-interest" style="--cover-radio: 56.25%" />
+            <VideoCard
+              class="enable-no-interest"
+              style="--cover-radio: 56.25%"
+            />
           </div>
-
         </div>
       </div>
     </div>
@@ -27,12 +31,15 @@ import VideoCard from '@/components/video/VideoCard.vue'
 .recommended-container_floor-aside {
   padding-bottom: 60px;
 }
+
 .recommended-container_floor-aside:not(.xs_sm) {
   position: relative;
 }
+
 .recommended-container_floor-aside .container {
   grid-gap: 20px;
 }
+
 @media (min-width: 1400px) and (max-width: 1560px) {
   .recommended-container_floor-aside .container {
     display: grid;
@@ -42,7 +49,6 @@ import VideoCard from '@/components/video/VideoCard.vue'
     grid-template-columns: repeat(5, 1fr);
   }
 }
-
 
 .feed-roll-btn {
   position: absolute;

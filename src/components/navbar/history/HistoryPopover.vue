@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
 
+<script setup lang="ts">
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import IconHistory from '@/components/icons/IconHistory.vue'
 import { ref } from 'vue'
@@ -15,8 +18,12 @@ const activeTab = ref<number>(1)
     :content-style="{ marginTop: '0', marginLeft: '-150px' }"
   >
     <template #trigger>
-      <a class="right-entry__outside" href="//message.pilibili.com" target="_blank">
-        <IconHistory/>
+      <a
+        class="right-entry__outside"
+        href="//message.pilibili.com"
+        target="_blank"
+      >
+        <IconHistory />
         <span class="right-entry-text">历史</span>
       </a>
     </template>
@@ -31,33 +38,44 @@ const activeTab = ref<number>(1)
         <div>
           <p class="header-tabs-panel__content--date">今天</p>
           <HistoryVideoCard
-            v-for="i in 5" :key="i"
-            :title="`视频${i}`" :date-time="`今天18:35`"
-            :duration="`9:00/12:00`" :is-mobile="true"
-            :user-name="`Patrick`" :progress="75"
+            v-for="i in 5"
+            :key="i"
+            :title="`视频${i}`"
+            :date-time="`今天18:35`"
+            :duration="`9:00/12:00`"
+            :is-mobile="true"
+            :user-name="`Patrick`"
+            :progress="75"
           />
         </div>
         <div>
           <p class="header-tabs-panel__content--date">昨天</p>
           <HistoryVideoCard
-            v-for="i in 2" :key="i"
-            :title="`视频${i}`" :date-time="`今天18:35`"
-            :duration="`9:00/12:00`" :is-mobile="false"
-            :user-name="`Patrick`" :progress="75"
+            v-for="i in 2"
+            :key="i"
+            :title="`视频${i}`"
+            :date-time="`今天18:35`"
+            :duration="`9:00/12:00`"
+            :is-mobile="false"
+            :user-name="`Patrick`"
+            :progress="75"
           />
         </div>
         <div>
           <p class="header-tabs-panel__content--date">更早</p>
           <HistoryVideoCard
-            v-for="i in 10" :key="i"
-            :title="`视频${i}`" :date-time="`今天18:35`"
-            :duration="`9:00/12:00`" :is-mobile="false"
-            :user-name="`Patrick`" :progress="75"
+            v-for="i in 10"
+            :key="i"
+            :title="`视频${i}`"
+            :date-time="`今天18:35`"
+            :duration="`9:00/12:00`"
+            :is-mobile="false"
+            :user-name="`Patrick`"
+            :progress="75"
           />
         </div>
       </div>
     </div>
-
   </GlobalPopover>
 </template>
 
@@ -66,6 +84,7 @@ const activeTab = ref<number>(1)
   width: 370px;
   height: 540px;
 }
+
 .history-panel-popover .header-tabs-panel {
   display: flex;
   align-items: center;
@@ -79,6 +98,7 @@ const activeTab = ref<number>(1)
   text-align: left;
   overscroll-behavior: none;
 }
+
 .history-panel-popover .header-tabs-panel__content--date {
   margin-top: 12px;
   margin-bottom: 5px;
@@ -87,5 +107,4 @@ const activeTab = ref<number>(1)
   font-size: 14px;
   line-height: 16px;
 }
-
 </style>

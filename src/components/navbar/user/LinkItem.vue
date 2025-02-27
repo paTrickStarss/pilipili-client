@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2025. Bubble
+  - Copyright (c) 2025.  Bubble
   -->
 
 <script setup lang="ts">
@@ -38,7 +38,9 @@ const linkItemMouseLeave = () => {
     :style="linkItemStyle"
   >
     <div class="link-title">
-      <slot name="icon"><UserOutlined /></slot>
+      <slot name="icon">
+        <UserOutlined />
+      </slot>
       <span class="link-title__text">{{ title }}</span>
     </div>
     <RightOutlined />
@@ -60,10 +62,12 @@ const linkItemMouseLeave = () => {
   transition: background-color 0.3s;
   white-space: nowrap;
 }
+
 .link-title {
   display: flex;
   align-items: center;
 }
+
 .link-title__text {
   margin-left: 10px;
 }

@@ -1,10 +1,14 @@
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
+
 <script setup lang="ts">
 defineProps({
   title: String,
   num: Number,
   active: {
     type: Boolean,
-    default: false
+    default: false,
   },
 })
 </script>
@@ -31,10 +35,12 @@ defineProps({
     background-color 0.3s,
     color 0.3s;
 }
+
 .favorite-panel-popover__nav .tab-item--active {
   background-color: var(--brand_blue);
   color: #fff;
 }
+
 .favorite-panel-popover__nav .tab-item__title {
   font-family:
     PingFang SC,
@@ -48,6 +54,7 @@ defineProps({
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .favorite-panel-popover__nav .tab-item__num {
   color: var(--text3);
   word-break: normal;
