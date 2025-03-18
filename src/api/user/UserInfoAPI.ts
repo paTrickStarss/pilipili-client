@@ -3,7 +3,7 @@
  */
 
 import axios from '@/api/axios'
-import type { RegisterReq } from '@/types/ApiRequestType'
+import type { RegisterReq, UpdateUserInfoReq } from '@/types/ApiRequestType'
 
 export const userInfoAPI = {
   /**
@@ -19,6 +19,9 @@ export const userInfoAPI = {
    * @param uid
    */
   getUserInfo(uid: string) {
-    return axios.get('/api/user/getUser', { params: { uid: uid } })
+    return axios.get(`/api/user/${uid}`)
+  },
+  updateUserInfo(body: UpdateUserInfoReq) {
+    return axios.put('/api/user/update', body)
   },
 }

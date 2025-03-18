@@ -103,3 +103,189 @@ export interface UpdateUserInfoReq {
    */
   pCoin?: number
 }
+
+
+/**
+ * UpdateVideoInfoReq
+ */
+export interface UpdateVideoInfoReq {
+  contentUrl?: string;
+  coverUrl?: string;
+  description?: string;
+  duration?: number;
+  primaryCategoryId?: number;
+  publishTime?: Date;
+  reprintPermit?: number;
+  secondaryCategoryId?: number;
+  sourceType?: number;
+  status?: number;
+  tag?: string;
+  title?: string;
+  vid?: number;
+}
+/**
+ * CreateVideoInfoReq
+ */
+export interface CreateVideoInfoReq {
+  contentUrl?: string;
+  coverUrl?: string;
+  description?: string;
+  duration?: number;
+  primaryCategoryId?: number;
+  publishTime?: Date;
+  reprintPermit?: number;
+  secondaryCategoryId?: number;
+  sourceType?: number;
+  tag?: string;
+  title?: string;
+  uid?: number;
+}
+
+/**
+ * PageQueryVideoInfoReq
+ */
+export interface PageQueryVideoInfoReq {
+  keyword?: string;
+  pageNo: number;
+  pageSize: number;
+  publishDateEnd?: string;
+  publishDateStart?: string;
+  tag?: string;
+  title?: string;
+  uid?: number;
+}
+/**
+ * UpdateCollectionInfoReq
+ */
+export interface UpdateCollectionInfoReq {
+  collectionId: number;
+  description?: string;
+  himitsu?: number;
+  title?: string;
+}
+/**
+ * SaveCollectionInfoReq
+ */
+export interface SaveCollectionInfoReq {
+  description?: string;
+  himitsu?: number;
+  title: string;
+  uid: number;
+}
+/**
+ * ChangeCollectionVideoReq
+ */
+export interface ChangeCollectionVideoReq {
+  collectionVideoList: CollectionVideo[];
+}
+/**
+ * CollectionVideo
+ */
+export interface CollectionVideo {
+  collectionId?: number;
+  vid?: number;
+}
+
+/**
+ * PageQueryCollectionInfoReq
+ */
+export interface PageQueryCollectionInfoReq {
+  pageNo: number;
+  pageSize: number;
+  uid: number;
+}
+
+/**
+ * PageQueryCollectionVideoReq
+ */
+export interface PageQueryCollectionVideoReq {
+  collectionId: number;
+  pageNo: number;
+  pageSize: number;
+}
+/**
+ * SaveDanmakuInfoReq
+ */
+export interface SaveDanmakuInfoReq {
+  color?: string;
+  content: string;
+  danmakuType?: number;
+  fontSize?: number;
+  timing: number;
+  uid: number;
+  vid: number
+}
+
+/**
+ * PageQueryVideoDanmakuReq
+ */
+export interface PageQueryVideoDanmakuReq {
+  danmakuId?: number;
+  pageNo: number;
+  pageSize: number;
+  uid?: number;
+  vid?: number;
+}
+/**
+ * SaveCommentInfoReq
+ */
+export interface SaveCommentInfoReq {
+  content: string;
+  parentId?: number;
+  parentRootId?: number;
+  relaId: number;
+  relaType: number;
+  uid: number;
+}
+
+/**
+ * PageQueryCommentReq
+ */
+export interface PageQueryCommentReq {
+  pageNo: number;
+  pageSize: number;
+  parentRootId?: number;
+  relaId?: number;
+  relaType?: number;
+}
+/**
+ * SaveDynamicInfoReq
+ */
+export interface SaveDynamicInfoReq {
+  attachList?: SaveDynamicAttachReq[];
+  content: string;
+  isRepost?: number;
+  relaId?: number;
+  relaType?: number;
+  uid: number;
+}
+/**
+ * UpdateDynamicInfoReq
+ */
+export interface UpdateDynamicInfoReq {
+  attachList?: SaveDynamicAttachReq[];
+  attachRemoveList?: SaveDynamicAttachReq[];
+  content: string;
+  did: number;
+  isRepost?: number;
+  relaId?: number;
+  relaType?: number;
+}
+/**
+ * SaveDynamicAttachReq
+ */
+export interface SaveDynamicAttachReq {
+  attachType?: number;
+  attachUrl?: string;
+  attachUUID?: string;
+  did?: number;
+}
+
+/**
+ * PageQueryDynamicReq
+ */
+export interface PageQueryDynamicReq {
+  pageNo: number;
+  pageSize: number;
+  uid: number;
+}
