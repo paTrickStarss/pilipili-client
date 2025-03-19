@@ -28,6 +28,9 @@ export const useUserStore = defineStore('user', () => {
   const hcoin = ref<number>(0)
   const pcoin = ref<number>(0)
   const level = ref<number>(0)
+  const followerCount = ref<number>(0)
+  const fansCount = ref<number>(0)
+  const dynamicCount = ref<number>(0)
 
   const userInfo = computed(() => {
     return {
@@ -48,6 +51,9 @@ export const useUserStore = defineStore('user', () => {
       hcoin,
       pcoin,
       level,
+      followerCount,
+      fansCount,
+      dynamicCount,
       spaceUrl,
     }
   })
@@ -106,6 +112,9 @@ export const useUserStore = defineStore('user', () => {
     hcoin.value = userInfo.hcoin
     pcoin.value = userInfo.pcoin
     level.value = userInfo.level
+    followerCount.value = userInfo.followerCount
+    fansCount.value = userInfo.fansCount
+    dynamicCount.value = 0 //todo: userInfo.dynamicCount
   }
 
   /**
@@ -130,6 +139,7 @@ export const useUserStore = defineStore('user', () => {
           .finally(() => {
             isFetching.value = false
           })
+
       }
     })
   }

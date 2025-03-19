@@ -2,6 +2,14 @@
  * Copyright (c) 2025. Bubble
  */
 
+
+/**
+ * 分页查询请求参数
+ */
+export interface PageQueryReq {
+  pageNo: number;
+  pageSize: number;
+}
 /**
  * 登录请求体
  */
@@ -144,10 +152,8 @@ export interface CreateVideoInfoReq {
 /**
  * PageQueryVideoInfoReq
  */
-export interface PageQueryVideoInfoReq {
+export interface PageQueryVideoInfoReq extends PageQueryReq {
   keyword?: string;
-  pageNo: number;
-  pageSize: number;
   publishDateEnd?: string;
   publishDateStart?: string;
   tag?: string;
@@ -189,19 +195,15 @@ export interface CollectionVideo {
 /**
  * PageQueryCollectionInfoReq
  */
-export interface PageQueryCollectionInfoReq {
-  pageNo: number;
-  pageSize: number;
+export interface PageQueryCollectionInfoReq extends PageQueryReq {
   uid: number;
 }
 
 /**
  * PageQueryCollectionVideoReq
  */
-export interface PageQueryCollectionVideoReq {
+export interface PageQueryCollectionVideoReq extends PageQueryReq {
   collectionId: number;
-  pageNo: number;
-  pageSize: number;
 }
 /**
  * SaveDanmakuInfoReq
@@ -219,10 +221,8 @@ export interface SaveDanmakuInfoReq {
 /**
  * PageQueryVideoDanmakuReq
  */
-export interface PageQueryVideoDanmakuReq {
+export interface PageQueryVideoDanmakuReq extends PageQueryReq {
   danmakuId?: number;
-  pageNo: number;
-  pageSize: number;
   uid?: number;
   vid?: number;
 }
@@ -241,9 +241,7 @@ export interface SaveCommentInfoReq {
 /**
  * PageQueryCommentReq
  */
-export interface PageQueryCommentReq {
-  pageNo: number;
-  pageSize: number;
+export interface PageQueryCommentReq extends PageQueryReq {
   parentRootId?: number;
   relaId?: number;
   relaType?: number;
@@ -284,8 +282,14 @@ export interface SaveDynamicAttachReq {
 /**
  * PageQueryDynamicReq
  */
-export interface PageQueryDynamicReq {
-  pageNo: number;
-  pageSize: number;
+export interface PageQueryDynamicReq extends PageQueryReq {
   uid: number;
+}
+
+/**
+ * PageQueryUserRelaReq
+ */
+export interface PageQueryUserRelaReq extends PageQueryReq {
+  special?: boolean;
+  uid?: number;
 }

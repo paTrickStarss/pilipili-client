@@ -12,7 +12,9 @@ import GlobalDialog from '@/components/global/GlobalDialog.vue'
 import { useUserStore } from '@/stores/user'
 import { CryptoUtil } from '@/utils/CryptoUtil'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const visible = defineModel<boolean>('visible', { required: true })
 const emit = defineEmits({
   /**
@@ -79,11 +81,11 @@ function loginCommit() {
     const encryptedPassword = CryptoUtil.instance.encrypt(
       loginBody.password || '',
     )
-    const signature = CryptoUtil.instance.sign(encryptedPassword)
+    // const signature = CryptoUtil.instance.sign(encryptedPassword)
     const body: LoginReq = {
       username: loginBody.username,
       password: encryptedPassword,
-      signature,
+      // signature,
     }
 
     authAPI
@@ -94,6 +96,7 @@ function loginCommit() {
         emit('commit')
         message.success('登录成功！欢迎回来。')
         console.log('login success', data)
+        router.go(0)
       })
       .catch(msg => {
         message.error(msg)
@@ -104,20 +107,21 @@ function loginCommit() {
   })
 }
 
-function registerCommit() {
+async function registerCommit() {
   if (passwordGroup.firstInput === '') {
     message.warn('请输入密码')
   } else if (passwordGroup.firstInput !== passwordGroup.lastInput) {
     message.warn('请确认二次输入密码一致')
   } else {
-    const encryptedPassword = CryptoUtil.instance.encrypt(
-      passwordGroup.firstInput,
+    const cryptoInstance = CryptoUtil.instance
+    const encryptedPassword = cryptoInstance.encrypt(
+      passwordGroup.firstInput
     )
-    const signature = CryptoUtil.instance.sign(encryptedPassword)
+    // const signature = cryptoInstance.sign(encryptedPassword)
     const body: RegisterReq = {
       nickname: registerBody.nickname,
       password: encryptedPassword,
-      signature,
+      // signature,
       email: registerBody.email,
     }
 

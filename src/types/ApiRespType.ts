@@ -87,6 +87,14 @@ export interface UserInfoType {
    * 用户等级
    */
   level: number
+  /**
+   * 关注数
+   */
+  followerCount: number
+  /**
+   * 粉丝数
+   */
+  fansCount: number
 }
 
 /**
@@ -199,4 +207,42 @@ export interface CommentDTOType {
    * 创建日期
    */
   createDate: string
+}
+
+/**
+ * SimpleResponse
+ */
+export interface SimpleResponse {
+  code?: number;
+  data?: unknown;
+  msg?: string;
+  success?: boolean;
+}
+
+/**
+ * QueryUserInfoDTO
+ */
+export interface QueryUserInfoDTO {
+  authority?: number;
+  authorityDesc?: string;
+  avatarUrl?: string;
+  backgroundUrl?: string;
+  createTime?: Date;
+  description?: string;
+  email?: string;
+  exp?: number;
+  fansCount?: number;
+  followerCount?: number;
+  gender?: number;
+  hcoin?: number;
+  level?: number;
+  nickname?: string;
+  pcoin?: number;
+  role?: number;
+  uid?: number;
+  updateTime?: Date;
+  uuid?: string;
+  validStatus?: number;
+  vipStatus?: number;
+  [property: string]: any;
 }

@@ -151,11 +151,11 @@ onMounted(() => {
       <!--      统计数据-->
       <div class="count-item">
         <a href="" target="_blank" class="single-count-item">
-          <div class="count-item__num">0</div>
+          <div class="count-item__num">{{ userInfo.followerCount }}</div>
           <div class="count-item__text">关注</div>
         </a>
         <a href="" target="_blank" class="single-count-item">
-          <div class="count-item__num">0</div>
+          <div class="count-item__num">{{ userInfo.fansCount }}</div>
           <div class="count-item__text">粉丝</div>
         </a>
         <a href="" target="_blank" class="single-count-item">

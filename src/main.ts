@@ -9,6 +9,7 @@ import router from './router'
 import axios from './api/axios'
 
 import Antd from 'ant-design-vue'
+import { CryptoUtil } from '@/utils/CryptoUtil'
 // import 'ant-design-vue/dist/reset.css'
 
 const app = createApp(App)
@@ -21,5 +22,13 @@ app.use(router)
 app.use(Antd)
 
 app.config.globalProperties.$api = axios
+
+const crypto = CryptoUtil.instance
+try {
+  await CryptoUtil.checkInitialized()
+  app.config.globalProperties.$crypto = crypto
+} catch (error) {
+  console.error('CryptoUtil initialization error', error)
+}
 
 app.mount('#app')
