@@ -59,9 +59,7 @@ const userInfo = ref(useUserStore().userInfo)
   border-radius: 6px;
 }
 
-.space-home .aside .home-aside-section > div:first-child {
-  margin-bottom: 10px;
-}
+
 
 .info-section__header {
   margin-bottom: 16px;

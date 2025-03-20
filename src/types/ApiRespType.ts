@@ -95,6 +95,10 @@ export interface UserInfoType {
    * 粉丝数
    */
   fansCount: number
+  /**
+   * 动态数
+   */
+  dynamicCount: number
 }
 
 /**
@@ -140,7 +144,7 @@ export interface VideoDTOType {
   /**
    * 视频标签
    */
-  tag: string[]
+  tagList: string[]
   /**
    * 视频状态：0审核中 1审核通过 2审核不通过 3下架
    */
@@ -148,7 +152,57 @@ export interface VideoDTOType {
   /**
    * 发布时间
    */
-  publishDate: string
+  publishTime: string
+  /**
+   * 投稿时间
+   */
+  uploadTime: string
+  /**
+   * 最后一次更新时间
+   */
+  updateTime: string
+  /**
+   * 视频分区主ID
+   */
+  primaryCategoryId: number
+  /**
+   * 视频分区子ID
+   */
+  secondaryCategoryId: number
+
+  /**
+   * 播放数
+   */
+  viewCount: number
+  /**
+   * 弹幕数
+   */
+  danmakuCount: number
+  /**
+   * 评论数
+   */
+  commentCount: number
+  /**
+   * 点赞数
+   */
+  favorCount: number
+  /**
+   * 投币数
+   */
+  coinCount: number
+  /**
+   * 收藏数
+   */
+  collectCount: number
+  /**
+   * 转发数
+   */
+  repostCount: number
+  /**
+   * 点踩数
+   */
+  dewCount: number
+
 }
 
 /**

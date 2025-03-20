@@ -21,4 +21,11 @@ export const authAPI = {
   logout(username: string) {
     return axios.get('/auth/session/logout/', { params: { username } })
   },
+
+  /**
+   * 获取参数加密公钥
+   */
+  getPublicKey() {
+    return axios.get('/auth/crypto/publicKey')
+  },
 }

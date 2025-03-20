@@ -10,6 +10,7 @@ import axios from './api/axios'
 
 import Antd from 'ant-design-vue'
 import { CryptoUtil } from '@/utils/CryptoUtil'
+import "moment/dist/locale/zh-cn.js";
 // import 'ant-design-vue/dist/reset.css'
 
 const app = createApp(App)

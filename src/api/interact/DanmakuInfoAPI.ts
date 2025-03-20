@@ -3,7 +3,7 @@
  */
 
 
-import axios from 'axios'
+import axios from '@/api/axios'
 import type { PageQueryVideoDanmakuReq, SaveDanmakuInfoReq } from '@/types/ApiRequestType'
 
 export default {

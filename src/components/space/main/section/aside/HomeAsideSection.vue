@@ -10,4 +10,8 @@
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.space-home .aside .home-aside-section > div:first-child {
+  margin-bottom: 10px;
+}
+</style>

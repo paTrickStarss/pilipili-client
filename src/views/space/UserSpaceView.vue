@@ -317,11 +317,11 @@ onMounted(() => {
           <div class="nav-statistics">
             <a href="#" class="nav-statistics__item jumpable">
               <span class="nav-statistics__item-text">关注数</span>
-              <span class="nav-statistics__item-num" title="200">200</span>
+              <span class="nav-statistics__item-num" title="200">{{ userInfo.followerCount }}</span>
             </a>
             <a href="#" class="nav-statistics__item jumpable">
               <span class="nav-statistics__item-text">粉丝数</span>
-              <span class="nav-statistics__item-num" title="28">28</span>
+              <span class="nav-statistics__item-num" title="28">{{ userInfo.fansCount }}</span>
             </a>
             <div class="nav-statistics__item">
               <span class="nav-statistics__item-text">获赞数</span>

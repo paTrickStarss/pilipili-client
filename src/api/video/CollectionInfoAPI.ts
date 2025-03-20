@@ -2,7 +2,7 @@
  * Copyright (c) 2025.  Bubble
  */
 
-import axios from 'axios'
+import axios from '@/api/axios'
 import type {
   ChangeCollectionVideoReq,
   PageQueryCollectionInfoReq, PageQueryCollectionVideoReq,

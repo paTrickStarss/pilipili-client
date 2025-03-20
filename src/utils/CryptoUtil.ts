@@ -5,6 +5,7 @@
 import { JSEncrypt } from 'jsencrypt'
 import type { PrivateKeyOutputFormatType } from 'jsrsasign'
 import JSRSASign from 'jsrsasign'
+import { authAPI } from '@/api/auth/AuthAPI'
 
 /**
  * 加密工具类
@@ -32,9 +33,9 @@ export class CryptoUtil {
 
   private async init() {
     try {
-      const publicKeyResp = await fetch('/src/crypto_dependency/crypto_public_key.txt')
-      this.PUBLIC_KEY = await publicKeyResp.text()
-      console.log('publicKey', this.PUBLIC_KEY, publicKeyResp)
+      const publicKeyResp = await authAPI.getPublicKey()
+      this.PUBLIC_KEY = await publicKeyResp.data.publicKey
+      // console.log('publicKey', this.PUBLIC_KEY, publicKeyResp)
     } catch (error) {
       console.error('CryptoUtil initialization failed', error)
       throw error

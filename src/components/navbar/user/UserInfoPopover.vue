@@ -159,7 +159,7 @@ onMounted(() => {
           <div class="count-item__text">粉丝</div>
         </a>
         <a href="" target="_blank" class="single-count-item">
-          <div class="count-item__num">0</div>
+          <div class="count-item__num">{{ userInfo.dynamicCount }}</div>
           <div class="count-item__text">动态</div>
         </a>
       </div>

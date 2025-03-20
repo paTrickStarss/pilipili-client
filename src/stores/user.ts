@@ -114,7 +114,7 @@ export const useUserStore = defineStore('user', () => {
     level.value = userInfo.level
     followerCount.value = userInfo.followerCount
     fansCount.value = userInfo.fansCount
-    dynamicCount.value = 0 //todo: userInfo.dynamicCount
+    dynamicCount.value = userInfo.dynamicCount
   }
 
   /**

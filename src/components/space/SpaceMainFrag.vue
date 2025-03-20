@@ -9,6 +9,8 @@ import HomeAsideSectionAuth from '@/components/space/main/section/aside/HomeAsid
 import HomeAsideSectionInfo from '@/components/space/main/section/aside/HomeAsideSectionInfo.vue'
 import { useWindowStore } from '@/stores/window'
 import { ref } from 'vue'
+import HomeAsideSectionUpload from '@/components/space/main/section/aside/HomeAsideSectionUpload.vue'
+import HomeSectionCollection from '@/components/space/main/section/collection/HomeSectionCollection.vue'
 
 const windowStore = useWindowStore()
 const slideDown = ref(windowStore.slideDownComputed)
@@ -27,14 +29,13 @@ function goTop() {
       <div class="content">
         <HomeSectionTop />
         <HomeSectionVideo />
-        <HomeSectionVideo />
-        <HomeSectionVideo />
-        <HomeSectionVideo />
+        <HomeSectionCollection />
       </div>
 
       <div class="aside">
         <HomeAsideSectionAuth />
         <HomeAsideSectionInfo />
+        <HomeAsideSectionUpload />
       </div>
     </div>
 

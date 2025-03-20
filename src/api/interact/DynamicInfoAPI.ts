@@ -2,8 +2,8 @@
  * Copyright (c) 2025.  Bubble
  */
 
+import axios from '@/api/axios'
 import type { PageQueryDynamicReq, SaveDynamicInfoReq, UpdateDynamicInfoReq } from '@/types/ApiRequestType'
-import axios from 'axios'
 
 export default {
 

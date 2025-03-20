@@ -32,6 +32,9 @@ export const useTokenStore = defineStore(
     const username = computed(() => {
       return tokenInfo.value?.username || ''
     })
+    const uid = computed(() => {
+      return Number(tokenInfo.value?.username) || 0
+    })
 
     function saveTokenInfo(tokenInfoSave: LoginInfoType) {
       tokenInfo.value = tokenInfoSave
@@ -46,6 +49,7 @@ export const useTokenStore = defineStore(
       isLogin,
       accessToken,
       username,
+      uid,
       saveTokenInfo,
       clearTokenInfo,
     }

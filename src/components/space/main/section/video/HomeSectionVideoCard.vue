@@ -3,10 +3,13 @@
   -->
 
 <script setup lang="ts">
-import type { VideoCardInfoType } from '@/types/PropsType'
+import type { VideoDTOType } from '@/types/ApiRespType'
+import { DateTimeUtil } from '../../../../../utils/DateTimeUtil'
+import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 
 defineProps<{
-  info: VideoCardInfoType
+  info: VideoDTOType
+  progress: number
 }>()
 </script>
 
@@ -16,12 +19,12 @@ defineProps<{
       <div class="bili-video-card__cover">
         <a href="#" target="_blank" class="bili-cover-card">
           <div class="bili-cover-card__thumbnail">
-            <img :src="info.coverUrl" alt="" />
+            <img :src="info.coverUrl || `${ASSETS_BASE_URL}/image/collection-cover-1.jpg@672w_380h_1c.avif`" alt="" />
           </div>
           <div class="bili-cover-card__stats">
             <div class="bili-cover-card__stat">
               <i class="sic-BDC-playdata_square_line" />
-              <span>{{ info.playCount }}</span>
+              <span>{{ info.viewCount }}</span>
             </div>
             <div class="bili-cover-card__stat">
               <i class="sic-BDC-danmu_square_line" />
@@ -33,7 +36,7 @@ defineProps<{
           </div>
           <div
             class="bili-cover-card__progress"
-            :style="{ '--bili-cover-card-progress-value': `${info.progress}%` }"
+            :style="{ '--bili-cover-card-progress-value': `${progress}%` }"
           ></div>
         </a>
         <div
@@ -51,19 +54,19 @@ defineProps<{
       </div>
       <div class="bili-video-card__details">
         <div class="bili-video-card__title" :title="info.title">
-          <a :href="info.linkUrl" target="_blank">
+          <a :href="info.contentUrl" target="_blank">
             {{ info.title }}
           </a>
         </div>
         <div class="bili-video-card__subtitle">
-          <span>{{ info.date }}</span>
+          <span>{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style>
 .bili-video-card {
   --bili-video-card-theme-brand-color: var(
     --bili-card-theme-brand-color,

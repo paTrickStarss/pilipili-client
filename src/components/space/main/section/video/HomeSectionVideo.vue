@@ -5,11 +5,16 @@
 <script setup lang="ts">
 import HomeSection from '@/components/space/main/HomeSection.vue'
 import RadioGroup from '@/components/space/main/section/RadioGroup.vue'
-import { ref } from 'vue'
-import type { RadioListType, VideoCardInfoType } from '@/types/PropsType'
+import { onMounted, ref } from 'vue'
+import type { RadioListType } from '@/types/PropsType'
 import { message } from 'ant-design-vue'
 import HomeSectionVideoCard from '@/components/space/main/section/video/HomeSectionVideoCard.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+import videoInfoAPI from '@/api/video/VideoInfoAPI'
+import { useTokenStore } from '@/stores/token'
+import type { VideoDTOType } from '@/types/ApiRespType'
+
+const token = useTokenStore()
 
 const radioList = ref<RadioListType[]>([
   {
@@ -26,63 +31,7 @@ const radioList = ref<RadioListType[]>([
   },
 ])
 const selectRadio = ref<number>(0)
-const videoList = ref<VideoCardInfoType[]>([
-  {
-    id: 0,
-    coverUrl: `${ASSETS_BASE_URL}/image/video-cover-2.jpg@672w_378h_1c.webp`,
-    linkUrl: '#',
-    title: '【Cover】X JAPAN - Say Anything (Solo)',
-    duration: '1:13',
-    date: '2-20',
-    playCount: 125,
-    danmakuCount: 12,
-    progress: 66,
-  },
-  {
-    id: 1,
-    coverUrl: `${ASSETS_BASE_URL}/image/video-cover-2.jpg@672w_378h_1c.webp`,
-    linkUrl: '#',
-    title: '【Cover】X JAPAN - Say Anything (Solo)',
-    duration: '1:13',
-    date: '2-20',
-    playCount: 125,
-    danmakuCount: 12,
-    progress: 66,
-  },
-  {
-    id: 2,
-    coverUrl: `${ASSETS_BASE_URL}/image/video-cover-2.jpg@672w_378h_1c.webp`,
-    linkUrl: '#',
-    title: '【Cover】X JAPAN - Say Anything (Solo)',
-    duration: '1:13',
-    date: '2-20',
-    playCount: 125,
-    danmakuCount: 12,
-    progress: 66,
-  },
-  {
-    id: 3,
-    coverUrl: `${ASSETS_BASE_URL}/image/video-cover-2.jpg@672w_378h_1c.webp`,
-    linkUrl: '#',
-    title: '【Cover】X JAPAN - Say Anything (Solo)',
-    duration: '1:13',
-    date: '2-20',
-    playCount: 125,
-    danmakuCount: 12,
-    progress: 66,
-  },
-  {
-    id: 4,
-    coverUrl: `${ASSETS_BASE_URL}/image/video-cover-2.jpg@672w_378h_1c.webp`,
-    linkUrl: '#',
-    title: '【Cover】X JAPAN - Say Anything (Solo)',
-    duration: '1:13',
-    date: '2-20',
-    playCount: 125,
-    danmakuCount: 12,
-    progress: 66,
-  },
-])
+const videoList = ref<VideoDTOType[]>([])
 
 function playAll() {
   message.info('playAll')
@@ -91,6 +40,19 @@ function playAll() {
 function showMore() {
   message.info('showMore')
 }
+
+onMounted(async () => {
+  videoInfoAPI.pageQueryByUid(
+    {
+      pageNo: 1,
+      pageSize: 10,
+      uid: token.uid
+    }
+  ).then((data) => {
+    console.log('user video list', data)
+    videoList.value = data.data
+  })
+})
 </script>
 
 <template>
@@ -118,8 +80,8 @@ function showMore() {
 
     <div class="wrap">
       <div class="items full">
-        <div class="items__item" v-for="item in videoList" :key="item.id">
-          <HomeSectionVideoCard :info="item" />
+        <div class="items__item" v-for="item in videoList" :key="item.vid">
+          <HomeSectionVideoCard :info="item" :progress="50" />
         </div>
       </div>
     </div>
