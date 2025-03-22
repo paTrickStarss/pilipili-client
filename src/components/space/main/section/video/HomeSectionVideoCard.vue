@@ -58,7 +58,7 @@ defineProps<{
             {{ info.title }}
           </a>
         </div>
-        <div class="bili-video-card__subtitle">
+        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDate(info.publishTime)">
           <span>{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
         </div>
       </div>

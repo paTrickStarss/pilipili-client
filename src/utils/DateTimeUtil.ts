@@ -17,9 +17,14 @@ export class DateTimeUtil {
     return DateTimeUtil._instance
   }
 
-  public getDate(): string {
-    const now = moment()
-    return now.format('YYYY-MM-DD')
+  public getDate(dateTime?: string): string {
+    let time
+    if (dateTime) {
+      time = moment(dateTime)
+    } else {
+      time = moment()
+    }
+    return time.format('YYYY-MM-DD')
   }
 
   public getDateTimeString(dateTime: string): string {

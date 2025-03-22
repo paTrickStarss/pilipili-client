@@ -102,7 +102,7 @@ const tokenStore = useTokenStore()
         :pop-prohibit="true"
       >
         <template #trigger>
-          <a href="#" target="_blank">
+          <a href="/creativity" target="_blank">
             <div class="header-upload-entry">
               <IconUpload />
               <span class="header-upload-entry__text">投稿</span>

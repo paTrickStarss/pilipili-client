@@ -8,11 +8,14 @@ import MainPageView from '@/views/main/MainPageView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // main-page
     {
       path: '/',
-      name: 'MainPageView',
+      name: 'main-page',
       component: MainPageView,
     },
+
+    // space
     {
       path: '/space/:id?',
       name: 'space',
@@ -114,6 +117,8 @@ const router = createRouter({
         },
       ],
     },
+
+    // video
     {
       path: '/video/:id?',
       name: 'video',
@@ -123,6 +128,17 @@ const router = createRouter({
           '@/views/video/VideoPageView.vue'
         ),
     },
+
+    // creativity-center
+    {
+      name: 'creativity-center',
+      path: '/creativity',
+      component: () =>
+        import(
+          /* webpackChunkName: "CreativityCenterView" */
+          '@/views/creativity/CreativityCenterView.vue'
+          )
+    }
   ],
 })
 

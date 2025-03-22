@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import IndexView from '@/views/index/IndexView.vue'
-import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import type { NavTabItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'

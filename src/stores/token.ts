@@ -7,11 +7,15 @@ import { computed, ref } from 'vue'
 import type { LoginInfoType } from '@/types/ApiRespType'
 // import type { StorageLike } from 'pinia-plugin-persistedstate'
 // import Cookies from 'js-cookie'
-//
+
 // const cookiesStorage: StorageLike = {
 //   setItem(key: string, value: string) {
-//     Cookies.set(key, value)
-//       // { path: '/', expires: Number(data.expires)/(24*60*60), secure: true, httpOnly: false })
+//     const obj = JSON.parse(value)
+//     const accessToken = 'Baerer ' + obj.tokenInfo.accessToken
+//     const expires = obj.tokenInfo.expires ? Number(obj.tokenInfo.expires)/(60*60*24) : 30
+//     console.log('setItem', key, obj, obj.tokenInfo.expires, expires)
+//     Cookies.set(key, accessToken,
+//       { path: '/', expires: expires, secure: true, httpOnly: false })
 //   },
 //   getItem(key: string) {
 //     return Cookies.get(key) || null
@@ -55,9 +59,15 @@ export const useTokenStore = defineStore(
     }
   },
   {
-    persist: {
-      key: 'tokenInfo',
-      storage: localStorage,
-    },
+    persist: [
+      {
+        key: 'tokenInfo',
+        storage: localStorage,
+      },
+      // {
+      //   key: 'access_token',
+      //   storage: cookiesStorage
+      // },
+    ]
   },
 )

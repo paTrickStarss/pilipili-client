@@ -15,6 +15,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  transparent: {
+    type: Boolean,
+    default: true,
+  }
 })
 
 const windowStore = useWindowStore()
@@ -72,7 +76,7 @@ onUnmounted(() => {
     <div v-else-if="fixed">
       <header>
         <div class="pili-header">
-          <HeaderBar class="transparent-header" :slide-down="slideDown" />
+          <HeaderBar class="transparent-header" :slide-down="transparent? slideDown : true" />
         </div>
       </header>
       <div id="app" style="margin-top: -64px">

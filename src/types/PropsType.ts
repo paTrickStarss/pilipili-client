@@ -146,3 +146,24 @@ export interface VideoCardInfoType {
   danmakuCount: number
   progress: number
 }
+
+/**
+ * 侧边导航栏项信息
+ */
+export interface NavSliderBarItemProps {
+  id: number
+  label: string
+  /**
+   * 自动打开第一个链接
+   */
+  autoOpen: boolean
+  groupItem: NavSliderGroupItemProps[]
+}
+/**
+ * 侧边导航栏分组子项信息
+ */
+export interface NavSliderGroupItemProps {
+  id: number
+  label: string
+  route: string
+}

@@ -14,12 +14,12 @@ import IconUploadManage from '@/components/icons/IconUploadManage.vue'
       <IconCreativity/>
     </a>
     <div class="upload-section-jumper">
-      <a href="#" target="_blank">
+      <a href="/creativity" target="_blank">
         <i class="vui_icon sic-BDC-arrow_upload_line" style="font-size: 16px"/>
         <span>视频投稿</span>
       </a>
       <div class="upload-section-jumper__split"></div>
-      <a href="#" target="_blank">
+      <a href="/creativity" target="_blank">
         <IconUploadManage/>
         <span>投稿管理</span>
       </a>
