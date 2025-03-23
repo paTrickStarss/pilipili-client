@@ -158,6 +158,7 @@ export interface NavSliderBarItemProps {
    */
   autoOpen: boolean
   groupItem: NavSliderGroupItemProps[]
+  route?: string
 }
 /**
  * 侧边导航栏分组子项信息
@@ -166,4 +167,23 @@ export interface NavSliderGroupItemProps {
   id: number
   label: string
   route: string
+}
+
+/**
+ * 视频上传信息
+ */
+export interface VideoUploadingItemProps {
+  id: number
+  fileName: string
+  fileSize: number
+  progress: number
+  speed: number
+}
+
+/**
+ * 单选按钮信息
+ */
+export interface RadioInfoProps {
+  key: string;
+  label: string;
 }

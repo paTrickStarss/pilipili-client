@@ -5,16 +5,31 @@
 <script setup lang="ts">
 
 import NavSliderBarItem from '@/components/creativity/NavSliderBarItem.vue'
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { NavSliderBarItemProps } from '@/types/PropsType'
+import { jumpRoute } from '@/utils/RouterUtil'
+import { useRoute, useRouter } from 'vue-router'
 
-const navBarIndex = ref<number>(0)
+const router = useRouter()
+const route = useRoute()
+const navBarIndex = ref<number>(checkNavIndex())
+
+watch(() => route.path,
+  () => {
+    navBarIndex.value = checkNavIndex()
+  }
+)
+function checkNavIndex() {
+  return route.meta.index as number
+}
+
 const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   {
     id: 0,
     label: '首页',
     autoOpen: false,
-    groupItem: []
+    groupItem: [],
+    route: '/creativity',
   },
   {
     id: 1,
@@ -125,7 +140,11 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
                 <div class="simplebar-content" style="padding: 0">
                   <!--                      投稿-->
                   <div class="nav-upload-btn newApp">
-                    <a href="/" id="nav_upload_btn">
+                    <a
+                      id="nav_upload_btn"
+                      href="/creativity/upload"
+                      @click.prevent="jumpRoute(router, '/creativity/upload')"
+                    >
                       <i class="bcc-iconfont bcc-icon-ic_contribute"/>
                       <span>投稿</span>
                     </a>

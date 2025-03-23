@@ -49,3 +49,4 @@ export function getDate(): string {
   const now = moment()
   return now.format('YYYY-MM-DD')
 }
+

@@ -36,6 +36,7 @@ const router = createRouter({
           name: 'space-main',
           meta: {
             mode: 'main',
+            index: 0
           },
           component: () =>
             import(
@@ -48,6 +49,7 @@ const router = createRouter({
           name: 'space-dynamic',
           meta: {
             mode: 'dynamic',
+            index: 1
           },
           component: () =>
             import(
@@ -60,6 +62,7 @@ const router = createRouter({
           name: 'space-upload',
           meta: {
             mode: 'upload',
+            index: 2
           },
           component: () =>
             import(
@@ -72,6 +75,7 @@ const router = createRouter({
           name: 'space-list',
           meta: {
             mode: 'list',
+            index: 3
           },
           component: () =>
             import(
@@ -84,6 +88,7 @@ const router = createRouter({
           name: 'space-collection',
           meta: {
             mode: 'collection',
+            index: 4
           },
           component: () =>
             import(
@@ -96,6 +101,7 @@ const router = createRouter({
           name: 'space-bangumi',
           meta: {
             mode: 'bangumi',
+            index: 5
           },
           component: () =>
             import(
@@ -108,6 +114,7 @@ const router = createRouter({
           name: 'space-settings',
           meta: {
             mode: 'settings',
+            index: 6
           },
           component: () =>
             import(
@@ -133,11 +140,30 @@ const router = createRouter({
     {
       name: 'creativity-center',
       path: '/creativity',
+      meta: {
+        mode: 'main',
+        index: 0
+      },
       component: () =>
         import(
           /* webpackChunkName: "CreativityCenterView" */
           '@/views/creativity/CreativityCenterView.vue'
-          )
+          ),
+      children: [
+        {
+          path: '/creativity/upload',
+          name: 'creativity-upload',
+          meta: {
+            mode: 'upload',
+            index: -1
+          },
+          component: () =>
+            import(
+              /* webpackChunkName: "VideoUploadFrag" */
+              '@/components/creativity/upload/VideoUploadFrag.vue'
+              )
+        }
+      ]
     }
   ],
 })

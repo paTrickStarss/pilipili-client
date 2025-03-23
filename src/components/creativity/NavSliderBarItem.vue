@@ -6,6 +6,7 @@
 import NavSliderGroupItem from '@/components/creativity/NavSliderGroupItem.vue'
 import type { NavSliderBarItemProps } from '@/types/PropsType'
 import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   info: NavSliderBarItemProps
@@ -20,6 +21,7 @@ watch(index, (val) => {
   }
 })
 
+const router = useRouter()
 const open = ref<boolean>(false)
 const groupIndex = ref<number>(-1)
 
@@ -35,6 +37,10 @@ function closeItem() {
 function switchGroup() {
   open.value = !open.value
   index.value = props.info.id
+
+  if (props.info.route) {
+    router.push(props.info.route)
+  }
 }
 </script>
 

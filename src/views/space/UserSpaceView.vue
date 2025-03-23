@@ -136,9 +136,7 @@ function init() {
 }
 
 function getSpaceNavTabIndex() {
-  return DictionaryConverter.instance.getSpaceNavTabIndex(
-    route.meta.mode as string,
-  )
+  return route.meta.index as number
 }
 
 onMounted(() => {

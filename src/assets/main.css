@@ -156,3 +156,38 @@ i.vui_icon {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.icon-sprite {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    vertical-align: -.15em;
+    overflow: hidden;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.bcc-button.small {
+    padding: 3px 8px;
+}
+.bcc-button {
+    display: inline-block;
+    text-align: center;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border: 0 none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    line-height: 1;
+}
+.bcc-button--default {
+    border: 1px solid #e7e7e7;
+    background: #fff;
+    color: #505050;
+}
+
