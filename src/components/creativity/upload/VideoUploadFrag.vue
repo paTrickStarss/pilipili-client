@@ -11,20 +11,21 @@ import { WebSocketHelper } from '@/utils/WebSocketHelper'
 import { useTokenStore } from '@/stores/token'
 import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import VideoUploadingItem from '@/components/creativity/upload/VideoUploadingItem.vue'
-import type { RadioInfoProps, VideoUploadingItemProps } from '@/types/PropsType'
+import type { RadioInfoProps, SelectorInfoProps, VideoUploadingItemProps } from '@/types/PropsType'
 import VideoUploadingFileItem from '@/components/creativity/upload/VideoUploadingFileItem.vue'
 import { deepCopy, randomInt } from '@/utils/CommonUtil'
 import FileUtil from '@/utils/FileUtil'
 import FormItem from '@/components/creativity/upload/FormItem.vue'
-import FormItemLabel from '@/components/creativity/upload/FormItemLabel.vue'
 import FormItemInput from '@/components/creativity/upload/FormItemInput.vue'
 import FormItemRadioGroup from '@/components/creativity/upload/FormItemRadioGroup.vue'
+import FormItemSelector from '@/components/creativity/upload/FormItemSelector.vue'
+import FomItemTagInput from '@/components/creativity/upload/FomItemTagInput.vue'
+import FormItemDescInput from '@/components/creativity/upload/FormItemDescInput.vue'
 
 
 const token = useTokenStore()
-const fileInput = ref()
-
-
+const videoFileInput = ref()
+const coverFileInput = ref()
 
 const uploadFileCount = ref<number>(0)
 
@@ -48,18 +49,24 @@ const handleDrop = (event: DragEvent) => {
   }
 };
 
-// 点击上传文件
-const handleFileChange = (event: Event) => {
+const handleVideoFileChange = (event: Event) => {
   console.log('handleFileChange', event);
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (file) {
     uploadFile(file)
-    // 在这里可以处理文件上传逻辑
   }
 };
+
+// 上传视频文件
 function uploadFile(file: File) {
   console.log('upload file', file);
+
+  videoUrl.value = URL.createObjectURL(file)
+  console.log('createObjectURL', videoUrl.value)
+
+  videoInfoForm.value.title = file.name
+
   const uploadInfo: VideoUploadingItemProps = {
     id: ++uploadFileCount.value,
     fileName: file.name,
@@ -76,8 +83,40 @@ function uploadFile(file: File) {
   //   })
 }
 
+// 点击上传文件
 function clickUpload() {
-  fileInput.value.click()
+  videoFileInput.value.click()
+}
+
+// 上传视频封面
+function handleCoverFileChange(event: Event) {
+  console.log('handleCoverFileChange', event);
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) {
+
+    // 销毁上一个上传的封面
+    if (videoCoverUrl.value) {
+      URL.revokeObjectURL(videoCoverUrl.value)
+    }
+
+    videoCoverUrl.value = URL.createObjectURL(file)
+    videoCover.value = videoCoverUrl.value
+    // console.log('videoCoverUrl', videoCoverUrl.value)
+
+    // 暂存视频封面文件，等保存时再上传
+    videoCoverFile.value = file
+  }
+}
+// 返回默认封面（清楚上传的封面）
+function setDefaultCover() {
+  if (videoCoverUrl.value) {
+    URL.revokeObjectURL(videoCoverUrl.value)
+  }
+  videoCoverUrl.value = ''
+  videoCoverFile.value = null
+  videoCover.value = defaultVideoCoverB64.value
+  // console.log('setDefaultCover', videoCover.value)
 }
 
 interface messageReq {
@@ -119,6 +158,40 @@ const showQueue = computed(() =>
   uploadingQueue.value.length > 0
 )
 
+const videoPlayer = ref()
+const videoUrl = ref<string | null>()
+const videoCoverFile = ref()
+const videoCoverUrl = ref<string>('')
+const videoCover = ref<string>('')
+// 视频封面Base64编码
+const defaultVideoCoverB64 = ref<string>('')
+// 获取上传视频第一帧画面
+function getVideoFirstFrame() {
+  if (videoPlayer.value) {
+    const canvas = document.createElement('canvas')
+    canvas.width = videoPlayer.value.videoWidth
+    canvas.height = videoPlayer.value.videoHeight
+    const ctx = canvas.getContext('2d')
+    if (ctx) {
+      videoPlayer.value.currentTime = 0.1
+      videoPlayer.value.addEventListener('seeked', () => {
+        ctx.drawImage(
+          videoPlayer.value,
+          0, 0,
+          canvas.width,
+          canvas.height,
+        )
+        defaultVideoCoverB64.value = canvas.toDataURL('image/png')
+        videoCover.value = defaultVideoCoverB64.value
+        if (videoUrl.value) {
+          URL.revokeObjectURL(videoUrl.value)
+          videoUrl.value = null
+        }
+      })
+    }
+  }
+}
+
 interface VideoInfoFormProps {
   title: string
   coverUrl: string
@@ -135,7 +208,11 @@ const videoInfoForm = ref<VideoInfoFormProps>({
   tags: [],
   description: ''
 })
+// watch(() => videoInfoForm.value.tags, (val) => {
+//   console.log('videoInfoForm field change', val)
+// })
 
+// 视频源类型
 const typeCheckRadioGroup = ref<RadioInfoProps[]>([
   {
     key: '1',
@@ -145,6 +222,50 @@ const typeCheckRadioGroup = ref<RadioInfoProps[]>([
     key: '2',
     label: '转载'
   }
+])
+
+// 视频分区
+const categorySelectList = ref<SelectorInfoProps[]>([
+  {
+    key: '1',
+    label: '动漫'
+  },
+  {
+    key: '2',
+    label: '音乐'
+  },
+  {
+    key: '3',
+    label: '科技'
+  },
+  {
+    key: '4',
+    label: '汽车'
+  },
+  {
+    key: '5',
+    label: '知识'
+  },
+  {
+    key: '6',
+    label: '动漫'
+  },
+  {
+    key: '7',
+    label: '音乐'
+  },
+  {
+    key: '8',
+    label: '科技'
+  },
+  {
+    key: '9',
+    label: '汽车'
+  },
+  {
+    key: '10',
+    label: '知识'
+  },
 ])
 
 async function initWsClient() {
@@ -176,12 +297,19 @@ function initTestData() {
     uploadingQueue.value.push(copy)
   }
 }
+const beforeUnload = (event: BeforeUnloadEvent) => {
+  const msg = '刷新页面将会丢失未保存内容，是否继续？'
+  event.preventDefault()
+  event.returnValue = msg
+}
 onMounted(async () => {
-  initTestData()
+  window.addEventListener('beforeunload', beforeUnload)
+  // initTestData()
 })
 
 onUnmounted(() => {
   // WebSocketHelper.instance.close()
+  window.removeEventListener('beforeunload', beforeUnload)
 })
 </script>
 
@@ -225,11 +353,11 @@ onUnmounted(() => {
                   </div>
                 </div>
                 <input
-                  ref="fileInput"
+                  ref="videoFileInput"
                   accept=".mp4,.flv,.avi,.wmv,.mov,.webm,.mpeg4,.ts,.mpg,.rm,.rmvb,.mkv,.m4v"
                   multiple
                   type="file"
-                  @change="handleFileChange"
+                  @change="handleVideoFileChange"
                   style="display: none"
                 />
               </div>
@@ -279,7 +407,6 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -294,9 +421,30 @@ onUnmounted(() => {
             <div class="cover-content">
               <div class="cover-upload">
 <!--                    todo: 获取默认视频封面（视频第一帧）-->
-                <div class="img"></div>
+<!--                <div class="img" :style="{background: `url(${videoCoverB64})`}"></div>-->
+                <img
+                  class="img"
+                  :src="videoCover"
+                  alt="视频封面"
+                />
+                <video
+                  v-if="videoUrl"
+                  style="display: none;"
+                  ref="videoPlayer"
+                  :src="videoUrl"
+                  controls
+                  @loadeddata="getVideoFirstFrame"
+                />
+                <input
+                  ref="coverFileInput"
+                  accept="image/png, image/jpeg"
+                  type="file"
+                  @change="handleCoverFileChange"
+                  style="display: none"
+                />
                 <div class="cover-upload-mask-btn">
-                  <span>更改封面</span>
+                  <span @click="coverFileInput.click()">更改封面</span>
+                  <span @click="setDefaultCover">默认封面</span>
                 </div>
               </div>
               <div class="cover-preview"></div>
@@ -324,7 +472,32 @@ onUnmounted(() => {
               />
             </div>
           </form-item>
+          <form-item wrap-class="video-human-type" label="分区" required>
+            <form-item-selector
+              class="selector-container"
+              :list="categorySelectList"
+              v-model:value="videoInfoForm.category"
+            />
+          </form-item>
+          <form-item wrap-class="tag-container" label="标签" required>
+            <div class="tag-input-wrp">
+              <fom-item-tag-input
+                v-model:tag-list="videoInfoForm.tags"
+              />
+            </div>
+          </form-item>
+          <form-item wrap-class="desc-container" label="简介">
+            <div class="desc-text-wrp">
+              <form-item-desc-input
+                v-model:value="videoInfoForm.description"
+              />
+            </div>
+          </form-item>
 
+          <form-item wrap-class="submit-container" label="">
+            <span class="submit-draft">存草稿</span>
+            <span class="submit-add">立即投稿</span>
+          </form-item>
         </div>
       </div>
     </div>
@@ -606,6 +779,7 @@ onUnmounted(() => {
   height: 127px;
   border-radius: 4px;
   position: relative;
+  object-fit: cover;
   cursor: pointer;
 }
 .cover-upload-mask-btn {
@@ -654,6 +828,46 @@ onUnmounted(() => {
   text-align: left;
   margin: 5px 0;
 }
-
+.video-human-type .selector-container {
+  display: flex;
+  align-items: center;
+}
+.tag-container .tag-input-wrp {
+  flex: 1;
+  margin-top: 12px;
+}
+.desc-container .desc-text-wrp {
+  width: 80%;
+  min-width: 700px;
+  flex: 1;
+}
+.submit-container .submit-add,
+.submit-container .submit-draft {
+  display: inline-block;
+  height: 40px;
+  font-size: 14px;
+  border-radius: 4px;
+  text-align: center;
+  vertical-align: middle;
+  width: 120px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: all .5s ease-in-out;
+}
+.submit-container .submit-draft {
+  line-height: 38px;
+  border: 1px solid #ccc;
+  color: #505050;
+  background: #fff;
+}
+.submit-container .submit-add {
+  margin-left: 16px;
+  line-height: 40px;
+  color: #fff;
+  background: #00a1d6;
+}
 
 </style>

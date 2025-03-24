@@ -148,7 +148,7 @@ const showWatchLaterText = ref<boolean>(false)
             <!--            <IconTinyMenu class="pili-video-card__info&#45;&#45;no-interest&#45;&#45;icon" />-->
             <NoInterestPopover />
           </div>
-          <h3 class="pili-video-card__info--tit">
+          <h3 class="pili-video-card__info--tit" style="font-weight: 500">
             <a href="#" target="_blank">{{ title }}</a>
           </h3>
           <div class="pili-video-card__info--bottom">

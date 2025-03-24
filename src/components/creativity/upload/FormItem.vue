@@ -18,7 +18,10 @@ defineProps({
         <p class="section-title-deg" v-show="required">
           <span>*</span>
         </p>
-        <h3 class="section-title-content-main">
+        <h3
+          class="section-title-content-main"
+          :class="{'not-required': !required}"
+        >
           {{ label }}
         </h3>
       </div>
@@ -54,7 +57,9 @@ defineProps({
   line-height: 21px;
   font-weight: 400;
 }
-
+.section-title-container .section-title-content-main.not-required {
+  margin-left: 12px;
+}
 
 .cover {
   color: #212121;
@@ -71,6 +76,25 @@ defineProps({
   display: flex;
   align-items: center;
 }
-
+.video-human-type {
+  display: flex;
+  position: relative;
+}
+.tag-container {
+  display: flex;
+  align-items: center;
+}
+.desc-container {
+  display: flex;
+  align-items: flex-start;
+  color: #212121;
+  margin-top: 40px;
+}
+.submit-container {
+  display: flex;
+  align-items: flex-end;
+  padding-top: 20px;
+  position: relative;
+}
 
 </style>

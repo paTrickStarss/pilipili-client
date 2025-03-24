@@ -187,3 +187,11 @@ export interface RadioInfoProps {
   key: string;
   label: string;
 }
+
+/**
+ * 下拉选择框信息
+ */
+export interface SelectorInfoProps {
+  key: string
+  label: string
+}

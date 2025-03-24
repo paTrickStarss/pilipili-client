@@ -3,7 +3,7 @@
   -->
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 defineProps({
   type: {
@@ -25,11 +25,16 @@ defineProps({
 const value = defineModel('value',
   { type: String, required: true }
 )
+
+const focus = ref<boolean>(false)
 const length = computed(() => value.value.length)
 </script>
 
 <template>
-  <div class="input input-container">
+  <div
+    class="input input-container"
+    :class="{'focus': focus}"
+  >
     <div class="input-instance">
       <input
         class="input-val"
@@ -37,6 +42,8 @@ const length = computed(() => value.value.length)
         :maxlength="maxlength"
         :placeholder="placeholder"
         v-model="value"
+        @focus="focus = true"
+        @blur="focus = false"
       >
     </div>
     <p class="input-max-tip">
@@ -55,6 +62,9 @@ const length = computed(() => value.value.length)
   align-items: center;
   flex-wrap: wrap;
   transition: border .3s ease;
+}
+.input-container.focus {
+  border-color: #00a1d6;
 }
 .input-container .input-instance {
   flex: 1;

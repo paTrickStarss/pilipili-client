@@ -7,6 +7,8 @@
 
 import type { VideoUploadingItemProps } from '@/types/PropsType'
 import { computed } from 'vue'
+import IconPlay from '@/components/icons/IconPlay.vue'
+import IconRefresh from '@/components/icons/IconRefresh.vue'
 
 const props = defineProps<{
   info: VideoUploadingItemProps
@@ -49,10 +51,10 @@ const remainingTime = computed(() => {
           <span class="progress-text">{{ `${info.progress}%` }}</span>
           <div class="operate-btns">
             <div class="icon-btn">
-              <svg class="icon icon-sprite icon-sprite-play"></svg>
+              <IconPlay class="icon icon-sprite icon-sprite-play"/>
             </div>
             <div class="icon-btn">
-              <svg class="icon icon-sprite icon-sprite-play"></svg>
+              <IconRefresh class="icon icon-sprite icon-sprite-play"/>
             </div>
           </div>
         </div>
