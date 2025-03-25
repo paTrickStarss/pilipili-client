@@ -9,7 +9,14 @@ import type { VideoUploadingItemProps } from '@/types/PropsType'
 import { computed } from 'vue'
 import IconPlay from '@/components/icons/IconPlay.vue'
 import IconRefresh from '@/components/icons/IconRefresh.vue'
+import IconPause from '@/components/icons/IconPause.vue'
+import IconClose from '@/components/icons/IconClose.vue'
 
+defineEmits({
+  reload: () => true,
+  abort: () => true,
+  pause: () => true
+})
 const props = defineProps<{
   info: VideoUploadingItemProps
 }>()
@@ -17,12 +24,6 @@ const props = defineProps<{
 const uploadOverPart = computed(() =>
   Number(props.info.fileSize * (props.info.progress/100)).toFixed(1)
 )
-const remainingTime = computed(() => {
-  if (!props.info.speed ||  props.info.speed <= 0) {
-    return '--'
-  }
-  return (Number(props.info.fileSize - Number(uploadOverPart.value)) / props.info.speed).toFixed(1)
-})
 </script>
 
 <template>
@@ -42,19 +43,27 @@ const remainingTime = computed(() => {
                 {{ `已经上传：${uploadOverPart}MB/${info.fileSize.toFixed(2)}MB` }}
               </span>
               <span>
-                {{ `当前速度：${info.speed}MB/s 剩余时间：${remainingTime}秒` }}
+                {{ `当前速度：${info.speed.toFixed(2)}MB/s 剩余时间：${info.eta}秒` }}
               </span>
             </div>
           </div>
         </div>
         <div class="file-item-content-operate">
-          <span class="progress-text">{{ `${info.progress}%` }}</span>
+          <span class="progress-text">{{ `${info.progress.toFixed(2)}%` }}</span>
           <div class="operate-btns">
-            <div class="icon-btn">
-              <IconPlay class="icon icon-sprite icon-sprite-play"/>
+            <div class="icon-btn" v-if="info.progress < 100">
+<!--              <IconPlay class="icon icon-sprite icon-sprite-play" v-if="info.paused"/>-->
+<!--              <IconPause class="icon icon-sprite icon-sprite-play" v-else/>-->
+              <IconClose
+                class="icon icon-sprite icon-sprite-play"
+                @click="$emit('abort')"
+              />
             </div>
             <div class="icon-btn">
-              <IconRefresh class="icon icon-sprite icon-sprite-play"/>
+              <IconRefresh
+                class="icon icon-sprite icon-sprite-play"
+                @click="$emit('reload')"
+              />
             </div>
           </div>
         </div>

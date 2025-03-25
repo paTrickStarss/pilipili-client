@@ -19,7 +19,7 @@ const map = computed<Map<string, string>>(() => {
   return res
 })
 const selectedKey = defineModel('value',
-  { type: String, required: true }
+  { type: Number, required: true }
 )
 
 const showDropList = ref<boolean>(false)

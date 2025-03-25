@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
   response => {
     // HttpStatus 2xx
     const { data } = response
-    console.log('response', data)
+    // console.log('response', data)
     if (data == null) {
       return Promise.reject(response)
     }

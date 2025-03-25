@@ -10,5 +10,13 @@ export default {
    */
   getFileSizeInMegabytes(size: number): number {
     return size / (1024 * 1024)
+  },
+
+  /**
+   * 去除文件后缀名
+   * @param fileName
+   */
+  sliceOffExtension(fileName: string): string {
+    return fileName.replace(/\.[^/.]+$/, '');
   }
 }

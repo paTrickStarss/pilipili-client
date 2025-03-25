@@ -178,13 +178,15 @@ export interface VideoUploadingItemProps {
   fileSize: number
   progress: number
   speed: number
+  eta: number
+  paused: boolean
 }
 
 /**
  * 单选按钮信息
  */
 export interface RadioInfoProps {
-  key: string;
+  key: number;
   label: string;
 }
 
@@ -192,6 +194,8 @@ export interface RadioInfoProps {
  * 下拉选择框信息
  */
 export interface SelectorInfoProps {
-  key: string
+  key: number
   label: string
 }
+
+

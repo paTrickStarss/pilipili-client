@@ -50,3 +50,6 @@ export function getDate(): string {
   return now.format('YYYY-MM-DD')
 }
 
+export function isEmptyString(str: string): boolean {
+  return str == null || str === ''
+}

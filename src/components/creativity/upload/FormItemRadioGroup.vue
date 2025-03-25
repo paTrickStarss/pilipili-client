@@ -11,7 +11,7 @@ defineProps<{
 }>()
 
 const selectedKey = defineModel('value',
-  { type: String, required: true }
+  { type: Number, required: true }
 )
 </script>
 

@@ -4,16 +4,18 @@
 
 <script setup lang="ts">
 import IconUpload from '@/components/icons/IconUpload.vue'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import OssAPI from '@/api/oss/OssAPI'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { WebSocketHelper } from '@/utils/WebSocketHelper'
 import { useTokenStore } from '@/stores/token'
-import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import VideoUploadingItem from '@/components/creativity/upload/VideoUploadingItem.vue'
-import type { RadioInfoProps, SelectorInfoProps, VideoUploadingItemProps } from '@/types/PropsType'
+import type {
+  RadioInfoProps,
+  SelectorInfoProps,
+  VideoUploadingItemProps,
+} from '@/types/PropsType'
 import VideoUploadingFileItem from '@/components/creativity/upload/VideoUploadingFileItem.vue'
-import { deepCopy, randomInt } from '@/utils/CommonUtil'
+import { deepCopy, isEmptyString, randomInt } from '@/utils/CommonUtil'
 import FileUtil from '@/utils/FileUtil'
 import FormItem from '@/components/creativity/upload/FormItem.vue'
 import FormItemInput from '@/components/creativity/upload/FormItemInput.vue'
@@ -21,7 +23,13 @@ import FormItemRadioGroup from '@/components/creativity/upload/FormItemRadioGrou
 import FormItemSelector from '@/components/creativity/upload/FormItemSelector.vue'
 import FomItemTagInput from '@/components/creativity/upload/FomItemTagInput.vue'
 import FormItemDescInput from '@/components/creativity/upload/FormItemDescInput.vue'
-
+import videoInfoAPI from '@/api/video/VideoInfoAPI'
+import type {
+  QueryCategoryListDTO,
+  UploadTaskMessage,
+} from '@/types/ApiRespType'
+import ossAPI from '@/api/oss/OssAPI'
+import { AxiosProgressEvent } from 'axios'
 
 const token = useTokenStore()
 const videoFileInput = ref()
@@ -30,57 +38,81 @@ const coverFileInput = ref()
 const uploadFileCount = ref<number>(0)
 
 // 拖拽上传文件
-const isDragging = ref(false);
+const isDragging = ref(false)
 const handleDragEnter = () => {
-  isDragging.value = true;
-};
+  isDragging.value = true
+}
 const handleDragOver = () => {
-  isDragging.value = true;
-};
+  isDragging.value = true
+}
 const handleDragLeave = () => {
-  isDragging.value = false;
-};
+  isDragging.value = false
+}
 const handleDrop = (event: DragEvent) => {
-  isDragging.value = false;
-  const files = event.dataTransfer?.files;
+  isDragging.value = false
+  const files = event.dataTransfer?.files
   if (files && files.length > 0) {
-    const file = files[0];
-    uploadFile(file);
+    const file = files[0]
+    uploadFile(file)
   }
-};
+}
 
 const handleVideoFileChange = (event: Event) => {
-  console.log('handleFileChange', event);
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
+  console.log('handleFileChange', event)
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
   if (file) {
     uploadFile(file)
   }
-};
+}
 
+const abortController = ref<AbortController>()
 // 上传视频文件
 function uploadFile(file: File) {
-  console.log('upload file', file);
+  console.log('upload file', file)
 
   videoUrl.value = URL.createObjectURL(file)
   console.log('createObjectURL', videoUrl.value)
 
-  videoInfoForm.value.title = file.name
+  // 默认视频标题为文件名
+  videoInfoForm.value.title = FileUtil.sliceOffExtension(file.name)
 
+  // 新增上传任务
   const uploadInfo: VideoUploadingItemProps = {
     id: ++uploadFileCount.value,
     fileName: file.name,
     fileSize: FileUtil.getFileSizeInMegabytes(file.size),
     progress: 0,
-    speed: 0
+    speed: 0,
+    eta: 0,
+    paused: false
   }
   uploadingQueue.value.push(uploadInfo)
   console.log('uploadingQueue', uploadingQueue.value)
-  // OssAPI.uploadVideo(file)
-  //   .then((res) => {
-  //     message.success('视频上传成功')
-  //     console.log('upload file', res);
-  //   })
+
+  abortController.value = new AbortController()
+  // 上传视频文件
+  ossAPI.uploadVideo(file, uploadProgressHandler, abortController.value.signal)
+    .then(res => {
+      message.success('视频上传成功')
+      console.log('upload file', res)
+    })
+}
+const uploadProgressHandler = (event: AxiosProgressEvent) => {
+  console.log('uploadProgress', event)
+  const progress = event.progress || 0
+  const rate = event.rate || 0
+  const estimated = event.estimated || 0
+  uploadingQueue.value[0].progress = progress * 100
+  uploadingQueue.value[0].speed = rate / (1024 * 1024)
+  uploadingQueue.value[0].eta = Math.round(estimated)
+}
+
+// 放弃上传文件
+function abortUpload() {
+  abortController.value?.abort('User Cancelled')
+  abortController.value = undefined
+  message.warn('取消上传')
 }
 
 // 点击上传文件
@@ -90,11 +122,10 @@ function clickUpload() {
 
 // 上传视频封面
 function handleCoverFileChange(event: Event) {
-  console.log('handleCoverFileChange', event);
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
+  console.log('handleCoverFileChange', event)
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
   if (file) {
-
     // 销毁上一个上传的封面
     if (videoCoverUrl.value) {
       URL.revokeObjectURL(videoCoverUrl.value)
@@ -114,49 +145,45 @@ function setDefaultCover() {
     URL.revokeObjectURL(videoCoverUrl.value)
   }
   videoCoverUrl.value = ''
-  videoCoverFile.value = null
+  videoCoverFile.value = defaultVideoCoverFile.value
   videoCover.value = defaultVideoCoverB64.value
   // console.log('setDefaultCover', videoCover.value)
 }
 
-interface messageReq {
-  id: number;
-  message: string;
-  createTime: string;
-}
-const count = ref<number>(0);
 const wsClient = ref<WebSocket | null>()
-/**
- * 发送消息
- * @param msg
- */
-function sendMessage(msg: string) {
-  const req: messageReq = {
-    id: count.value++,
-    message: msg,
-    createTime: DateTimeUtil.instance.getDate()
-  }
-
-  wsClient.value?.send(JSON.stringify(req))
-}
+// /**
+//  * 发送消息
+//  * @param msg
+//  */
+// function sendMessage(msg: string) {
+//   const req: messageReq = {
+//     id: count.value++,
+//     message: msg,
+//     createTime: DateTimeUtil.instance.getDate()
+//   }
+//   wsClient.value?.send(JSON.stringify(req))
+// }
 function handleMessage(msg: MessageEvent) {
   const { data } = msg
-  message.info(`getMessage(${data})`)
-  console.log('getMessage', msg)
+  // message.info(`getMessage(${data})`)
+  const body: UploadTaskMessage = JSON.parse(data) as UploadTaskMessage
+  console.log('getMessage', msg, body)
+  if (body.msg) {
+    message.info(body.msg)
+  }
 }
 
-const demoFile = ref<VideoUploadingItemProps>({
-    id: 0,
-    fileName: 'Yuan Shen 原神 2023.10.13 - 19.03.27.01',
-    fileSize: 65.7,
-    progress: 34,
-    speed: 7.4
-})
+// const count = ref<number>(0)
+// const demoFile = ref<VideoUploadingItemProps>({
+//   id: 0,
+//   fileName: 'Yuan Shen 原神 2023.10.13 - 19.03.27.01',
+//   fileSize: 65.7,
+//   progress: 34,
+//   speed: 7.4,
+// })
 const uploadingQueue = ref<VideoUploadingItemProps[]>([])
 
-const showQueue = computed(() =>
-  uploadingQueue.value.length > 0
-)
+const showQueue = computed(() => uploadingQueue.value.length > 0)
 
 const videoPlayer = ref()
 const videoUrl = ref<string | null>()
@@ -165,6 +192,7 @@ const videoCoverUrl = ref<string>('')
 const videoCover = ref<string>('')
 // 视频封面Base64编码
 const defaultVideoCoverB64 = ref<string>('')
+const defaultVideoCoverFile = ref()
 // 获取上传视频第一帧画面
 function getVideoFirstFrame() {
   if (videoPlayer.value) {
@@ -175,12 +203,17 @@ function getVideoFirstFrame() {
     if (ctx) {
       videoPlayer.value.currentTime = 0.1
       videoPlayer.value.addEventListener('seeked', () => {
-        ctx.drawImage(
-          videoPlayer.value,
-          0, 0,
-          canvas.width,
-          canvas.height,
-        )
+        ctx.drawImage(videoPlayer.value, 0, 0, canvas.width, canvas.height)
+        defaultVideoCoverFile.value = null
+        canvas.toBlob(blob => {
+          if (blob) {
+            const file = new File([blob], 'default-video-cover.png', {
+              type: 'image/png',
+            })
+            console.log('canvas.toBlob', file)
+            defaultVideoCoverFile.value = file
+          }
+        })
         defaultVideoCoverB64.value = canvas.toDataURL('image/png')
         videoCover.value = defaultVideoCoverB64.value
         if (videoUrl.value) {
@@ -195,18 +228,19 @@ function getVideoFirstFrame() {
 interface VideoInfoFormProps {
   title: string
   coverUrl: string
-  type: string
-  category: string
+  type: number
+  category: number
   tags: string[]
   description: string
 }
+// 视频信息表单
 const videoInfoForm = ref<VideoInfoFormProps>({
   title: '',
   coverUrl: '',
-  type: '1',
-  category: '',
+  type: 1,
+  category: -1,
   tags: [],
-  description: ''
+  description: '',
 })
 // watch(() => videoInfoForm.value.tags, (val) => {
 //   console.log('videoInfoForm field change', val)
@@ -215,59 +249,69 @@ const videoInfoForm = ref<VideoInfoFormProps>({
 // 视频源类型
 const typeCheckRadioGroup = ref<RadioInfoProps[]>([
   {
-    key: '1',
-    label: '自制'
+    key: 0,
+    label: '自制',
   },
   {
-    key: '2',
-    label: '转载'
-  }
+    key: 1,
+    label: '转载',
+  },
 ])
 
 // 视频分区
-const categorySelectList = ref<SelectorInfoProps[]>([
-  {
-    key: '1',
-    label: '动漫'
-  },
-  {
-    key: '2',
-    label: '音乐'
-  },
-  {
-    key: '3',
-    label: '科技'
-  },
-  {
-    key: '4',
-    label: '汽车'
-  },
-  {
-    key: '5',
-    label: '知识'
-  },
-  {
-    key: '6',
-    label: '动漫'
-  },
-  {
-    key: '7',
-    label: '音乐'
-  },
-  {
-    key: '8',
-    label: '科技'
-  },
-  {
-    key: '9',
-    label: '汽车'
-  },
-  {
-    key: '10',
-    label: '知识'
-  },
-])
+const categorySelectList = ref<SelectorInfoProps[]>([])
 
+// 投稿视频
+async function handleSubmit() {
+  // 上传视频封面
+  if (!videoCoverFile.value) {
+    if (!defaultVideoCoverFile.value) {
+      message.warn('请等待默认封面生成')
+      return
+    }
+    videoCoverFile.value = defaultVideoCoverFile.value
+  }
+
+  try {
+    const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
+    videoInfoForm.value.coverUrl = data.filePath
+  } catch (error) {
+    message.error('上传视频封面失败')
+    console.error('上传视频封面失败', error)
+    return
+  }
+
+  // 确认视频文件上传完毕
+  if (uploadingQueue.value[0].progress < 100) {
+    message.warn('请等待视频上传完成')
+    return
+  }
+
+  // 检查视频信息表单
+  if (!formCheck()) {
+    message.warn('请填写完整视频信息')
+    return
+  }
+  // todo: 保存视频信息
+  message.info('保存视频信息')
+}
+// 检查表单
+function formCheck(): boolean {
+  const form = videoInfoForm.value
+  if (isEmptyString(form.title)) {
+    return false
+  }
+  if (form.category === -1) {
+    return false
+  }
+  if (isEmptyString(form.coverUrl)) {
+    message.warn('请等待视频封面上传完毕')
+    return false
+  }
+  return true
+}
+
+// 初始化WebSocket连接
 async function initWsClient() {
   const wsHelper = WebSocketHelper.instance
   wsHelper.init(`ws/oss/${token.uid}`)
@@ -280,19 +324,21 @@ async function initWsClient() {
 
   const ws = wsHelper.client
   if (ws) {
-    ws.onmessage = (e) => {
+    ws.onmessage = e => {
       handleMessage(e)
     }
+    wsClient.value = ws
+  } else {
+    console.warn('WebSocket client null!')
   }
-
-  wsClient.value = ws
 }
+// 初始化测试数据
 function initTestData() {
   for (let i = 0; i < 1; i++) {
     const copy = deepCopy(demoFile.value)
     copy.id = i + 1
-    copy.fileSize = randomInt(560, 1730)/10
-    copy.speed = randomInt(20, 200)/10
+    copy.fileSize = randomInt(560, 1730) / 10
+    copy.speed = randomInt(20, 200) / 10
     copy.progress = randomInt(1, 99)
     uploadingQueue.value.push(copy)
   }
@@ -302,11 +348,31 @@ const beforeUnload = (event: BeforeUnloadEvent) => {
   event.preventDefault()
   event.returnValue = msg
 }
+// 获取视频分区列表
+async function fetchCategoryList() {
+  try {
+    const { data } = await videoInfoAPI.categoryList()
+    categorySelectList.value.push({
+      key: -1,
+      label: '--请选择分区--',
+    })
+    data.forEach((item: QueryCategoryListDTO) => {
+      categorySelectList.value.push({
+        key: item.id,
+        label: item.name,
+      })
+    })
+  } catch (error) {
+    console.log('fetchCategoryList', error)
+  }
+}
+
+// Life-cycle hook
 onMounted(async () => {
   window.addEventListener('beforeunload', beforeUnload)
-  // initTestData()
+  initWsClient().then()
+  fetchCategoryList().then()
 })
-
 onUnmounted(() => {
   // WebSocketHelper.instance.close()
   window.removeEventListener('beforeunload', beforeUnload)
@@ -314,9 +380,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-
   <div id="video-up-app" class="video-up-app">
-<!--    上传入口-->
+    <!--    上传入口-->
     <div class="video-entrance" v-show="!showQueue">
       <div class="upload-body">
         <div class="upload-body-content">
@@ -330,26 +395,22 @@ onUnmounted(() => {
                   @dragleave="handleDragLeave"
                   @drop.prevent="handleDrop"
                 >
-                  <IconUpload class="icon-upload"/>
+                  <IconUpload class="icon-upload" />
                   <div class="upload-text no-events" v-show="!isDragging">
                     拖拽到此处也可上传
                   </div>
                   <div class="upload-text no-events" v-show="isDragging">
                     释放以上传
                   </div>
-                  <div class="upload-btn no-events">
-                    上传视频
-                  </div>
+                  <div class="upload-btn no-events">上传视频</div>
                   <div class="upload-audit-progress">
                     <span>当前审核队列</span>
                     <span
                       class="tag"
                       style="background-color: rgb(69, 129, 142)"
-                    >快速
-                  <span class="tag-block"
-                  >预计审核完成时间：10分钟内
-                  </span>
-                </span>
+                      >快速
+                      <span class="tag-block">预计审核完成时间：10分钟内 </span>
+                    </span>
                   </div>
                 </div>
                 <input
@@ -367,7 +428,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-<!--    上传情况及信息填写-->
+    <!--    上传情况及信息填写-->
     <div class="video-basic-wrp" v-show="showQueue">
       <div class="video-basic">
         <div class="video-upload">
@@ -390,9 +451,7 @@ onUnmounted(() => {
                   :key="item.id"
                   :info="item"
                 />
-                <div class="task-list-content-btn">
-
-                </div>
+                <div class="task-list-content-btn"></div>
               </div>
               <div class="file-list">
                 <div class="btns"></div>
@@ -402,6 +461,7 @@ onUnmounted(() => {
                       v-for="item in uploadingQueue"
                       :key="item.id"
                       :info="item"
+                      @abort="abortUpload"
                     />
                   </div>
                 </div>
@@ -412,24 +472,16 @@ onUnmounted(() => {
 
         <div class="form">
           <div class="title">
-            <span class="label" style="width: 120px">
-              基本设置
-            </span>
+            <span class="label" style="width: 120px"> 基本设置 </span>
             <span class="quick-fill-entrance">一键填写</span>
           </div>
           <form-item wrap-class="cover" label="封面" required>
             <div class="cover-content">
               <div class="cover-upload">
-<!--                    todo: 获取默认视频封面（视频第一帧）-->
-<!--                <div class="img" :style="{background: `url(${videoCoverB64})`}"></div>-->
-                <img
-                  class="img"
-                  :src="videoCover"
-                  alt="视频封面"
-                />
+                <img class="img" :src="videoCover" alt="视频封面" />
                 <video
                   v-if="videoUrl"
-                  style="display: none;"
+                  style="display: none"
                   ref="videoPlayer"
                   :src="videoUrl"
                   controls
@@ -453,7 +505,8 @@ onUnmounted(() => {
           <form-item
             class="form-item-short-margin"
             wrap-class="video-title"
-            label="标题" required
+            label="标题"
+            required
           >
             <div class="video-title-content">
               <form-item-input
@@ -481,28 +534,23 @@ onUnmounted(() => {
           </form-item>
           <form-item wrap-class="tag-container" label="标签" required>
             <div class="tag-input-wrp">
-              <fom-item-tag-input
-                v-model:tag-list="videoInfoForm.tags"
-              />
+              <fom-item-tag-input v-model:tag-list="videoInfoForm.tags" />
             </div>
           </form-item>
           <form-item wrap-class="desc-container" label="简介">
             <div class="desc-text-wrp">
-              <form-item-desc-input
-                v-model:value="videoInfoForm.description"
-              />
+              <form-item-desc-input v-model:value="videoInfoForm.description" />
             </div>
           </form-item>
 
           <form-item wrap-class="submit-container" label="">
             <span class="submit-draft">存草稿</span>
-            <span class="submit-add">立即投稿</span>
+            <span class="submit-add" @click="handleSubmit">立即投稿</span>
           </form-item>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -516,7 +564,13 @@ onUnmounted(() => {
   border-top: 16px solid transparent;
   box-sizing: border-box;
   font-size: 0;
-  font-family: PingFang SC,Source Han Sans CN,Microsoft YaHei,Arial,Helvetica,sans-serif;
+  font-family:
+    PingFang SC,
+    Source Han Sans CN,
+    Microsoft YaHei,
+    Arial,
+    Helvetica,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   font-variant-ligatures: normal;
   font-variant-caps: normal;
@@ -539,7 +593,7 @@ onUnmounted(() => {
 .upload-body-content {
   position: relative;
 }
-.upload-body>div {
+.upload-body > div {
   max-width: 830px;
   margin: 0 auto;
 }
@@ -568,21 +622,21 @@ onUnmounted(() => {
   display: inline-block;
 }
 .bcc-upload-wrapper {
-  padding: 0
+  padding: 0;
 }
 .bcc-upload-wrapper .icon-upload {
   color: #9a9a9a;
   margin-bottom: 20px;
   transform: scale(3);
 }
-.upload>div {
+.upload > div {
   flex: 1;
 }
 .icon-sprite {
   width: 20px;
   height: 20px;
   fill: currentColor;
-  vertical-align: -.15em;
+  vertical-align: -0.15em;
   overflow: hidden;
   font-size: inherit;
   line-height: inherit;
@@ -608,7 +662,7 @@ onUnmounted(() => {
   cursor: pointer;
   background: #00a1d6;
   border-radius: 4px;
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
   text-align: center;
   line-height: 40px;
   white-space: nowrap;
@@ -638,7 +692,7 @@ onUnmounted(() => {
   color: #99a2aa;
   border: 1px solid #e5e9ef;
   border-radius: 4px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,.14);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
   background-color: #fff;
   padding: 8px 10px;
   text-align: left;
@@ -682,8 +736,8 @@ onUnmounted(() => {
 }
 .upload-header-top-btn .btn {
   color: #61666d;
-  font-size: 14px!important;
-  padding: 12px 16px!important;
+  font-size: 14px !important;
+  padding: 12px 16px !important;
 }
 
 .task-list {
@@ -723,7 +777,7 @@ onUnmounted(() => {
 }
 
 .file-list .drag-list {
-  transition: height .5s ease-in-out;
+  transition: height 0.5s ease-in-out;
   overflow: hidden;
 }
 .file-list .drag-handler {
@@ -784,7 +838,7 @@ onUnmounted(() => {
 }
 .cover-upload-mask-btn {
   display: flex;
-  opacity: .8;
+  opacity: 0.8;
   position: absolute;
   bottom: 0;
   align-items: center;
@@ -795,14 +849,14 @@ onUnmounted(() => {
   width: 100%;
   border-radius: 0 0 4px 4px;
   z-index: 1;
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
   padding: 6px 0;
   box-sizing: border-box;
   height: 28px;
 }
 .cover-upload-mask-btn:before {
-  content: "";
+  content: '';
   position: absolute;
   left: 50%;
   width: 1px;
@@ -855,7 +909,7 @@ onUnmounted(() => {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 .submit-container .submit-draft {
   line-height: 38px;
@@ -869,5 +923,4 @@ onUnmounted(() => {
   color: #fff;
   background: #00a1d6;
 }
-
 </style>

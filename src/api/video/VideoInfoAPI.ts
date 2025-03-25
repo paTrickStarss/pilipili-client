@@ -68,4 +68,7 @@ export default {
     return axios.patch('/api/video/coin', {}, { params: { vid, uid } })
   },
 
+  categoryList() {
+    return axios.get('/api/video/categoryList')
+  },
 }

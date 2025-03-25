@@ -298,5 +298,42 @@ export interface QueryUserInfoDTO {
   uuid?: string;
   validStatus?: number;
   vipStatus?: number;
-  [property: string]: any;
+}
+
+/**
+ * 视频分区列表
+ */
+export interface QueryCategoryListDTO {
+  id: number
+  name: string
+}
+
+/**
+ * 上传任务消息（WebSocket通讯用）
+ */
+export interface UploadTaskMessage {
+  /**
+   * 上传任务ID（UUID）
+   */
+  taskId: string
+  /**
+   * 上传用户ID
+   */
+  username: string
+  /**
+   * 任务状态 0已创建未开始 1上传中 2上传完成 3错误
+   */
+  status: number
+  /**
+   * 当前上传进度 0~100 %
+   */
+  progress: number
+  /**
+   * 备注消息
+   */
+  msg: string
+  /**
+   * 消息发送时间戳
+   */
+  msgTime: number;
 }
