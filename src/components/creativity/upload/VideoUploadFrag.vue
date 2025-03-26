@@ -30,6 +30,7 @@ import type {
 } from '@/types/ApiRespType'
 import ossAPI from '@/api/oss/OssAPI'
 import { AxiosProgressEvent } from 'axios'
+import type { CreateVideoInfoReq } from '@/types/ApiRequestType'
 
 const token = useTokenStore()
 const videoFileInput = ref()
@@ -85,17 +86,24 @@ function uploadFile(file: File) {
     progress: 0,
     speed: 0,
     eta: 0,
-    paused: false
+    paused: false,
   }
   uploadingQueue.value.push(uploadInfo)
   console.log('uploadingQueue', uploadingQueue.value)
 
   abortController.value = new AbortController()
   // 上传视频文件
-  ossAPI.uploadVideo(file, uploadProgressHandler, abortController.value.signal)
-    .then(res => {
+  ossAPI
+    .uploadVideo(file, uploadProgressHandler, abortController.value.signal)
+    .then(({ data }) => {
       message.success('视频上传成功')
-      console.log('upload file', res)
+      console.log('upload file', data)
+      const taskId = data.taskId
+      const objectName = data.objectName
+      if (taskId) {
+        videoInfo.value.taskId = taskId
+        videoInfo.value.contentUrl = objectName
+      }
     })
 }
 const uploadProgressHandler = (event: AxiosProgressEvent) => {
@@ -168,19 +176,13 @@ function handleMessage(msg: MessageEvent) {
   // message.info(`getMessage(${data})`)
   const body: UploadTaskMessage = JSON.parse(data) as UploadTaskMessage
   console.log('getMessage', msg, body)
+  // videoInfo.value.taskId = body.taskId
   if (body.msg) {
     message.info(body.msg)
   }
 }
 
-// const count = ref<number>(0)
-// const demoFile = ref<VideoUploadingItemProps>({
-//   id: 0,
-//   fileName: 'Yuan Shen 原神 2023.10.13 - 19.03.27.01',
-//   fileSize: 65.7,
-//   progress: 34,
-//   speed: 7.4,
-// })
+// 视频上传队列
 const uploadingQueue = ref<VideoUploadingItemProps[]>([])
 
 const showQueue = computed(() => uploadingQueue.value.length > 0)
@@ -221,8 +223,16 @@ function getVideoFirstFrame() {
           videoUrl.value = null
         }
       })
+      // videoPlayer.value.addEventListener('loadedmetadata', () => {
+      //   videoInfo.value.duration = videoPlayer.value.duration
+      // })
     }
   }
+}
+// 获取视频元信息
+function getVideoMeta() {
+  // document.createElement('video').du
+  videoInfo.value.duration = Math.round(videoPlayer.value.duration)
 }
 
 interface VideoInfoFormProps {
@@ -237,10 +247,17 @@ interface VideoInfoFormProps {
 const videoInfoForm = ref<VideoInfoFormProps>({
   title: '',
   coverUrl: '',
-  type: 1,
+  type: 0,
   category: -1,
   tags: [],
   description: '',
+})
+const videoInfo = ref<CreateVideoInfoReq>({
+  duration: 0,
+  primaryCategoryId: 0,
+  taskId: '',
+  title: '',
+  uid: 0,
 })
 // watch(() => videoInfoForm.value.tags, (val) => {
 //   console.log('videoInfoForm field change', val)
@@ -263,7 +280,6 @@ const categorySelectList = ref<SelectorInfoProps[]>([])
 
 // 投稿视频
 async function handleSubmit() {
-  // 上传视频封面
   if (!videoCoverFile.value) {
     if (!defaultVideoCoverFile.value) {
       message.warn('请等待默认封面生成')
@@ -272,12 +288,9 @@ async function handleSubmit() {
     videoCoverFile.value = defaultVideoCoverFile.value
   }
 
-  try {
-    const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
-    videoInfoForm.value.coverUrl = data.filePath
-  } catch (error) {
-    message.error('上传视频封面失败')
-    console.error('上传视频封面失败', error)
+  // 检查视频信息表单
+  if (!formCheck()) {
+    message.warn('请填写完整视频信息')
     return
   }
 
@@ -287,13 +300,30 @@ async function handleSubmit() {
     return
   }
 
-  // 检查视频信息表单
-  if (!formCheck()) {
-    message.warn('请填写完整视频信息')
+  // 上传视频封面
+  try {
+    const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
+    videoInfo.value.coverUrl = data.filePath
+  } catch (error) {
+    message.error('上传视频封面失败')
+    console.error('上传视频封面失败', error)
     return
   }
+
   // todo: 保存视频信息
   message.info('保存视频信息')
+  videoInfo.value.title = videoInfoForm.value.title
+  videoInfo.value.uid = token.uid
+  videoInfo.value.tag = videoInfoForm.value.tags.join(',')
+  videoInfo.value.description = videoInfoForm.value.description
+  videoInfo.value.sourceType = videoInfoForm.value.type
+  videoInfo.value.primaryCategoryId = videoInfoForm.value.category
+  videoInfo.value.reprintPermit = 1
+  videoInfoAPI.save(videoInfo.value)
+    .then(res => {
+      message.success('保存成功')
+      console.log('SaveVideoInfo', res)
+    })
 }
 // 检查表单
 function formCheck(): boolean {
@@ -302,10 +332,6 @@ function formCheck(): boolean {
     return false
   }
   if (form.category === -1) {
-    return false
-  }
-  if (isEmptyString(form.coverUrl)) {
-    message.warn('请等待视频封面上传完毕')
     return false
   }
   return true
@@ -333,16 +359,16 @@ async function initWsClient() {
   }
 }
 // 初始化测试数据
-function initTestData() {
-  for (let i = 0; i < 1; i++) {
-    const copy = deepCopy(demoFile.value)
-    copy.id = i + 1
-    copy.fileSize = randomInt(560, 1730) / 10
-    copy.speed = randomInt(20, 200) / 10
-    copy.progress = randomInt(1, 99)
-    uploadingQueue.value.push(copy)
-  }
-}
+// function initTestData() {
+//   for (let i = 0; i < 1; i++) {
+//     const copy = deepCopy(demoFile.value)
+//     copy.id = i + 1
+//     copy.fileSize = randomInt(560, 1730) / 10
+//     copy.speed = randomInt(20, 200) / 10
+//     copy.progress = randomInt(1, 99)
+//     uploadingQueue.value.push(copy)
+//   }
+// }
 const beforeUnload = (event: BeforeUnloadEvent) => {
   const msg = '刷新页面将会丢失未保存内容，是否继续？'
   event.preventDefault()
@@ -486,6 +512,7 @@ onUnmounted(() => {
                   :src="videoUrl"
                   controls
                   @loadeddata="getVideoFirstFrame"
+                  @loadedmetadata="getVideoMeta"
                 />
                 <input
                   ref="coverFileInput"

@@ -138,15 +138,43 @@ export interface CreateVideoInfoReq {
   contentUrl?: string;
   coverUrl?: string;
   description?: string;
-  duration?: number;
-  primaryCategoryId?: number;
+  /**
+   * 视频时长（秒）
+   */
+  duration: number;
+  /**
+   * 视频主分区ID
+   */
+  primaryCategoryId: number;
+  /**
+   * 发布时间（过审时间/定时发布时间）
+   */
   publishTime?: Date;
+  /**
+   * 转载声明：0可自由转载 1未经许可不可转载
+   */
   reprintPermit?: number;
   secondaryCategoryId?: number;
+  /**
+   * 类型：0自制 1转载
+   */
   sourceType?: number;
+  /**
+   * 视频标签 多标签用半角逗号隔开
+   */
   tag?: string;
-  title?: string;
-  uid?: number;
+  /**
+   * 视频标题
+   */
+  title: string;
+  /**
+   * 投稿用户ID
+   */
+  uid: number;
+  /**
+   * 上传任务ID
+   */
+  taskId: string
 }
 
 /**
