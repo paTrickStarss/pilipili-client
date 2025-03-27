@@ -27,6 +27,7 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   {
     id: 0,
     label: '首页',
+    iconClass: 'bcc-icon-ic_home_',
     autoOpen: false,
     groupItem: [],
     route: '/creativity',
@@ -34,6 +35,7 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   {
     id: 1,
     label: '内容管理',
+    iconClass: 'bcc-icon-ic_Content_',
     autoOpen: true,
     groupItem: [
       {
@@ -56,18 +58,21 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   {
     id: 2,
     label: '数据管理',
+    iconClass: 'bcc-icon-ic_data_',
     autoOpen: false,
     groupItem: []
   },
   {
     id: 3,
     label: '粉丝管理',
+    iconClass: 'bcc-icon-ic_fans_',
     autoOpen: false,
     groupItem: []
   },
   {
     id: 4,
     label: '互动管理',
+    iconClass: 'bcc-icon-ic_interactive_',
     autoOpen: true,
     groupItem: [
       {
@@ -85,6 +90,7 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   {
     id: 5,
     label: '收益管理',
+    iconClass: 'bcc-icon-ic_earnings_',
     autoOpen: true,
     groupItem: [
       {

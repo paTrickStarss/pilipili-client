@@ -93,9 +93,9 @@ export interface VideoPageInfoType {
   desc?: string
 }
 
-export interface VideoPageInfoProps {
-  videoInfo: VideoPageInfoType
-}
+// export interface VideoPageInfoProps {
+//   videoInfo: VideoPageInfoType
+// }
 
 /**
  * 评论卡片组件参数
@@ -153,6 +153,7 @@ export interface VideoCardInfoType {
 export interface NavSliderBarItemProps {
   id: number
   label: string
+  iconClass?: string
   /**
    * 自动打开第一个链接
    */
@@ -198,4 +199,30 @@ export interface SelectorInfoProps {
   label: string
 }
 
+/**
+ * 视频播放器清晰度菜单选项
+ */
+export interface VideoPlayerQualityItemProps {
+  id: number
+  text: string
+  vip: boolean
+}
 
+/**
+ * 视频播放器倍速菜单选项
+ */
+export interface VideoPlayerPlaybackRateItemProps {
+  id: number
+  text: string
+}
+
+export interface VideoPageInfoProps {
+  vid: number
+  title: string
+  publishDate: string
+  viewCount: number
+  danmakuCount: number
+  honorText?: string
+  argue?: string
+  reprintPermit: number
+}

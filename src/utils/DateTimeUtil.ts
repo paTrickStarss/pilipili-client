@@ -24,7 +24,7 @@ export class DateTimeUtil {
     } else {
       time = moment()
     }
-    return time.format('YYYY-MM-DD')
+    return time.format('YYYY-MM-DD HH:mm')
   }
 
   public getDateTimeString(dateTime: string): string {

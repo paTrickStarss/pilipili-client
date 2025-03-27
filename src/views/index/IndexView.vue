@@ -10,6 +10,12 @@ import HeaderChannel from '@/components/navbar/HeaderChannel.vue'
 import { useWindowStore } from '@/stores/window'
 
 const props = defineProps({
+  type: {
+    type: String,
+    default: '',
+    validator: (value: string) =>
+      ['', 'main', 'space', 'body'].includes(value),
+  },
   main: Boolean,
   fixed: {
     type: Boolean,
@@ -50,7 +56,7 @@ onUnmounted(() => {
 <template>
   <div>
     <!--    主页模式 显示banner、channel-->
-    <div class="pili-wrap" v-if="main">
+    <div class="pili-wrap" v-if="type === 'main'">
       <div class="pili-header large-header">
         <HeaderBar :slide-down="slideDown" />
         <div class="pili-header__banner">
@@ -72,20 +78,8 @@ onUnmounted(() => {
       </main>
     </div>
 
-    <!--    固定navBar模式-->
-    <div v-else-if="fixed">
-      <header>
-        <div class="pili-header">
-          <HeaderBar class="transparent-header" :slide-down="transparent? slideDown : true" />
-        </div>
-      </header>
-      <div id="app" style="margin-top: -64px">
-        <slot>Main Content...</slot>
-      </div>
-    </div>
-
     <!--    不固定navBar模式-->
-    <div v-else>
+    <div v-else-if="type === 'space'">
       <header>
         <div class="pili-header">
           <HeaderBar class="transparent-header" />
@@ -95,6 +89,34 @@ onUnmounted(() => {
         <slot>Main Content...</slot>
       </div>
     </div>
+
+    <!--    固定navBar模式-->
+    <div v-else-if="type === 'body'">
+      <header>
+        <div class="pili-header">
+          <HeaderBar
+            class="transparent-header"
+            :slide-down="true"
+          />
+        </div>
+      </header>
+      <div id="app" style="margin-top: -64px">
+        <slot>Main Content...</slot>
+      </div>
+    </div>
+    <!--    固定navBar模式-->
+    <div v-else>
+      <header>
+        <div class="pili-header">
+          <HeaderBar
+            class="transparent-header"
+            :slide-down="true"
+          />
+        </div>
+      </header>
+      <slot>Main Content...</slot>
+    </div>
+
   </div>
 </template>
 

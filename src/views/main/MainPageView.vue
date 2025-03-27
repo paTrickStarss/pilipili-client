@@ -9,7 +9,7 @@ import VideoCard from '@/components/video/VideoCard.vue'
 </script>
 
 <template>
-  <IndexView main>
+  <IndexView type="main">
     <div class="feed2">
       <div class="recommended-container_floor-aside">
         <div class="container is-version8">

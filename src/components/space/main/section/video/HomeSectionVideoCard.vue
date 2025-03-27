@@ -54,12 +54,16 @@ defineProps<{
       </div>
       <div class="bili-video-card__details">
         <div class="bili-video-card__title" :title="info.title">
-          <a :href="info.contentUrl" target="_blank">
+          <a :href="`/video/${info.vid}`" target="_blank">
             {{ info.title }}
           </a>
         </div>
-        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDate(info.publishTime)">
-          <span>{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
+        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDate(info.publishTime || info.uploadTime)">
+          <span v-if="info.publishTime">{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
+          <span v-else>
+            <span>未发布</span>
+            {{ DateTimeUtil.instance.getDateTimeString(info.uploadTime) }}
+          </span>
         </div>
       </div>
     </div>

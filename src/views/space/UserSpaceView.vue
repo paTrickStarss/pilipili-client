@@ -146,7 +146,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <IndexView :fixed="false">
+  <IndexView type="space">
     <div class="header">
       <!--      背景-->
       <div class="bg header-bg">

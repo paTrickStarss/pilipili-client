@@ -11,7 +11,7 @@ import NavSliderBar from '@/components/creativity/NavSliderBar.vue'
 </script>
 
 <template>
-  <IndexView :transparent="false">
+  <IndexView type="body">
     <div id="root" class="ct-root">
       <NavSliderBar />
 

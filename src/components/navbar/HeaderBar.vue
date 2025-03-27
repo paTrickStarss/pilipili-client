@@ -33,43 +33,43 @@ const tokenStore = useTokenStore()
     <!--          左侧菜单-->
     <ul class="left-entry">
       <li>
-        <a href="#" class="entry-title">
+        <a href="/" target="_blank" class="entry-title">
           <IconTV />
           <span>首页</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>番剧</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>直播</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>游戏中心</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>会员购</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>漫画</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="default-entry">
+        <a href="/" target="_blank" class="default-entry">
           <span>赛事</span>
         </a>
       </li>
       <li class="v-popover-wrap">
-        <a href="#" class="download-entry download-client-trigger">
+        <a href="/" target="_blank" class="download-entry download-client-trigger">
           <IconDownload />
           <span>下载客户端</span>
         </a>
@@ -91,7 +91,7 @@ const tokenStore = useTokenStore()
 
       <GlobalPopover wrap-class="right-entry-item" :pop-prohibit="true">
         <template #trigger>
-          <a href="#" target="_blank" class="right-entry__outside">
+          <a href="/creativity" target="_blank" class="right-entry__outside">
             <IconBulb />
             <span class="right-entry-text">创作中心</span>
           </a>

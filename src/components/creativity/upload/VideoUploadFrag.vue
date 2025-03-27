@@ -29,9 +29,12 @@ import type {
   UploadTaskMessage,
 } from '@/types/ApiRespType'
 import ossAPI from '@/api/oss/OssAPI'
-import { AxiosProgressEvent } from 'axios'
+import type { AxiosProgressEvent } from 'axios'
 import type { CreateVideoInfoReq } from '@/types/ApiRequestType'
+import { useRouter } from 'vue-router'
+import { jumpRoute } from '@/utils/RouterUtil'
 
+const router = useRouter()
 const token = useTokenStore()
 const videoFileInput = ref()
 const coverFileInput = ref()
@@ -279,10 +282,19 @@ const typeCheckRadioGroup = ref<RadioInfoProps[]>([
 const categorySelectList = ref<SelectorInfoProps[]>([])
 
 // 投稿视频
+const loadingMessageKey = 'saving'
+const loading = ref<boolean>(false)
 async function handleSubmit() {
+  if (loading.value) {
+    return
+  }
+
+  loading.value = true
+  message.loading({ content: '检查信息...', key: loadingMessageKey })
   if (!videoCoverFile.value) {
     if (!defaultVideoCoverFile.value) {
-      message.warn('请等待默认封面生成')
+      message.warn( { content: '请等待默认封面生成', key: loadingMessageKey })
+      loading.value = false
       return
     }
     videoCoverFile.value = defaultVideoCoverFile.value
@@ -290,13 +302,15 @@ async function handleSubmit() {
 
   // 检查视频信息表单
   if (!formCheck()) {
-    message.warn('请填写完整视频信息')
+    message.warn({ content: '请填写完整视频信息', key: loadingMessageKey })
+    loading.value = false
     return
   }
 
   // 确认视频文件上传完毕
   if (uploadingQueue.value[0].progress < 100) {
-    message.warn('请等待视频上传完成')
+    message.warn({ content: '请等待视频上传完成', key: loadingMessageKey })
+    loading.value = false
     return
   }
 
@@ -305,13 +319,14 @@ async function handleSubmit() {
     const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
     videoInfo.value.coverUrl = data.filePath
   } catch (error) {
-    message.error('上传视频封面失败')
+    message.error({ content: '上传视频封面失败', key: loadingMessageKey })
+    loading.value = false
     console.error('上传视频封面失败', error)
     return
   }
 
   // todo: 保存视频信息
-  message.info('保存视频信息')
+  // message.info('保存视频信息')
   videoInfo.value.title = videoInfoForm.value.title
   videoInfo.value.uid = token.uid
   videoInfo.value.tag = videoInfoForm.value.tags.join(',')
@@ -321,8 +336,12 @@ async function handleSubmit() {
   videoInfo.value.reprintPermit = 1
   videoInfoAPI.save(videoInfo.value)
     .then(res => {
-      message.success('保存成功')
+      message.success({ content: '保存成功', key: loadingMessageKey })
       console.log('SaveVideoInfo', res)
+      setTimeout(() => {
+        jumpRoute(router, '/creativity')
+      }, 1000)
+      loading.value = false
     })
 }
 // 检查表单

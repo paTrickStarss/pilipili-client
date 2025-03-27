@@ -52,7 +52,12 @@ function switchGroup() {
         :class="{'active': index === props.info.id}"
       >
         <slot name="icon">
-          <i class="menu-icon bcc-iconfont bcc-icon-ic_Content_"/>
+          <i
+            v-if="info.iconClass"
+            class="menu-icon bcc-iconfont"
+            :class="info.iconClass"
+          />
+          <i v-else class="menu-icon bcc-iconfont bcc-icon-ic_Content_"/>
         </slot>
         <span class="menu-title">
           {{ info.label }}
