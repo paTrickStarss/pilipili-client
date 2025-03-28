@@ -3,62 +3,98 @@
   -->
 
 <script setup lang="ts">
-
-import VideoPlayerQualityItem from '@/components/video/player/VideoPlayerQualityItem.vue'
+import VideoPlayerQualityItem from '@/components/video/player/video-area/VideoPlayerQualityItem.vue'
 import { computed, ref } from 'vue'
 import type { VideoPlayerQualityItemProps } from '@/types/PropsType'
 
 // 清晰度
-const showQualityMenu = ref<boolean>(false)
-const currentQualityText = computed<string>(() =>
-  qualityList.value
-    .filter(quality => quality.id === currentQuality.value )
-    ?.[0].text
+const currentQualityText = computed<string>(
+  () =>
+    qualityList.value.filter(
+      quality => quality.id === currentQuality.value,
+    )?.[0].text,
 )
-const currentQuality = defineModel('value',
-  { type: Number, required: true })
+const currentQuality = defineModel('value', { type: Number, required: true })
 const qualityList = ref<VideoPlayerQualityItemProps[]>([
   {
     id: 0,
     text: '4K 超清',
-    vip: true
+    vip: true,
   },
   {
     id: 1,
     text: '1080P 高码率',
-    vip: true
+    vip: true,
   },
   {
     id: 2,
     text: '1080P 高清',
-    vip: false
+    vip: false,
   },
   {
     id: 3,
     text: '720P 高清',
-    vip: true
+    vip: false,
   },
   {
     id: 4,
     text: '480P 清晰',
-    vip: true
+    vip: false,
   },
   {
     id: 5,
     text: '360P 流畅',
-    vip: true
+    vip: false,
   },
 ])
 
+const showQualityMenu = ref<boolean>(false)
+const btnEnter = ref<boolean>(false)
+const menuEnter = ref<boolean>(false)
+function btnMouseEnter() {
+  btnEnter.value = true
+  setTimeout(() => {
+    if (btnEnter.value) {
+      showQualityMenu.value = true
+    }
+  }, 100)
+}
+function btnMouseLeave() {
+  btnEnter.value = false
+  setTimeout(() => {
+    if (!menuEnter.value) {
+      showQualityMenu.value = false
+    }
+  }, 100)
+}
+function menuMouseEnter() {
+  menuEnter.value = true
+}
+function menuMouseLeave() {
+  menuEnter.value = false
+  setTimeout(() => {
+    if (!btnEnter.value) {
+      showQualityMenu.value = false
+    }
+  }, 100)
+}
 </script>
 
 <template>
   <div
     class="bpx-player-ctrl-btn bpx-player-ctrl-quality"
-    aria-label="清晰度" tabindex="0"
+    aria-label="清晰度"
+    tabindex="0"
+    @mouseenter="btnMouseEnter"
+    @mouseleave="btnMouseLeave"
   >
     <div class="bpx-player-ctrl-quality-result">{{ currentQualityText }}</div>
-    <div class="bpx-player-ctrl-quality-menu-wrap" v-show="showQualityMenu">
+    <div
+      class="bpx-player-ctrl-quality-menu-wrap"
+      v-show="showQualityMenu"
+      @mouseenter="menuMouseEnter"
+      @mouseleave="menuMouseLeave"
+    >
       <ul class="bpx-player-ctrl-quality-menu">
         <video-player-quality-item
           v-for="item in qualityList"
@@ -73,7 +109,6 @@ const qualityList = ref<VideoPlayerQualityItemProps[]>([
 </template>
 
 <style scoped>
-
 .bpx-player-ctrl-quality {
   -webkit-box-flex: 0;
   -ms-flex: none;
@@ -82,13 +117,17 @@ const qualityList = ref<VideoPlayerQualityItemProps[]>([
   margin-right: 10px;
   width: auto;
 }
+/*.bpx-player-ctrl-quality:hover {
+  margin-top: -10px;
+  padding-top: -10px;
+}*/
 .bpx-player-ctrl-quality-result {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
 }
 .bpx-player-ctrl-quality-menu-wrap {
-  background-color: hsla(0,0%,8%,.9);
+  background-color: hsla(0, 0%, 8%, 0.9);
   border-radius: 2px;
   bottom: 41px;
   cursor: pointer;
@@ -102,7 +141,7 @@ const qualityList = ref<VideoPlayerQualityItemProps[]>([
   transform: translateX(-50%);
 }
 .bpx-player-ctrl-quality-menu {
-  display: none;
+  /*  display: none;*/
   margin: 0;
   padding: 0;
 }

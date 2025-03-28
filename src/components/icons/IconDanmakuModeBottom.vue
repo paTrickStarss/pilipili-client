@@ -1,0 +1,16 @@
+<!--
+  - Copyright (c) 2025.  Bubble
+  -->
+
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xml:space="preserve"
+    data-pointer="none"
+    viewBox="0 0 28 28"
+  >
+    <path
+      d="M23 3H5a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h18a4 4 0 0 0 4-4V7a4 4 0 0 0-4-4zM9 21H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"
+    ></path>
+  </svg>
+</template>

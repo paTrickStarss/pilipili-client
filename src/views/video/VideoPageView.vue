@@ -9,6 +9,10 @@ import VideoInfo from '@/components/video/VideoInfo.vue'
 import { ref } from 'vue'
 import type { VideoPageInfoProps } from '@/types/PropsType'
 import VideoPlayer from '@/components/video/player/VideoPlayer.vue'
+import VideoPlayerPlaceholder from '@/components/video/player/video-area/VideoPlayerPlaceholder.vue'
+
+
+const playerLoading = ref<boolean>(false)
 
 const videoInfoEntity = ref<VideoPageInfoProps>({
   vid: 1101,
@@ -28,7 +32,8 @@ const videoInfoEntity = ref<VideoPageInfoProps>({
       <div class="left-container scroll-sticky">
         <video-info :info="videoInfoEntity" />
         <div id="playerWrap" class="player-wrap">
-          <video-player />
+          <video-player-placeholder v-show="playerLoading" />
+          <video-player v-show="!playerLoading" />
         </div>
       </div>
 

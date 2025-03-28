@@ -4,15 +4,26 @@
 
 <script setup lang="ts">
 
-import VideoPlayerVideoArea from '@/components/video/player/VideoPlayerVideoArea.vue'
+import VideoPlayerVideoArea from '@/components/video/player/video-area/VideoPlayerVideoArea.vue'
+import { ref } from 'vue'
+import VideoPlayerSendingArea from '@/components/video/player/sending-area/VideoPlayerSendingArea.vue'
+
+const controlHidden = ref<boolean>(true)
+
 </script>
 
 <template>
   <div id="bilibili-player">
     <div class="bpx-docker bpx-docker-major">
-      <div class="bpx-player-container">
-        <div class="bpx-player-primary-area" aria-label="播放器">
-          <video-player-video-area />
+      <div class="bpx-player-container bpx-state-no-cursor" :data-ctrl-hidden="controlHidden" data-revision="1">
+        <div
+          class="bpx-player-primary-area"
+          aria-label="播放器"
+          @mouseenter="controlHidden = false"
+          @mouseleave="controlHidden = true"
+        >
+          <video-player-video-area :data-shadow-show="controlHidden" />
+          <video-player-sending-area />
         </div>
       </div>
     </div>
@@ -34,6 +45,8 @@ import VideoPlayerVideoArea from '@/components/video/player/VideoPlayerVideoArea
   font-style: normal;
   line-height: 1;
 }
+
+
 .bpx-docker-major {
   height: 100%;
   position: relative;

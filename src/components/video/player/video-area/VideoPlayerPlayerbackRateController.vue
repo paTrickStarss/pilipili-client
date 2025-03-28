@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 
-import VideoPlayerPlaybackRateItem from '@/components/video/player/VideoPlayerPlaybackRateItem.vue'
+import VideoPlayerPlaybackRateItem from '@/components/video/player/video-area/VideoPlayerPlaybackRateItem.vue'
 import { computed, ref } from 'vue'
 import type { VideoPlayerPlaybackRateItemProps } from '@/types/PropsType'
 
@@ -46,17 +46,56 @@ const playbackRateList = ref<VideoPlayerPlaybackRateItemProps[]>([
     text: '0.5x'
   },
 ])
+
+
+const showPlaybackRateMenu = ref<boolean>(false)
+const btnEnter = ref<boolean>(false)
+const menuEnter = ref<boolean>(false)
+function btnMouseEnter() {
+  btnEnter.value = true
+  setTimeout(() => {
+    if (btnEnter.value) {
+      showPlaybackRateMenu.value = true
+    }
+  }, 100)
+}
+function btnMouseLeave() {
+  btnEnter.value = false
+  setTimeout(() => {
+    if (!menuEnter.value) {
+      showPlaybackRateMenu.value = false
+    }
+  }, 100)
+}
+function menuMouseEnter() {
+  menuEnter.value = true
+}
+function menuMouseLeave() {
+  menuEnter.value = false
+  setTimeout(() => {
+    if (!btnEnter.value) {
+      showPlaybackRateMenu.value = false
+    }
+  }, 100)
+}
 </script>
 
 <template>
   <div
     class="bpx-player-ctrl-btn bpx-player-ctrl-playbackrate"
     aria-label="倍速" tabindex="0"
+    @mouseenter="btnMouseEnter"
+    @mouseleave="btnMouseLeave"
   >
     <div class="bpx-player-ctrl-playbackrate-result">
       {{ resultText }}
     </div>
-    <ul class="bpx-player-ctrl-playbackrate-menu">
+    <ul
+      class="bpx-player-ctrl-playbackrate-menu"
+      v-show="showPlaybackRateMenu"
+      @mouseenter="menuMouseEnter"
+      @mouseleave="menuMouseLeave"
+    >
       <video-player-playback-rate-item
         v-for="item in playbackRateList"
         :key="item.id"
@@ -81,9 +120,9 @@ const playbackRateList = ref<VideoPlayerPlaybackRateItemProps[]>([
   background-color: hsla(0,0%,8%,.9);
   border-radius: 2px;
   bottom: 41px;
-  -webkit-box-sizing: border-box;
+/*  -webkit-box-sizing: border-box;*/
   box-sizing: border-box;
-  display: none;
+/*  display: none;*/
   left: 50%;
   margin: 0;
   padding: 0;

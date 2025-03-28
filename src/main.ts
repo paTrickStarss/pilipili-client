@@ -13,6 +13,10 @@ import { CryptoUtil } from '@/utils/CryptoUtil'
 import "moment/dist/locale/zh-cn.js";
 // import 'ant-design-vue/dist/reset.css'
 
+import IconDanmakuModeScroll from '@/components/icons/IconDanmakuModeScroll.vue'
+import IconDanmakuModeTop from '@/components/icons/IconDanmakuModeTop.vue'
+import IconDanmakuModeBottom from '@/components/icons/IconDanmakuModeBottom.vue'
+
 const app = createApp(App)
 
 const pinia = createPinia()
@@ -23,6 +27,11 @@ app.use(router)
 app.use(Antd)
 
 app.config.globalProperties.$api = axios
+
+app.component('IconDanmakuModeScroll', IconDanmakuModeScroll)
+app.component('IconDanmakuModeTop', IconDanmakuModeTop)
+app.component('IconDanmakuModeBottom', IconDanmakuModeBottom)
+
 
 const crypto = CryptoUtil.instance
 try {

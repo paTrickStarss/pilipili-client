@@ -44,7 +44,7 @@ const selectedIndex = defineModel('value',
   height: 36px;
   padding: 0 12px;
   white-space: nowrap;
-  width: 145px;
+  width: 165px;
 }
 .bpx-player-ctrl-quality-menu-item.bpx-state-active {
   color: var(--bpx-primary-color,#00a1d6);

@@ -4,16 +4,27 @@
 
 <script setup lang="ts">
 
-import VideoPlayerDanmakuItem from '@/components/video/player/VideoPlayerDanmakuItem.vue'
+import VideoPlayerDanmakuItem from '@/components/video/player/video-area/VideoPlayerDanmakuItem.vue'
 import { computed, ref } from 'vue'
 import IconProgressThumb from '@/components/icons/IconProgressThumb.vue'
 import IconVideoPlayerPause from '@/components/icons/IconVideoPlayerPause.vue'
 import IconVideoPlayerPlay from '@/components/icons/IconVideoPlayerPlay.vue'
-import VideoPlayerQualityItem from '@/components/video/player/VideoPlayerQualityItem.vue'
+import VideoPlayerQualityItem from '@/components/video/player/video-area/VideoPlayerQualityItem.vue'
 import type { VideoPlayerQualityItemProps } from '@/types/PropsType'
-import VideoPlayerQualityController from '@/components/video/player/VideoPlayerQualityController.vue'
-import VideoPlayerPlayerbackRateController from '@/components/video/player/VideoPlayerPlayerbackRateController.vue'
+import VideoPlayerQualityController from '@/components/video/player/video-area/VideoPlayerQualityController.vue'
+import VideoPlayerPlayerbackRateController from '@/components/video/player/video-area/VideoPlayerPlayerbackRateController.vue'
+import IconSubtitleDeactivated from '@/components/icons/IconSubtitleDeactivated.vue'
+import IconSubtitle from '@/components/icons/IconSubtitle.vue'
+import VideoPlayerVolumeController from '@/components/video/player/video-area/VideoPlayerVolumeController.vue'
+import VideoPlayerSettingsController from '@/components/video/player/video-area/VideoPlayerSettingsController.vue'
+import IconPipEnter from '@/components/icons/IconPipEnter.vue'
+import IconWideEnter from '@/components/icons/IconWideEnter.vue'
+import IconWebEnter from '@/components/icons/IconWebEnter.vue'
+import IconFullScreen from '@/components/icons/IconFullScreen.vue'
 
+defineProps({
+  dataShadowShow: Boolean,
+})
 
 const videoSrc = ref<string>()
 
@@ -32,7 +43,10 @@ const playerPause = ref<boolean>(false)
 const currentQuality = ref<number>(0)
 // 倍速
 const currentPlaybackRate = ref<number>(3)
-
+// 字幕
+const showSubtitle = ref<boolean>(false)
+// 音量
+const volume = ref<number>(70)
 
 
 </script>
@@ -51,120 +65,122 @@ const currentPlaybackRate = ref<number>(3)
           :src="videoSrc"
         />
       </div>
+    </div>
 
-      <div class="bpx-player-video-poster" v-show="false"></div>
-      <div class="bpx-player-visual-wrap">
-        <div class="bpx-player-visual-pixel"></div>
+
+    <div class="bpx-player-video-poster" v-show="false"></div>
+    <div class="bpx-player-visual-wrap">
+      <div class="bpx-player-visual-pixel"></div>
+    </div>
+
+    <!--      弹幕渲染区域-->
+    <div class="bpx-player-render-dm-wrap">
+      <div class="bpx-player-adv-dm-wrap"></div>
+      <div class="bpx-player-bas-dm-wrap">
+        <div class="bas-danmaku bas-danmaku-pause" style="width: 100%"></div>
       </div>
-
-<!--      弹幕渲染区域-->
-      <div class="bpx-player-render-dm-wrap">
-        <div class="bpx-player-adv-dm-wrap"></div>
-        <div class="bpx-player-bas-dm-wrap">
-          <div class="bas-danmaku bas-danmaku-pause" style="width: 100%"></div>
-        </div>
-        <div class="bpx-player-row-dm-wrap bili-danmaku-x-paused">
-          <div class="bili-danmaku-x-dm-rotate"></div>
-          <VideoPlayerDanmakuItem
-            v-for="i in 10"
-            :key="i"
-            :content="`弹幕${i}`"
-          />
-        </div>
-        <div class="bpx-player-cmd-dm-wrap">
-          <div class="bpx-player-cmd-dm-inside" style="width: 750px; height: 422px;"></div>
-        </div>
+      <div class="bpx-player-row-dm-wrap bili-danmaku-x-paused">
+        <div class="bili-danmaku-x-dm-rotate"></div>
+        <VideoPlayerDanmakuItem
+          v-for="i in 10"
+          :key="i"
+          :content="`弹幕${i}`"
+        />
       </div>
+      <div class="bpx-player-cmd-dm-wrap">
+        <div class="bpx-player-cmd-dm-inside" style="width: 750px; height: 422px;"></div>
+      </div>
+    </div>
 
-      <div class="bpx-player-ending-wrap"></div>
-      <div class="bpx-player-subtitle-wrap"></div>
-      <div class="bpx-player-top-wrap"></div>
-      <div class="bpx-player-state-wrap"></div>
-      <div class="bpx-player-loading-panel"></div>
-      <div class="bpx-player-toast-wrap"></div>
-      <div class="bpx-player-summary-wrap"></div>
+    <div class="bpx-player-ending-wrap"></div>
+    <div class="bpx-player-subtitle-wrap"></div>
+    <div class="bpx-player-top-wrap"></div>
+    <div class="bpx-player-state-wrap"></div>
+    <div class="bpx-player-loading-panel"></div>
+    <div class="bpx-player-toast-wrap"></div>
+    <div class="bpx-player-summary-wrap"></div>
 
-<!--      视频控制栏-->
-      <div class="bpx-player-control-wrap">
-        <div class="bpx-player-control-mask"></div>
-        <div class="bpx-player-control-entity">
-<!--          控制栏顶部：进度条-->
-          <div class="bpx-player-control-top">
-            <div class="bpx-player-progress-area">
-              <div class="bpx-player-progress-freezone"></div>
-              <div class="bpx-player-progress-wrap">
-                <div class="bpx-player-progress" style="height: 4px">
-<!--                  进度条块（已播放和已缓冲）-->
-                  <div class="bpx-player-progress-schedule-wrap">
-                    <div class="bpx-player-progress-schedule">
-                      <div
-                        class="bpx-player-progress-schedule-buffer"
-                        :style="{ transform: `scaleX(${progressBuffer}%)` }"
-                      ></div>
-                      <div
-                        class="bpx-player-progress-schedule-current"
-                        :style="{ transform: `scaleX(${progressCurrent}%)` }"
-                      ></div>
-                    </div>
+    <!--      视频控制栏-->
+    <div class="bpx-player-control-wrap">
+      <div class="bpx-player-control-mask"></div>
+      <div class="bpx-player-control-entity" :data-shadow-show="dataShadowShow">
+        <!--          控制栏顶部：进度条-->
+        <div class="bpx-player-control-top">
+          <div class="bpx-player-progress-area">
+            <div class="bpx-player-progress-freezone"></div>
+            <div class="bpx-player-progress-wrap">
+              <div class="bpx-player-progress" style="height: 4px">
+                <!--                  进度条块（已播放和已缓冲）-->
+                <div class="bpx-player-progress-schedule-wrap">
+                  <div class="bpx-player-progress-schedule">
+                    <div
+                      class="bpx-player-progress-schedule-buffer"
+                      :style="{ transform: `scaleX(${progressBuffer}%)` }"
+                    ></div>
+                    <div
+                      class="bpx-player-progress-schedule-current"
+                      :style="{ transform: `scaleX(${progressCurrent}%)` }"
+                    ></div>
                   </div>
-                  <div class="bpx-player-progress-point-wrap"></div>
-<!--                  当前进度位置图标-->
-                  <div
-                    class="bpx-player-progress-thumb"
-                    :style="{ transform: `translateX(${currentPointX}px)`}"
-                  >
-                    <div class="bpx-player-progress-thumb-icon bpx-player-progress-thumb-icon-dynamic">
-                      <div>
-                        <IconProgressThumb
-                          style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
-                        />
-                      </div>
-                    </div>
-                  </div>
-<!--                  当前鼠标位置指示器-->
-                  <div
-                    class="bpx-player-progress-move-indicator"
-                    :style="{ left: `${indicatorLeft}px`}"
-                  >
-                    <div class="bpx-player-progress-move-indicator-down"></div>
-                    <div class="bpx-player-progress-move-indicator-up"></div>
-                  </div>
-<!--                  指定时间位置预览画面-->
-                  <div
-                    class="bpx-player-progress-popup"
-                    :style="{ left: `${indicatorLeft}px`}"
-                  >
-                    <div class="bpx-player-progress-preview">
-                      <img
-                        class="bpx-player-progress-preview-image"
-                        :src="previewImageB64"
-                        alt=""
-                      >
-                      <div class="bpx-player-progress-preview-time">
-                        {{ currentPointTime }}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="bpx-player-progress-pull-indicator"
-                    :style="{ left: `${indicatorLeft}px`}"
-                  ></div>
-                  <div
-                    class="bpx-player-progress-cursor"
-                    :style="{ left: `${indicatorLeft}px`}"
-                  ></div>
-                  <div class="bpx-player-progress-scaleplate"></div>
                 </div>
+                <div class="bpx-player-progress-point-wrap"></div>
+                <!--                  当前进度位置图标-->
+                <div
+                  class="bpx-player-progress-thumb"
+                  :style="{ transform: `translateX(${currentPointX}px)`}"
+                >
+                  <div class="bpx-player-progress-thumb-icon bpx-player-progress-thumb-icon-dynamic">
+                    <div>
+                      <IconProgressThumb
+                        style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!--                  当前鼠标位置指示器-->
+                <div
+                  class="bpx-player-progress-move-indicator"
+                  :style="{ left: `${indicatorLeft}px`}"
+                >
+                  <div class="bpx-player-progress-move-indicator-down"></div>
+                  <div class="bpx-player-progress-move-indicator-up"></div>
+                </div>
+                <!--                  指定时间位置预览画面-->
+                <div
+                  class="bpx-player-progress-popup"
+                  :style="{ left: `${indicatorLeft}px`}"
+                >
+                  <div class="bpx-player-progress-preview">
+                    <img
+                      class="bpx-player-progress-preview-image"
+                      :src="previewImageB64"
+                      alt=""
+                    >
+                    <div class="bpx-player-progress-preview-time">
+                      {{ currentPointTime }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bpx-player-progress-pull-indicator"
+                  :style="{ left: `${indicatorLeft}px`}"
+                ></div>
+                <div
+                  class="bpx-player-progress-cursor"
+                  :style="{ left: `${indicatorLeft}px`}"
+                ></div>
+                <div class="bpx-player-progress-scaleplate"></div>
               </div>
             </div>
-
           </div>
 
-<!--          控制栏底部：控制按钮-->
-          <div class="bpx-player-control-bottom">
-            <div class="bpx-player-control-bottom-left">
-              <div class="bpx-player-ctrl-btn bpx-player-ctrl-play" aria-label="播放/暂停" tabindex="0">
-                <div class="bpx-player-ctrl-btn-icon">
+        </div>
+
+        <!--          控制栏底部：控制按钮-->
+        <div class="bpx-player-control-bottom">
+          <div class="bpx-player-control-bottom-left">
+            <div class="bpx-player-ctrl-btn bpx-player-ctrl-play" aria-label="播放/暂停" tabindex="0">
+              <div class="bpx-player-ctrl-btn-icon">
                   <span class="bpx-common-svg-icon">
                     <IconVideoPlayerPlay
                       v-show="playerPause"
@@ -175,81 +191,110 @@ const currentPlaybackRate = ref<number>(3)
                       style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
                     />
                   </span>
-                </div>
-              </div>
-              <div class="bpx-player-ctrl-btn bpx-player-ctrl-time">
-                <input class="bpx-player-ctrl-time-seek" v-model="seekTime" v-show="false">
-                <div class="bpx-player-ctrl-time-label">
-                  <span class="bpx-player-ctrl-time-current">{{ currentTime }}</span>
-                  <span class="bpx-player-ctrl-time-divide">/</span>
-                  <span class="bpx-player-ctrl-time-duration">{{ duration }}</span>
-                </div>
               </div>
             </div>
-            <div class="bpx-player-control-bottom-center"></div>
-            <div class="bpx-player-control-bottom-right">
-
-<!--              清晰度控制-->
-              <video-player-quality-controller v-model:value="currentQuality" />
-<!--              倍速控制-->
-              <video-player-playerback-rate-controller v-model:value="currentPlaybackRate" />
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-subtitle"
-                aria-label="字幕" tabindex="0"
-              >
-
+            <div class="bpx-player-ctrl-btn bpx-player-ctrl-time">
+              <input class="bpx-player-ctrl-time-seek" v-model="seekTime" v-show="false">
+              <div class="bpx-player-ctrl-time-label">
+                <span class="bpx-player-ctrl-time-current">{{ currentTime }}</span>
+                <span class="bpx-player-ctrl-time-divide">/</span>
+                <span class="bpx-player-ctrl-time-duration">{{ duration }}</span>
               </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-volume"
-                aria-label="音量" tabindex="0"
-              >
+            </div>
+          </div>
+          <div class="bpx-player-control-bottom-center"></div>
+          <div class="bpx-player-control-bottom-right">
 
+            <!--              清晰度控制-->
+            <video-player-quality-controller v-model:value="currentQuality" />
+            <!--              倍速控制-->
+            <video-player-playerback-rate-controller v-model:value="currentPlaybackRate" />
+            <div
+              class="bpx-player-ctrl-btn bpx-player-ctrl-subtitle"
+              aria-label="字幕" tabindex="0"
+            >
+              <div
+                class="bpx-player-ctrl-btn-icon"
+                @click="showSubtitle = !showSubtitle"
+              >
+                <span class="bpx-common-svg-icon">
+                  <IconSubtitle
+                    v-if="showSubtitle"
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                  <IconSubtitleDeactivated
+                    v-else
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                </span>
               </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-setting"
-                aria-label="设置" tabindex="0"
-              >
-
+            </div>
+<!--            音量控制-->
+            <video-player-volume-controller v-model:value="volume" />
+<!--            设置-->
+            <video-player-settings-controller />
+            <div
+              class="bpx-player-ctrl-btn bpx-player-ctrl-pip"
+              aria-label="画中画" title="画中画" tabindex="0"
+            >
+              <div class="bpx-player-ctrl-btn-icon bpx-player-ctrl-pip-enter">
+                <span class="bpx-common-svg-icon">
+                  <IconPipEnter
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                </span>
               </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-pip"
-                aria-label="画中画" tabindex="0"
-              >
-
+            </div>
+            <div
+              class="bpx-player-ctrl-btn bpx-player-ctrl-wide"
+              aria-label="宽屏" title="宽屏" tabindex="0"
+            >
+              <div class="bpx-player-ctrl-btn-icon bpx-player-ctrl-wide-enter">
+                <span class="bpx-common-svg-icon">
+                  <IconWideEnter
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                </span>
               </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-wide"
-                aria-label="宽屏" tabindex="0"
-              >
-
+            </div>
+            <div
+              class="bpx-player-ctrl-btn bpx-player-ctrl-web"
+              aria-label="网页全屏" title="网页全屏" tabindex="0"
+            >
+              <div class="bpx-player-ctrl-btn-icon bpx-player-ctrl-web-enter">
+                <span class="bpx-common-svg-icon">
+                  <IconWebEnter
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                </span>
               </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-web"
-                aria-label="网页全屏" tabindex="0"
-              >
-
-              </div>
-              <div
-                class="bpx-player-ctrl-btn bpx-player-ctrl-full"
-                aria-label="全屏" tabindex="0"
-              >
-
+            </div>
+            <div
+              class="bpx-player-ctrl-btn bpx-player-ctrl-full"
+              aria-label="全屏" title="全屏" tabindex="0"
+            >
+              <div class="bpx-player-ctrl-btn-icon">
+                <span class="bpx-common-svg-icon">
+                  <IconFullScreen
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"
+                  />
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="bpx-player-dialog-wrap"></div>
-      <div class="bpx-player-music-wrap"></div>
-      <div class="bpx-player-business-wrap business-hide"></div>
-      <div class="bpx-player-mini-warp" v-show="false"></div>
     </div>
+
+    <div class="bpx-player-dialog-wrap"></div>
+    <div class="bpx-player-music-wrap"></div>
+    <div class="bpx-player-business-wrap business-hide"></div>
+    <div class="bpx-player-mini-warp" v-show="false"></div>
 
   </div>
 </template>
 
-<style scoped>
+<style>
 .bpx-player-video-area {
   -webkit-box-flex: 1;
   background-color: #000;
@@ -289,9 +334,9 @@ const currentPlaybackRate = ref<number>(3)
   position: relative;
   width: 100%;
 }
-.bpx-state-no-cursor .bpx-player-video-perch {
+/*.bpx-state-no-cursor .bpx-player-video-perch {
   cursor: none;
-}
+}*/
 .bpx-player-video-wrap {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -770,6 +815,9 @@ const currentPlaybackRate = ref<number>(3)
   width: 36px;
   z-index: 2;
 }
+.bpx-player-ctrl-btn:hover {
+  color: #fff;
+}
 .bpx-player-ctrl-btn-icon {
   cursor: pointer;
   width: 100%;
@@ -783,6 +831,10 @@ const currentPlaybackRate = ref<number>(3)
   -ms-user-select: none;
   user-select: none;
   width: 100%;
+  transition: fill .2s ease-in-out;
+}
+.bpx-common-svg-icon:hover {
+  fill: #00a1d6;
 }
 .bpx-player-ctrl-btn-icon>.bpx-common-svg-icon {
   height: 22px;
@@ -835,9 +887,24 @@ const currentPlaybackRate = ref<number>(3)
   list-style: none;
   outline: none;
 }
+.bpx-docker a, .bpx-docker input {
+  outline: none;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
 
-
-
+.subtitle-switch-enter-active,
+.subtitle-switch-leave-active {
+  transition: opacity .9s ease;
+}
+.subtitle-switch-enter-from,
+.subtitle-switch-leave-to {
+  opacity: 0;
+}
+.subtitle-switch-enter-to,
+.subtitle-switch-leave-from {
+  opacity: 1;
+}
 
 
 .bpx-player-shadow-progress-area {
@@ -867,6 +934,17 @@ const currentPlaybackRate = ref<number>(3)
   width: calc(100% + 24px);
   z-index: -1;
 }
+.bpx-player-ctrl-pip-enter {
+  display: block;
+}
+.bpx-player-ctrl-wide-enter {
+  display: block;
+}
+.bpx-player-ctrl-web-enter {
+  display: block;
+}
+
+
 
 
 
@@ -904,7 +982,6 @@ const currentPlaybackRate = ref<number>(3)
   top: 0;
   z-index: 12;
 }
-
 
 
 

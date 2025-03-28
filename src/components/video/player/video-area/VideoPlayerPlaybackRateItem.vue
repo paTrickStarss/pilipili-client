@@ -33,5 +33,8 @@ const selectedIndex = defineModel('value',
 .bpx-player-ctrl-playbackrate-menu-item.bpx-state-active {
   color: var(--bpx-primary-color,#00a1d6);
 }
+.bpx-player-ctrl-playbackrate-menu-item:hover {
+  background-color: hsla(0, 0%, 25%, 0.8);
+}
 
 </style>

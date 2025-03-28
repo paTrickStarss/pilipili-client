@@ -47,7 +47,7 @@ defineProps({
     default: '今天 14:33',
   },
 })
-
+const vid = ref<numbner>(1100)
 const showTinyMenu = ref<boolean>(false)
 const showWatchLaterIcon = ref<boolean>(false)
 const showWatchLaterText = ref<boolean>(false)
@@ -84,7 +84,7 @@ const showWatchLaterText = ref<boolean>(false)
           </div>
         </div>
       </div>
-      <a class="pili-video-card__image--link" href="#" target="_blank">
+      <a class="pili-video-card__image--link" :href="`/video/${vid}`" target="_blank">
         <div
           class="pili-video-card__image pili-video-card__image--hover"
           @mouseenter="showWatchLaterIcon = true"
@@ -102,8 +102,9 @@ const showWatchLaterText = ref<boolean>(false)
                 <span
                   class="pili-watch-later__tip--lab"
                   v-show="showWatchLaterText"
-                  >添加至稍后再看</span
                 >
+                  添加至稍后再看
+                </span>
               </div>
             </div>
             <picture class="v-img pili-video-card__cover">
@@ -120,20 +121,19 @@ const showWatchLaterText = ref<boolean>(false)
               <div class="pili-video-card__stats--left">
                 <span class="pili-video-card__stats--item">
                   <IconStatsPlay class="pili-video-card__stats--icon" />
-                  <span class="pili-video-card__stats--text">{{
-                    playCount
-                  }}</span>
+                  <span class="pili-video-card__stats--text">
+                    {{ playCount }}</span>
                 </span>
                 <span class="pili-video-card__stats--item">
                   <IconStatsDanmaku class="pili-video-card__stats--icon" />
-                  <span class="pili-video-card__stats--text">{{
-                    danmakuCount
-                  }}</span>
+                  <span class="pili-video-card__stats--text">
+                    {{ danmakuCount }}
+                  </span>
                 </span>
               </div>
-              <span class="pili-video-card__stats__duration">{{
-                duration
-              }}</span>
+              <span class="pili-video-card__stats__duration">
+                {{ duration }}
+              </span>
             </div>
           </div>
         </div>
@@ -149,14 +149,14 @@ const showWatchLaterText = ref<boolean>(false)
             <NoInterestPopover />
           </div>
           <h3 class="pili-video-card__info--tit" style="font-weight: 500">
-            <a href="#" target="_blank">{{ title }}</a>
+            <a :href="`/video/${vid}`" target="_blank">{{ title }}</a>
           </h3>
           <div class="pili-video-card__info--bottom">
             <a class="pili-video-card__info--owner" href="#" target="_blank">
               <IconUpUserBlack class="pili-video-card__info--owner__up" />
-              <span class="pili-video-card__info--author">{{
-                authorName
-              }}</span>
+              <span class="pili-video-card__info--author">
+                {{ authorName }}
+              </span>
               <span class="pili-video-card__info--date">· {{ date }}</span>
             </a>
           </div>

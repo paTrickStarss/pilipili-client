@@ -233,6 +233,7 @@ function overflowLeave() {
   height: 24px;
   overflow: hidden;
   box-sizing: border-box;
+  transition: opacity .3s;
 }
 .video-info-container .video-info-meta .video-info-detail-content {
   flex: 1;

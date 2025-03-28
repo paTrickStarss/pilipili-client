@@ -14,7 +14,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   config => {
     // Do something before request...
-    if (!config.url?.includes('/login') && !config.url?.includes('/register')) {
+    if (!config.url?.includes('/login')
+      && !config.url?.includes('/register')
+      && !config.url?.includes('/publicKey')
+    ) {
       config.headers['Authorization'] = `Bearer ${useTokenStore().accessToken}`
     }
     return config
