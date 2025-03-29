@@ -45,11 +45,28 @@ export function deepCopy<T>(obj: T): T {
   return obj
 }
 
-export function getDate(): string {
-  const now = moment()
-  return now.format('YYYY-MM-DD')
-}
 
 export function isEmptyString(str: string): boolean {
   return str == null || str === ''
+}
+
+export function formatCount(count: number): string {
+  if (count == null) return ''
+  // 1万以下直接显示详细数据
+  if (count < 10000) return count.toString()
+
+  // 1万以上保留一位小数概括性显示，如 2.3万、16.9万
+  const left = (count / 10000).toFixed(0)
+  const right = (count % 10000).toString().substring(0, 1)
+  return `${left}.${right}万`
+
+}
+
+export function copyFieldValue<T extends object, R extends object>(source: T, target: R): R {
+  Object.keys(source).forEach(key => {
+    if (key in target) {
+      (target as Record<string, unknown>)[key] = source[key as keyof T]
+    }
+  })
+  return target
 }

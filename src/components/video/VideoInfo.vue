@@ -13,6 +13,7 @@ import IconDanmaku from '@/components/icons/IconDanmaku.vue'
 import IconRemark from '@/components/icons/IconRemark.vue'
 import IconCopyright from '@/components/icons/IconCopyright.vue'
 import IconShowMore from '@/components/icons/IconShowMore.vue'
+import { DateTimeUtil } from '../../utils/DateTimeUtil'
 
 defineProps<{
   info: VideoPageInfoProps
@@ -93,7 +94,7 @@ function overflowLeave() {
 <!--          发布日期-->
           <div class="pubdate-ip item">
             <div class="pubdate-ip-text">
-              {{ info.publishDate }}
+              {{ DateTimeUtil.instance.getDateTime(info.publishTime) }}
             </div>
           </div>
 <!--          作者声明-->
@@ -142,7 +143,7 @@ function overflowLeave() {
         <!--          发布日期-->
         <div class="pubdate-ip item">
           <div class="pubdate-ip-text">
-            {{ info.publishDate }}
+            {{ DateTimeUtil.instance.getDateTime(info.publishTime) }}
           </div>
         </div>
         <!--          作者声明-->

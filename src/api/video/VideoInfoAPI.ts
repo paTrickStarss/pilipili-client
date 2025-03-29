@@ -7,8 +7,16 @@ import type { CreateVideoInfoReq, PageQueryVideoInfoReq, UpdateVideoInfoReq } fr
 
 export default {
 
-  get(vid: string) {
+  get(vid: number) {
     return axios.get(`/api/video/${vid}`)
+  },
+  /**
+   * 查询用户视频互动状态
+   * @param vid
+   * @param uid
+   */
+  getUserVideo(vid: number, uid: number) {
+    return axios.get('/api/video/getUserVideo', { params: { vid, uid }})
   },
   /**
    * 分页查询视频（搜索引擎）
@@ -45,6 +53,9 @@ export default {
   },
   repostRevoke(vid: number, uid: number) {
     return axios.patch('/api/video/repostRevoke', {}, { params : { vid, uid } })
+  },
+  triple(vid: number, uid: number) {
+    return axios.patch('/api/video/triple', {}, { params: { vid, uid } })
   },
   favor(vid: number, uid: number) {
     return axios.patch('/api/video/favor', {}, { params: { vid, uid } })

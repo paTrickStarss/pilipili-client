@@ -10,6 +10,14 @@ export default {
   get(cid: number) {
     return axios.get(`/api/interact/comment/${cid}`)
   },
+  /**
+   * 查询用户动态互动状态
+   * @param cid
+   * @param uid
+   */
+  getUserComment(cid: number, uid: number) {
+    return axios.get('/api/interact/comment/getUserComment', { params: { cid, uid }})
+  },
   delete(cid: number) {
     return axios.delete(`/api/interact/comment/${cid}`)
   },

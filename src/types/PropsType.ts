@@ -219,10 +219,22 @@ export interface VideoPlayerPlaybackRateItemProps {
 export interface VideoPageInfoProps {
   vid: number
   title: string
-  publishDate: string
+  publishTime: string
   viewCount: number
   danmakuCount: number
   honorText?: string
   argue?: string
   reprintPermit: number
+}
+
+export interface VideoToolbarInfoProps {
+  vid: number
+  favorCount: number
+  coinCount: number
+  collectCount: number
+  repostCount: number
+  favor: boolean
+  coin: boolean
+  collect: boolean
+  repost: boolean
 }

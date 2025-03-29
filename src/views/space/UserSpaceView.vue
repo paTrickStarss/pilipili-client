@@ -13,6 +13,7 @@ import { message } from 'ant-design-vue'
 import { useRoute } from 'vue-router'
 import { DictionaryConverter } from '@/utils/DictionaryConverter'
 import { getDate } from '@/utils/CommonUtil'
+import { DateTimeUtil } from '@/utils/DateTimeUtil'
 
 const route = useRoute()
 const user = useUserStore()
@@ -63,7 +64,7 @@ function handleSearch() {
   message.info(`search: ${searchInput.value}`)
 }
 
-const nowDate = ref(getDate())
+const nowDate = ref(DateTimeUtil.instance.getDate())
 
 watch(
   () => route.path,

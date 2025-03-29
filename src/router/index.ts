@@ -127,7 +127,7 @@ const router = createRouter({
 
     // video
     {
-      path: '/video/:id?',
+      path: '/video/:vid?',
       name: 'video',
       component: () =>
         import(

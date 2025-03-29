@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type { VideoDTOType } from '@/types/ApiRespType'
-import { DateTimeUtil } from '../../../../../utils/DateTimeUtil'
+import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 
 defineProps<{
@@ -17,7 +17,7 @@ defineProps<{
   <div class="bili-video-card">
     <div class="bili-video-card__wrap">
       <div class="bili-video-card__cover">
-        <a href="#" target="_blank" class="bili-cover-card">
+        <a :href="`/video/${info.vid}`" target="_blank" class="bili-cover-card">
           <div class="bili-cover-card__thumbnail">
             <img :src="info.coverUrl || `${ASSETS_BASE_URL}/image/collection-cover-1.jpg@672w_380h_1c.avif`" alt="" />
           </div>
@@ -58,7 +58,7 @@ defineProps<{
             {{ info.title }}
           </a>
         </div>
-        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDate(info.publishTime || info.uploadTime)">
+        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDateTime(info.publishTime || info.uploadTime)">
           <span v-if="info.publishTime">{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
           <span v-else>
             <span>未发布</span>
