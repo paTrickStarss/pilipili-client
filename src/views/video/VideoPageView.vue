@@ -16,6 +16,9 @@ import videoInfoAPI from '@/api/video/VideoInfoAPI'
 import { useTokenStore } from '@/stores/token'
 import type { VideoDTOType } from '@/types/ApiRespType'
 import { copyFieldValue } from '@/utils/CommonUtil'
+import VideoDescription from '@/components/video/description/VideoDescription.vue'
+import VideoTag from '@/components/video/tag/VideoTag.vue'
+import VideoComment from '@/components/video/comment/VideoComment.vue'
 
 const token = useTokenStore()
 const playerLoading = ref<boolean>(false)
@@ -27,13 +30,13 @@ const vid = computed(() =>
 const videoInfoDTO = ref<VideoDTOType>()
 const videoInfoEntity = ref<VideoPageInfoProps>({
   vid: vid.value,
-  title: '【毕导】往开水里尿尿，开水会瞬间逆流而上烫伤你？请看VCR！',
-  publishTime: '2025-01-23 21:45:23',
-  viewCount: 125124,
-  danmakuCount: 782,
+  title: '--',
+  publishTime: '--',
+  viewCount: 0,
+  danmakuCount: 0,
   honorText: '全站排行榜最高第4名',
   argue: '该内容仅供娱乐，请勿过分解读',
-  reprintPermit: 1
+  reprintPermit: 1,
 })
 const toolbarInfo = ref<VideoToolbarInfoProps>({
   vid: vid.value,
@@ -91,6 +94,9 @@ onMounted(() => {
         </div>
 <!--        互动栏-->
         <video-toolbar :info="toolbarInfo" />
+        <video-description :content="videoInfoDTO?.description" />
+        <video-tag :tag-list="videoInfoDTO?.tagList || []" />
+        <video-comment />
       </div>
 
       <div class="right-container">

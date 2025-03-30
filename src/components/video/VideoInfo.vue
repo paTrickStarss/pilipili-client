@@ -13,7 +13,7 @@ import IconDanmaku from '@/components/icons/IconDanmaku.vue'
 import IconRemark from '@/components/icons/IconRemark.vue'
 import IconCopyright from '@/components/icons/IconCopyright.vue'
 import IconShowMore from '@/components/icons/IconShowMore.vue'
-import { DateTimeUtil } from '../../utils/DateTimeUtil'
+import { DateTimeUtil } from '@/utils/DateTimeUtil'
 
 defineProps<{
   info: VideoPageInfoProps
