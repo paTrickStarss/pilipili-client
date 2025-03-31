@@ -7,7 +7,6 @@ import piniaPersistState from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router'
 import axios from './api/axios'
-
 import Antd from 'ant-design-vue'
 import { CryptoUtil } from '@/utils/CryptoUtil'
 import "moment/dist/locale/zh-cn.js";

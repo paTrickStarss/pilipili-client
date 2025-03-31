@@ -63,6 +63,7 @@ export function formatCount(count: number): string {
 }
 
 export function copyFieldValue<T extends object, R extends object>(source: T, target: R): R {
+  if (source == null || typeof source !== 'object') return {} as R
   Object.keys(source).forEach(key => {
     if (key in target) {
       (target as Record<string, unknown>)[key] = source[key as keyof T]

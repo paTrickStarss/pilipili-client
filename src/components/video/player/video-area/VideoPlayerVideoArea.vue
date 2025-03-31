@@ -5,7 +5,7 @@
 <script setup lang="ts">
 
 import VideoPlayerDanmakuItem from '@/components/video/player/video-area/VideoPlayerDanmakuItem.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import IconProgressThumb from '@/components/icons/IconProgressThumb.vue'
 import IconVideoPlayerPause from '@/components/icons/IconVideoPlayerPause.vue'
 import IconVideoPlayerPlay from '@/components/icons/IconVideoPlayerPlay.vue'
@@ -21,6 +21,7 @@ import IconPipEnter from '@/components/icons/IconPipEnter.vue'
 import IconWideEnter from '@/components/icons/IconWideEnter.vue'
 import IconWebEnter from '@/components/icons/IconWebEnter.vue'
 import IconFullScreen from '@/components/icons/IconFullScreen.vue'
+import Hls from 'hls.js'
 
 defineProps({
   dataShadowShow: Boolean,
@@ -48,6 +49,99 @@ const showSubtitle = ref<boolean>(false)
 // 音量
 const volume = ref<number>(70)
 
+const videoRef = ref<HTMLVideoElement | null>(null)
+
+function videoPauseOrPlay() {
+  if (playerPause.value) {
+    // 播放
+    videoRef.value?.play()
+    playerPause.value = false
+
+  } else {
+    // 暂停
+    videoRef.value?.pause()
+    playerPause.value = true
+
+  }
+}
+
+const hls = new Hls()
+function initHls() {
+  if (!videoRef.value) {
+    console.error('videoRef is undefined')
+    return
+  }
+  hls.attachMedia(videoRef.value)
+  hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+
+    // hls.on(Hls.Events.MANIFEST_PARSED, () => {
+    //   // 清晰度降序排序
+    //   hls.levels.sort((a, b) => {
+    //     if (b.height === a.height) {
+    //       return b.bitrate - a.bitrate
+    //     } else {
+    //       return b.height - a.height
+    //     }
+    //   })
+    //   const frag = document.createDocumentFragment()
+    //   const listener = (i: number) => (init: unknown) => {
+    //     const last = quantity.itemElements[quantity.itemElements.length - 1]
+    //     const prev = quantity.itemElements[quantity.value] || last
+    //     const el = quantity.itemElements[i] || last
+    //     prev.classList.add('quantity_item-active')
+    //     el.classList.add('quantity_item-active')
+    //     quantity.btn.textContent = el.textContent
+    //
+    //     if (init !== true && !player.paused) {
+    //       setTimeout(() => player.play())
+    //     }
+    //     quantity.value = hls.currentLevel = hls.loadLevel = i
+    //     quantity.popover.hide()
+    //   }
+    //   console.log('hls.levels', hls.levels)
+    //   quantity.itemElements = hls.levels.map((l, i) => {
+    //     const el = document.createElement('div')
+    //     el.textContent = l.name + 'p'
+    //     if (l.height === 1080) {
+    //       // todo: 当有两档1080p时，若比特率较高的没有超过5Mbps，这里会失效，考虑在外层重新判断
+    //       if (l.bitrate > 5000000) {
+    //         el.textContent += '高比特率'
+    //       } else {
+    //         el.textContent += '超清'
+    //       }
+    //     }
+    //     if (l.height == 720) el.textContent += '高清'
+    //     if (l.height == 480) el.textContent += '清晰'
+    //     el.classList.add('quantity_item')
+    //     el.addEventListener('click', listener(i))
+    //     frag.appendChild(el)
+    //     return el
+    //   })
+    //
+    //   // 自动 - 根据当前客户端网络带宽决定加载的清晰度
+    //   const el = document.createElement('div')
+    //   el.textContent = '自动'
+    //   el.addEventListener('click', listener(-1))
+    //   el.classList.add('quantity_item')
+    //   frag.appendChild(el)
+    //   quantity.itemElements.push(el)
+    //
+    //   quantity.popover.panelEl.appendChild(frag)
+    //   quantity.el.style.display = 'block'
+    //
+    //   // listener(hls.currentLevel)(true)
+    //   listener(hls.levels[0].id)
+    // })
+    // 使用HLS格式的视频流播放
+    hls.loadSource('/hls/master.m3u8')
+    videoRef.value?.play()
+  })
+
+}
+
+onMounted(() => {
+  initHls()
+})
 
 </script>
 
@@ -59,10 +153,10 @@ const volume = ref<number>(70)
     <div class="bpx-player-video-perch">
       <div class="bpx-player-video-wrap">
         <video
+          ref="videoRef"
           id="video-player"
           crossorigin="anonymous"
           preload="auto"
-          :src="videoSrc"
         />
       </div>
     </div>
@@ -181,7 +275,7 @@ const volume = ref<number>(70)
           <div class="bpx-player-control-bottom-left">
             <div class="bpx-player-ctrl-btn bpx-player-ctrl-play" aria-label="播放/暂停" tabindex="0">
               <div class="bpx-player-ctrl-btn-icon">
-                  <span class="bpx-common-svg-icon">
+                  <span class="bpx-common-svg-icon" @click="videoPauseOrPlay">
                     <IconVideoPlayerPlay
                       v-show="playerPause"
                       style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px)"

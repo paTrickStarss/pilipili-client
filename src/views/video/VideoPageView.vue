@@ -21,7 +21,8 @@ import VideoTag from '@/components/video/tag/VideoTag.vue'
 import VideoComment from '@/components/video/comment/VideoComment.vue'
 
 const token = useTokenStore()
-const playerLoading = ref<boolean>(false)
+const playerLoading = ref<boolean>(true)
+const playerRef = ref()
 
 const route = useRoute()
 const vid = computed(() =>
@@ -60,6 +61,8 @@ async function fetchData() {
       copyFieldValue(videoInfoDTO.value, videoInfoEntity.value)
       copyFieldValue(videoInfoDTO.value, toolbarInfo.value)
       console.log('getVideoInfo', videoInfoDTO.value, videoInfoEntity.value, toolbarInfo.value)
+      playerLoading.value = false
+      // playerRef.value.updatePlayerOptions()
     })
   if (token.isLogin) {
     // 若已登录，则获取用户对该视频的互动信息
@@ -90,7 +93,12 @@ onMounted(() => {
 <!--        视频播放器-->
         <div id="playerWrap" class="player-wrap">
           <video-player-placeholder v-show="playerLoading" />
-          <video-player v-show="!playerLoading" />
+          <video-player
+            ref="playerRef"
+            v-if="!playerLoading"
+            :vid="videoInfoDTO?.vid || 0"
+            :src="videoInfoDTO?.contentUrl || ''"
+          />
         </div>
 <!--        互动栏-->
         <video-toolbar :info="toolbarInfo" />

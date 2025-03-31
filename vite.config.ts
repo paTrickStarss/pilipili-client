@@ -31,6 +31,12 @@ export default defineConfig({
         target: 'ws://localhost:8065/ws',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ws/, ''),
+      },
+      '/hls': {
+        // 本地测试HLS
+        target: 'http://localhost/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hls/, ''),
       }
     }
   }
