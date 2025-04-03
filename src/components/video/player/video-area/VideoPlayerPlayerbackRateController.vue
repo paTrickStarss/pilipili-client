@@ -5,45 +5,61 @@
 <script setup lang="ts">
 
 import VideoPlayerPlaybackRateItem from '@/components/video/player/video-area/VideoPlayerPlaybackRateItem.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { VideoPlayerPlaybackRateItemProps } from '@/types/PropsType'
 
+const emits = defineEmits({
+  /**
+   * 更新播放速度
+   * @param rate
+   */
+  updatePlaybackRate: (rate: number) => true
+})
 
 const resultText = computed(() => {
-  if (currentPlaybackRate.value === 3) {
+  if (currentPlaybackRateId.value === 3) {
     return '倍速'
   }
   return playbackRateList.value
-    .filter(item => item.id === currentPlaybackRate.value)
+    .filter(item => item.id === currentPlaybackRateId.value)
     ?.[0]
     .text
 })
-const currentPlaybackRate = defineModel('value',
-  { type: Number, required: true })
+const currentPlaybackRateId = ref<number>(3)
+watch(currentPlaybackRateId, () => {
+  const value = playbackRateList.value[currentPlaybackRateId.value].value
+  emits('updatePlaybackRate', value)
+})
 const playbackRateList = ref<VideoPlayerPlaybackRateItemProps[]>([
   {
     id: 0,
-    text: '2.0x'
+    text: '2.0x',
+    value: 2.0
   },
   {
     id: 1,
-    text: '1.5x'
+    text: '1.5x',
+    value: 1.5
   },
   {
     id: 2,
-    text: '1.25x'
+    text: '1.25x',
+    value: 1.25
   },
   {
     id: 3,
-    text: '1.0x'
+    text: '1.0x',
+    value: 1.0
   },
   {
     id: 4,
-    text: '0.75x'
+    text: '0.75x',
+    value: 0.75
   },
   {
     id: 5,
-    text: '0.5x'
+    text: '0.5x',
+    value: 0.5
   },
 ])
 
@@ -100,7 +116,7 @@ function menuMouseLeave() {
         v-for="item in playbackRateList"
         :key="item.id"
         :info="item"
-        v-model:value="currentPlaybackRate"
+        v-model:value="currentPlaybackRateId"
       />
     </ul>
   </div>

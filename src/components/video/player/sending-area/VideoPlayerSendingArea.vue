@@ -153,6 +153,9 @@ function sendDanmaku() {
   justify-content: space-between;
   padding: 0 12px 0 20px;
 }
+.bpx-player-container[data-screen='full'] .bpx-player-sending-bar {
+  display: none;
+}
 .bpx-player-sending-bar .bpx-player-video-info {
   -ms-flex-negative: 1;
   -webkit-box-align: center;

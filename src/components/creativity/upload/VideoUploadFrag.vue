@@ -317,7 +317,7 @@ async function handleSubmit() {
   // 上传视频封面
   try {
     const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
-    videoInfo.value.coverUrl = data.filePath
+    videoInfo.value.coverUrl = data.objectName
   } catch (error) {
     message.error({ content: '上传视频封面失败', key: loadingMessageKey })
     loading.value = false
@@ -419,7 +419,7 @@ onMounted(async () => {
   fetchCategoryList().then()
 })
 onUnmounted(() => {
-  // WebSocketHelper.instance.close()
+  WebSocketHelper.instance.close()
   window.removeEventListener('beforeunload', beforeUnload)
 })
 </script>

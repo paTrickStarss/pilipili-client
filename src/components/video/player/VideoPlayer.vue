@@ -4,12 +4,13 @@
 
 <script setup lang="ts">
 import VideoPlayerVideoArea from '@/components/video/player/video-area/VideoPlayerVideoArea.vue'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch } from 'vue'
 import VideoPlayerSendingArea from '@/components/video/player/sending-area/VideoPlayerSendingArea.vue'
 import Player, { type ControlItem, Popover } from 'nplayer'
 import Danmaku from '@nplayer/danmaku'
 import Hls from 'hls.js'
 import type { DanmakuPluginOption } from '@nplayer/danmaku/src/ts/main'
+import { message } from 'ant-design-vue'
 
 const props = defineProps({
   vid: {
@@ -23,6 +24,7 @@ const props = defineProps({
 })
 
 const controlHidden = ref<boolean>(true)
+const screenMode = ref<string>('normal')
 
 const nplayerRef = ref()
 const hls = new Hls()
@@ -49,108 +51,128 @@ const quantity: ControlItem = {
     this.el.classList.add('quantity')
   },
 }
-function createNPlayer() {
-  const player = new Player({
-    controls: [
-      [
-        'play',
-        'volume',
-        'time',
-        'spacer',
-        quantity,
-        'danmaku-settings',
-        'settings',
-        'web-fullscreen',
-        'fullscreen',
-      ],
-      ['progress'],
-      ['spacer'],
-    ],
-    plugins: [new Danmaku(danmakuOptions.value)],
-  })
-
-  hls.attachMedia(player.video)
-  hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-
-    // hls.on(Hls.Events.MANIFEST_PARSED, () => {
-    //   // 清晰度降序排序
-    //   hls.levels.sort((a, b) => {
-    //     if (b.height === a.height) {
-    //       return b.bitrate - a.bitrate
-    //     } else {
-    //       return b.height - a.height
-    //     }
-    //   })
-    //   const frag = document.createDocumentFragment()
-    //   const listener = (i: number) => (init: unknown) => {
-    //     const last = quantity.itemElements[quantity.itemElements.length - 1]
-    //     const prev = quantity.itemElements[quantity.value] || last
-    //     const el = quantity.itemElements[i] || last
-    //     prev.classList.add('quantity_item-active')
-    //     el.classList.add('quantity_item-active')
-    //     quantity.btn.textContent = el.textContent
-    //
-    //     if (init !== true && !player.paused) {
-    //       setTimeout(() => player.play())
-    //     }
-    //     quantity.value = hls.currentLevel = hls.loadLevel = i
-    //     quantity.popover.hide()
-    //   }
-    //   console.log('hls.levels', hls.levels)
-    //   quantity.itemElements = hls.levels.map((l, i) => {
-    //     const el = document.createElement('div')
-    //     el.textContent = l.name + 'p'
-    //     if (l.height === 1080) {
-    //       // todo: 当有两档1080p时，若比特率较高的没有超过5Mbps，这里会失效，考虑在外层重新判断
-    //       if (l.bitrate > 5000000) {
-    //         el.textContent += '高比特率'
-    //       } else {
-    //         el.textContent += '超清'
-    //       }
-    //     }
-    //     if (l.height == 720) el.textContent += '高清'
-    //     if (l.height == 480) el.textContent += '清晰'
-    //     el.classList.add('quantity_item')
-    //     el.addEventListener('click', listener(i))
-    //     frag.appendChild(el)
-    //     return el
-    //   })
-    //
-    //   // 自动 - 根据当前客户端网络带宽决定加载的清晰度
-    //   const el = document.createElement('div')
-    //   el.textContent = '自动'
-    //   el.addEventListener('click', listener(-1))
-    //   el.classList.add('quantity_item')
-    //   frag.appendChild(el)
-    //   quantity.itemElements.push(el)
-    //
-    //   quantity.popover.panelEl.appendChild(frag)
-    //   quantity.el.style.display = 'block'
-    //
-    //   // listener(hls.currentLevel)(true)
-    //   listener(hls.levels[0].id)
-    // })
-    // 使用HLS格式的视频流播放
-    hls.loadSource('/hls/master.m3u8')
-  })
-
-  player.mount(nplayerRef.value)
-  nplayer.value = player
-}
+// function createNPlayer() {
+//   const player = new Player({
+//     controls: [
+//       [
+//         'play',
+//         'volume',
+//         'time',
+//         'spacer',
+//         quantity,
+//         'danmaku-settings',
+//         'settings',
+//         'web-fullscreen',
+//         'fullscreen',
+//       ],
+//       ['progress'],
+//       ['spacer'],
+//     ],
+//     plugins: [new Danmaku(danmakuOptions.value)],
+//   })
+//
+//   hls.attachMedia(player.video)
+//   hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+//
+//     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+//       // 清晰度降序排序
+//       hls.levels.sort((a, b) => {
+//         if (b.height === a.height) {
+//           return b.bitrate - a.bitrate
+//         } else {
+//           return b.height - a.height
+//         }
+//       })
+//       const frag = document.createDocumentFragment()
+//       const listener = (i: number) => (init: unknown) => {
+//         const last = quantity.itemElements[quantity.itemElements.length - 1]
+//         const prev = quantity.itemElements[quantity.value] || last
+//         const el = quantity.itemElements[i] || last
+//         prev.classList.add('quantity_item-active')
+//         el.classList.add('quantity_item-active')
+//         quantity.btn.textContent = el.textContent
+//
+//         if (init !== true && !player.paused) {
+//           setTimeout(() => player.play())
+//         }
+//         quantity.value = hls.currentLevel = hls.loadLevel = i
+//         quantity.popover.hide()
+//       }
+//       console.log('hls.levels', hls.levels)
+//       quantity.itemElements = hls.levels.map((l, i) => {
+//         const el = document.createElement('div')
+//         el.textContent = l.name + 'p'
+//         if (l.height === 1080) {
+//           // todo: 当有两档1080p时，若比特率较高的没有超过5Mbps，这里会失效，考虑在外层重新判断
+//           if (l.bitrate > 5000000) {
+//             el.textContent += '高比特率'
+//           } else {
+//             el.textContent += '超清'
+//           }
+//         }
+//         if (l.height == 720) el.textContent += '高清'
+//         if (l.height == 480) el.textContent += '清晰'
+//         el.classList.add('quantity_item')
+//         el.addEventListener('click', listener(i))
+//         frag.appendChild(el)
+//         return el
+//       })
+//
+//       // 自动 - 根据当前客户端网络带宽决定加载的清晰度
+//       const el = document.createElement('div')
+//       el.textContent = '自动'
+//       el.addEventListener('click', listener(-1))
+//       el.classList.add('quantity_item')
+//       frag.appendChild(el)
+//       quantity.itemElements.push(el)
+//
+//       quantity.popover.panelEl.appendChild(frag)
+//       quantity.el.style.display = 'block'
+//
+//       // listener(hls.currentLevel)(true)
+//       listener(hls.levels[0].id)
+//     })
+//     // 使用HLS格式的视频流播放
+//     hls.loadSource('/hls/master.m3u8')
+//   })
+//
+//   player.mount(nplayerRef.value)
+//   nplayer.value = player
+// }
+const playerContainerRef = ref<HTMLDivElement>()
+const fullscreenHandler = reactive({
+  handleFullscreen: () => {
+    // message.info('fullscreen')
+    playerContainerRef.value?.requestFullscreen()
+  }
+})
+provide('fullscreenHandler', fullscreenHandler)
 
 onMounted(() => {
   // console.log('videoPlayer mounted', nplayerOptions.value.src, nplayerOptions.value, nplayer.value)
   // createNPlayer()
+  document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+      // 进入全屏
+      screenMode.value = 'full'
+    } else {
+      // 退出全屏
+      screenMode.value = 'normal'
+    }
+  })
 })
 </script>
 
 <template>
   <div id="bilibili-player">
     <div class="bpx-docker bpx-docker-major">
+<!--      要全屏播放视频，则使bpx-player-container全屏，不要直接让video全屏，否则其他组件看不到-->
       <div
+        ref="playerContainerRef"
         class="bpx-player-container bpx-state-no-cursor"
         :data-ctrl-hidden="controlHidden"
         data-revision="1"
+        :data-screen="screenMode"
       >
         <div
           class="bpx-player-primary-area"
@@ -158,7 +180,7 @@ onMounted(() => {
           @mouseenter="controlHidden = false"
           @mouseleave="controlHidden = true"
         >
-          <video-player-video-area :data-shadow-show="controlHidden" />
+          <video-player-video-area :src="src" :data-shadow-show="controlHidden" />
 <!--          <div ref="nplayerRef"></div>-->
           <video-player-sending-area />
         </div>
@@ -167,7 +189,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style >
 #bilibili-player {
   width: 750px;
   height: 468px;
@@ -196,6 +218,11 @@ onMounted(() => {
   height: 100%;
   position: relative;
   width: 100%;
+}
+.bpx-player-container[data-screen=full],
+.bpx-player-container[data-screen=mini],
+.bpx-player-container[data-screen=web] {
+  z-index: 100000!important;
 }
 .bpx-player-primary-area {
   -webkit-box-orient: vertical;

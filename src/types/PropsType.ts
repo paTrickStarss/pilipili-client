@@ -205,7 +205,9 @@ export interface SelectorInfoProps {
 export interface VideoPlayerQualityItemProps {
   id: number
   text: string
+  value: string
   vip: boolean
+  show: boolean
 }
 
 /**
@@ -214,6 +216,7 @@ export interface VideoPlayerQualityItemProps {
 export interface VideoPlayerPlaybackRateItemProps {
   id: number
   text: string
+  value: number
 }
 
 export interface VideoPageInfoProps {

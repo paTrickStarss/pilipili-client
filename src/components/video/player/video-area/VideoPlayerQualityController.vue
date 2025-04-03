@@ -4,8 +4,18 @@
 
 <script setup lang="ts">
 import VideoPlayerQualityItem from '@/components/video/player/video-area/VideoPlayerQualityItem.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import type { VideoPlayerQualityItemProps } from '@/types/PropsType'
+
+const props = defineProps({
+  level: {
+    type: Number,
+    default: 6
+  }
+})
+watch(() => props.level, () => {
+  doUpdateQualityList(props.level)
+})
 
 // 清晰度
 const currentQualityText = computed<string>(
@@ -19,32 +29,44 @@ const qualityList = ref<VideoPlayerQualityItemProps[]>([
   {
     id: 0,
     text: '4K 超清',
+    value: 'v4k',
     vip: true,
+    show: true,
   },
   {
     id: 1,
     text: '1080P 高码率',
+    value: 'v1080p_hbit',
     vip: true,
+    show: true,
   },
   {
     id: 2,
     text: '1080P 高清',
+    value: 'v1080p',
     vip: false,
+    show: true,
   },
   {
     id: 3,
     text: '720P 高清',
+    value: 'v720p',
     vip: false,
+    show: true,
   },
   {
     id: 4,
     text: '480P 清晰',
+    value: 'v480p',
     vip: false,
+    show: true,
   },
   {
     id: 5,
     text: '360P 流畅',
+    value: 'v360p',
     vip: false,
+    show: true,
   },
 ])
 
@@ -78,6 +100,18 @@ function menuMouseLeave() {
     }
   }, 100)
 }
+
+function doUpdateQualityList(level: number) {
+  // console.log('doUpdateQualityList', level)
+  const unavailableLevelCount = Math.min((qualityList.value.length - level), qualityList.value.length)
+  for (let i = 0; i < unavailableLevelCount; i++) {
+    qualityList.value[i].show = false
+  }
+}
+
+onMounted(() => {
+  doUpdateQualityList(props.level)
+})
 </script>
 
 <template>
@@ -97,7 +131,7 @@ function menuMouseLeave() {
     >
       <ul class="bpx-player-ctrl-quality-menu">
         <video-player-quality-item
-          v-for="item in qualityList"
+          v-for="item in qualityList.filter(q => q.show)"
           :key="item.id"
           :info="item"
           v-model:value="currentQuality"
@@ -115,7 +149,7 @@ function menuMouseLeave() {
   flex: none;
   font-size: 12px;
   margin-right: 10px;
-  width: auto;
+  width: auto !important;
 }
 /*.bpx-player-ctrl-quality:hover {
   margin-top: -10px;

@@ -51,4 +51,30 @@ export class DateTimeUtil {
     }
     return time.fromNow()
   }
+
+  public getFormatTextFromSeconds(seconds: number): string {
+    const hours = Math.floor(seconds / 3600)
+    const remainingSeconds = seconds % 3600
+    const minutes = Math.floor(remainingSeconds / 60)
+    const remainingSecondsAfterMinutes = remainingSeconds % 60
+
+    const paddedHours = hours.toString().padStart(2, '0')
+    const paddedMinutes = minutes.toString().padStart(2, '0')
+    const paddedSeconds = remainingSecondsAfterMinutes.toString().padStart(2, '0')
+
+    if (hours > 0) {
+      return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+    }
+    return `${paddedMinutes}:${paddedSeconds}`
+  }
+
+  public getSecondsFromText(time: string): number {
+    let momentTime: moment.Moment
+    if (time.length <= 5) {
+      momentTime = moment(time, 'mm:ss')
+    } else {
+      momentTime = moment(time, 'HH:mm:ss')
+    }
+    return momentTime.get('seconds')
+  }
 }

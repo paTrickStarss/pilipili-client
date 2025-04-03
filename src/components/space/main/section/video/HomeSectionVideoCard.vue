@@ -31,7 +31,7 @@ defineProps<{
               <span>{{ info.danmakuCount }}</span>
             </div>
             <div class="bili-cover-card__stat">
-              <span>{{ info.duration }}</span>
+              <span>{{ DateTimeUtil.instance.getFormatTextFromSeconds(info.duration) }}</span>
             </div>
           </div>
           <div
