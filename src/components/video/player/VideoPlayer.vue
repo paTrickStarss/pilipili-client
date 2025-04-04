@@ -6,10 +6,10 @@
 import VideoPlayerVideoArea from '@/components/video/player/video-area/VideoPlayerVideoArea.vue'
 import { onMounted, provide, reactive, ref, watch } from 'vue'
 import VideoPlayerSendingArea from '@/components/video/player/sending-area/VideoPlayerSendingArea.vue'
-import Player, { type ControlItem, Popover } from 'nplayer'
-import Danmaku from '@nplayer/danmaku'
-import Hls from 'hls.js'
-import type { DanmakuPluginOption } from '@nplayer/danmaku/src/ts/main'
+// import Player, { type ControlItem, Popover } from 'nplayer'
+// import Danmaku from '@nplayer/danmaku'
+// import Hls from 'hls.js'
+// import type { DanmakuPluginOption } from '@nplayer/danmaku/src/ts/main'
 import { message } from 'ant-design-vue'
 
 const props = defineProps({
@@ -26,31 +26,43 @@ const props = defineProps({
 const controlHidden = ref<boolean>(true)
 const screenMode = ref<string>('normal')
 
-const nplayerRef = ref()
-const hls = new Hls()
-const nplayer = ref<Player>()
-const danmakuOptions = ref<DanmakuPluginOption>({
-  autoInsert: false,
-  items: [
-    { time: 1, text: '弹幕1', color: '#FFFFFF' },
-    { time: 2, text: '弹幕2', color: '#FFFFFF' },
-    { time: 3, text: '弹幕3', color: '#ff4646' },
-    { time: 5, text: '弹幕4', color: '#66CCFF' },
-    { time: 10, text: '弹幕554555', color: '#FFFFFF' },
-  ],
-})
-const quantity: ControlItem = {
-  el: document.createElement('div'),
-  init() {
-    this.btn = document.createElement('div')
-    this.btn.textContent = '画质'
-    this.el.appendChild(this.btn)
-    this.popover = new Popover(this.el)
-    this.btn.addEventListener('click', () => this.popover.show())
-    this.el.style.display = 'block'
-    this.el.classList.add('quantity')
-  },
+function playerMouseEnter() {
+  if (screenMode.value !== 'full') {
+    controlHidden.value = false
+  }
 }
+function playerMouseLeave() {
+  if (screenMode.value !== 'full') {
+    controlHidden.value = true
+  }
+}
+
+// 使用NPlayer方案
+// const nplayerRef = ref()
+// const hls = new Hls()
+// const nplayer = ref<Player>()
+// const danmakuOptions = ref<DanmakuPluginOption>({
+//   autoInsert: false,
+//   items: [
+//     { time: 1, text: '弹幕1', color: '#FFFFFF' },
+//     { time: 2, text: '弹幕2', color: '#FFFFFF' },
+//     { time: 3, text: '弹幕3', color: '#ff4646' },
+//     { time: 5, text: '弹幕4', color: '#66CCFF' },
+//     { time: 10, text: '弹幕554555', color: '#FFFFFF' },
+//   ],
+// })
+// const quantity: ControlItem = {
+//   el: document.createElement('div'),
+//   init() {
+//     this.btn = document.createElement('div')
+//     this.btn.textContent = '画质'
+//     this.el.appendChild(this.btn)
+//     this.popover = new Popover(this.el)
+//     this.btn.addEventListener('click', () => this.popover.show())
+//     this.el.style.display = 'block'
+//     this.el.classList.add('quantity')
+//   },
+// }
 // function createNPlayer() {
 //   const player = new Player({
 //     controls: [
@@ -139,6 +151,7 @@ const quantity: ControlItem = {
 //   player.mount(nplayerRef.value)
 //   nplayer.value = player
 // }
+
 const playerContainerRef = ref<HTMLDivElement>()
 const fullscreenHandler = reactive({
   handleFullscreen: () => {
@@ -148,6 +161,19 @@ const fullscreenHandler = reactive({
 })
 provide('fullscreenHandler', fullscreenHandler)
 
+const danmakuSwitchOn = ref<boolean>(false)
+
+let timer: number | null = null
+function fullscreenMouseMoveHandler(event: MouseEvent) {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  controlHidden.value = false
+  timer = setTimeout(() => {
+    controlHidden.value = true
+    timer = null
+  }, 2000)
+}
 onMounted(() => {
   // console.log('videoPlayer mounted', nplayerOptions.value.src, nplayerOptions.value, nplayer.value)
   // createNPlayer()
@@ -155,9 +181,13 @@ onMounted(() => {
     if (document.fullscreenElement) {
       // 进入全屏
       screenMode.value = 'full'
+      controlHidden.value = true
+      window.addEventListener('mousemove', fullscreenMouseMoveHandler)
     } else {
       // 退出全屏
       screenMode.value = 'normal'
+      // controlHidden.value = true
+      window.removeEventListener('mousemove', fullscreenMouseMoveHandler)
     }
   })
 })
@@ -177,12 +207,16 @@ onMounted(() => {
         <div
           class="bpx-player-primary-area"
           aria-label="播放器"
-          @mouseenter="controlHidden = false"
-          @mouseleave="controlHidden = true"
+          @mouseenter="playerMouseEnter"
+          @mouseleave="playerMouseLeave"
         >
-          <video-player-video-area :src="src" :data-shadow-show="controlHidden" />
+          <video-player-video-area
+            :src="src"
+            :data-shadow-show="controlHidden"
+            :danmaku-switch-on="danmakuSwitchOn"
+          />
 <!--          <div ref="nplayerRef"></div>-->
-          <video-player-sending-area />
+          <video-player-sending-area v-model:switch="danmakuSwitchOn" />
         </div>
       </div>
     </div>

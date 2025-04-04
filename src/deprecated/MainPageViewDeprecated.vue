@@ -11,7 +11,7 @@ import {
   RightCircleOutlined,
 } from '@ant-design/icons-vue'
 import VideoInfoCard from '@/components/video/VideoInfoCard.vue'
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import type {
   CarouselInfoType,
   VideoCardFlowInfoType,
@@ -110,7 +110,7 @@ onMounted(() => {
     signal: controller.signal,
   })
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   // window.removeEventListener('scroll', scrollEventHandler)
   controller.abort()
 })

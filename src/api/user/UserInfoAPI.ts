@@ -14,6 +14,10 @@ export const userInfoAPI = {
   getUserInfo(uid: string) {
     return axios.get(`/api/user/${uid}`)
   },
+
+  queryRela(fromUid: number, toUid: number) {
+    return axios.get(`/api/user/isFollow`, { params: { fromUid, toUid }})
+  },
   queryFollowers(query: PageQueryUserRelaReq) {
     return axios.get('/api/user/pageQueryFollowers', { params: { ...query }})
   },

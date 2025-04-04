@@ -10,20 +10,32 @@ defineProps({
 </script>
 
 <template>
-  <div class="danmaku-wrap bili-danmaku-x-dm">
+  <div
+    class="bili-danmaku-x-dm bili-danmaku-x-roll bili-danmaku-x-show"
+    style="
+      --translateX: -1277px;
+      --duration: 9s;
+      --opacity: 0.47;
+      --fontSize: 25px;
+      --fontFamily: 'Microsoft YaHei', Arial, Helvetica, sans-serif;
+      --fontWeight: bold;
+      --color: #e70012;
+      --textShadow: 1px 1px 2px #000000,0 0 1px #000000;
+    "
+  >
     {{ content }}
   </div>
 </template>
 
 <style scoped>
-.danmaku-wrap {
+/*.danmaku-wrap {
   --opacity: 0.47;
   --fontSize: 25px;
   --fontFamily: 'Microsoft YaHei', Arial, Helvetica, sans-serif;
   --fontWeight: bold;
   --color: #e70012;
   --textShadow: 1px 1px 2px #000000,0 0 1px #000000;
-}
+}*/
 .bili-danmaku-x-dm {
   position: absolute;
   line-height: 1.125;
@@ -60,5 +72,26 @@ defineProps({
 .bili-danmaku-x-paused .bili-danmaku-x-dm {
   -webkit-animation-play-state: paused !important;
   animation-play-state: paused !important;
+}
+
+.bili-danmaku-x-dm.bili-danmaku-x-show {
+  opacity: var(--opacity, 1);
+  display: -webkit-box;
+}
+
+.bili-danmaku-x-dm.bili-danmaku-x-show.bili-danmaku-x-roll {
+  -webkit-animation: roll linear var(--duration) forwards;
+  animation: roll linear var(--duration) forwards;
+}
+
+@keyframes roll {
+  0% {
+    -webkit-transform: translateX(0) translateZ(0);
+    transform: translateX(0) translateZ(0);
+  }
+  100% {
+    -webkit-transform: translateX(var(--translateX)) translateZ(0);
+    transform: translateX(var(--translateX)) translateZ(0);
+  }
 }
 </style>

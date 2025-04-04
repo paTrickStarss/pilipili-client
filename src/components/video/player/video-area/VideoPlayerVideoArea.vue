@@ -3,22 +3,28 @@
   -->
 
 <script setup lang="ts">
-
 import VideoPlayerDanmakuItem from '@/components/video/player/video-area/VideoPlayerDanmakuItem.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import Hls from 'hls.js'
 import VideoPlayerControl from '@/components/video/player/video-area/control/VideoPlayerControl.vue'
 
 const props = defineProps({
   src: {
     type: String,
-    required: true
+    required: true,
+  },
+  danmakuSwitchOn: {
+    type: Boolean,
+    required: true,
   },
   dataShadowShow: Boolean,
 })
+watch(() => props.danmakuSwitchOn, (value: boolean) => {
+  console.log('danmakuSwitchOn', value)
+})
 
 const loadingOver = ref<boolean>(false)
-const videoSrc = ref<string>()
+// const videoSrc = ref<string>()
 const videoRef = ref<HTMLVideoElement>()
 
 const hls = new Hls()
@@ -30,7 +36,6 @@ function initHls() {
   }
   hls.attachMedia(videoRef.value)
   hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       // 清晰度降序排序
       hls.levels.sort((a, b) => {
@@ -41,7 +46,7 @@ function initHls() {
         }
       })
       // const frag = document.createDocumentFragment()
-      qualityLevel.value = Math.max((hls.levels.length - 2), 0)
+      qualityLevel.value = Math.max(hls.levels.length - 2, 0)
       console.log('hls.levels', hls.levels, qualityLevel.value)
       // const listener = (i: number) => (init: unknown) => {
       //   const last = quantity.itemElements[quantity.itemElements.length - 1]
@@ -91,29 +96,44 @@ function initHls() {
       // listener(hls.levels[0].id)
     })
     // 使用HLS格式的视频流播放
-    hls.loadSource('/hls/input-1/master.m3u8')
-    // hls.loadSource(props.src)
-    videoRef.value?.play()
+    hls.loadSource(props.src)
+    // hls.loadSource('/hls/input-1/master.m3u8')
+    // videoRef.value?.play()
   })
-
 }
 function updateHlsLevel(level: number) {
   console.log('updateHlsLevel', level)
   hls.loadLevel = level
   hls.currentLevel = level
 }
+
+const controlRef = ref()
+
+let timer: number | undefined;
+function videoClick() {
+  if (timer) {
+    clearTimeout(timer)
+    timer = undefined
+    controlRef.value?.videoFullScreen()
+  } else {
+    timer = setTimeout(() => {
+      controlRef.value?.videoPauseOrPlay()
+      timer = undefined
+    }, 300)
+  }
+}
+
 onMounted(() => {
   initHls()
   loadingOver.value = true
 })
-
 </script>
 
 <template>
   <div class="bpx-player-video-area">
     <div class="bpx-player-error-sign"></div>
 
-<!--    视频内容区域-->
+    <!--    视频内容区域-->
     <div class="bpx-player-video-perch">
       <div class="bpx-player-video-wrap">
         <video
@@ -121,10 +141,10 @@ onMounted(() => {
           id="video-player"
           crossorigin="anonymous"
           preload="auto"
+          @click="videoClick"
         />
       </div>
     </div>
-
 
     <div class="bpx-player-video-poster" v-show="false"></div>
     <div class="bpx-player-visual-wrap">
@@ -133,20 +153,31 @@ onMounted(() => {
 
     <!--      弹幕渲染区域-->
     <div class="bpx-player-render-dm-wrap">
-      <div class="bpx-player-adv-dm-wrap"></div>
-      <div class="bpx-player-bas-dm-wrap">
-        <div class="bas-danmaku bas-danmaku-pause" style="width: 100%"></div>
+      <div
+        class="bpx-player-dm-svg-mask-wrap"
+        :style="{ opacity: 0, visibility: `${danmakuSwitchOn? 'hidden' : 'visible'}` }"
+      ></div>
+
+      <div class="bpx-player-dm-mask-wrap" v-show="danmakuSwitchOn">
+        <div class="bpx-player-adv-dm-wrap"></div>
+        <div class="bpx-player-bas-dm-wrap">
+          <div class="bas-danmaku bas-danmaku-pause" style="width: 100%"></div>
+        </div>
+        <div class="bpx-player-row-dm-wrap bili-danmaku-x-paused">
+          <div class="bili-danmaku-x-dm-rotate"></div>
+          <VideoPlayerDanmakuItem
+            v-for="i in 10"
+            :key="i"
+            :content="`弹幕${i}`"
+          />
+        </div>
       </div>
-      <div class="bpx-player-row-dm-wrap bili-danmaku-x-paused">
-        <div class="bili-danmaku-x-dm-rotate"></div>
-        <VideoPlayerDanmakuItem
-          v-for="i in 10"
-          :key="i"
-          :content="`弹幕${i}`"
-        />
-      </div>
+
       <div class="bpx-player-cmd-dm-wrap">
-        <div class="bpx-player-cmd-dm-inside" style="width: 750px; height: 422px;"></div>
+        <div
+          class="bpx-player-cmd-dm-inside"
+          style="width: 750px; height: 422px"
+        ></div>
       </div>
     </div>
 
@@ -160,6 +191,7 @@ onMounted(() => {
 
     <!--      视频控制栏-->
     <video-player-control
+      ref="controlRef"
       v-if="loadingOver"
       :data-shadow-show="dataShadowShow"
       v-model:video="videoRef"
@@ -171,7 +203,6 @@ onMounted(() => {
     <div class="bpx-player-music-wrap"></div>
     <div class="bpx-player-business-wrap business-hide"></div>
     <div class="bpx-player-mini-warp" v-show="false"></div>
-
   </div>
 </template>
 
@@ -235,7 +266,6 @@ onMounted(() => {
   width: 100%;
 }
 
-
 .bpx-player-video-poster {
   bottom: 0;
   height: 100%;
@@ -252,7 +282,7 @@ onMounted(() => {
   width: 100%;
 }
 .bpx-player-visual-wrap .bpx-player-visual-pixel {
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, 0.1);
   height: 1px;
   left: 0;
   position: absolute;
@@ -272,7 +302,10 @@ onMounted(() => {
   justify-content: center;
   z-index: 11;
 }
-.bpx-player-adv-dm-wrap, .bpx-player-bas-dm-wrap, .bpx-player-row-dm-wrap {
+.bpx-player-adv-dm-wrap,
+.bpx-player-bas-dm-wrap,
+.bpx-player-dm-mask-wrap,
+.bpx-player-row-dm-wrap {
   cursor: pointer;
   height: 100%;
   left: 0;
@@ -298,8 +331,8 @@ onMounted(() => {
   pointer-events: none;
   position: absolute;
   top: 50%;
-  -webkit-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -320,7 +353,6 @@ onMounted(() => {
   transform-origin: center;
   z-index: 4;
 }
-
 
 .bpx-player-cmd-dm-wrap {
   -webkit-box-align: center;
@@ -370,8 +402,12 @@ onMounted(() => {
 .bpx-player-ending-wrap,
 .bpx-player-share-panel {
   opacity: 0;
-  -webkit-transition: opacity .2s linear,visibility 0ms .2s;
-  transition: opacity .2s linear,visibility 0ms .2s;
+  -webkit-transition:
+    opacity 0.2s linear,
+    visibility 0ms 0.2s;
+  transition:
+    opacity 0.2s linear,
+    visibility 0ms 0.2s;
   visibility: hidden;
 }
 .bpx-player-subtitle-wrap {
@@ -386,12 +422,12 @@ onMounted(() => {
   pointer-events: none;
   position: absolute;
   top: 0;
-  -webkit-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   width: 100%;
   z-index: 45;
 }
-.bpx-player-container[data-ctrl-hidden=true] .bpx-player-top-wrap {
+.bpx-player-container[data-ctrl-hidden='true'] .bpx-player-top-wrap {
   opacity: 0;
   visibility: hidden;
 }
@@ -427,11 +463,6 @@ onMounted(() => {
   z-index: 65;
 }
 
-
-
-
-
-
 .bpx-player-music-wrap {
   position: absolute;
   right: 0;
@@ -466,8 +497,4 @@ onMounted(() => {
   top: 0;
   z-index: 12;
 }
-
-
-
-
 </style>

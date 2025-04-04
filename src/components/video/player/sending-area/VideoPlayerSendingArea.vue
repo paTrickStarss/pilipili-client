@@ -17,7 +17,8 @@ const onlineCountText = computed<string>(() =>
   onlineCount.value > 1000 ? '1000+': onlineCount.value.toString()
 )
 
-const danmakuSwitchOn = ref<boolean>(false)
+const danmakuSwitchOn = defineModel('switch',
+  { type: Boolean, required: true })
 const danmakuInput = ref<string>('')
 
 function sendDanmaku() {

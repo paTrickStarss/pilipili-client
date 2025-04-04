@@ -3,7 +3,7 @@
   -->
 
 <script setup lang="ts">
-import VideoPlayerQualityItem from '@/components/video/player/video-area/VideoPlayerQualityItem.vue'
+import VideoPlayerQualityItem from '@/components/video/player/video-area/control/VideoPlayerQualityItem.vue'
 import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import type { VideoPlayerQualityItemProps } from '@/types/PropsType'
 

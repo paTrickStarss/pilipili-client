@@ -4,19 +4,19 @@
 
 <script setup lang="ts">
 import IconVideoPlayerPause from '@/components/icons/IconVideoPlayerPause.vue'
-import VideoPlayerSettingsController from '@/components/video/player/video-area/VideoPlayerSettingsController.vue'
+import VideoPlayerSettingsController from '@/components/video/player/video-area/control/VideoPlayerSettingsController.vue'
 import IconFullScreen from '@/components/icons/IconFullScreen.vue'
 import IconVideoPlayerPlay from '@/components/icons/IconVideoPlayerPlay.vue'
 import IconSubtitle from '@/components/icons/IconSubtitle.vue'
 import IconSubtitleDeactivated from '@/components/icons/IconSubtitleDeactivated.vue'
 import IconPipEnter from '@/components/icons/IconPipEnter.vue'
-import VideoPlayerQualityController from '@/components/video/player/video-area/VideoPlayerQualityController.vue'
-import VideoPlayerVolumeController from '@/components/video/player/video-area/VideoPlayerVolumeController.vue'
+import VideoPlayerQualityController from '@/components/video/player/video-area/control/VideoPlayerQualityController.vue'
+import VideoPlayerVolumeController from '@/components/video/player/video-area/control/VideoPlayerVolumeController.vue'
 import IconWebEnter from '@/components/icons/IconWebEnter.vue'
 import IconProgressThumb from '@/components/icons/IconProgressThumb.vue'
 import IconWideEnter from '@/components/icons/IconWideEnter.vue'
-import VideoPlayerPlayerbackRateController from '@/components/video/player/video-area/VideoPlayerPlayerbackRateController.vue'
-import { inject, onMounted, ref, watch } from 'vue'
+import VideoPlayerPlayerbackRateController from '@/components/video/player/video-area/control/VideoPlayerPlayerbackRateController.vue'
+import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { VideoPlayerPlaybackRateItemProps } from '@/types/PropsType'
 import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import { isEmptyString } from '@/utils/CommonUtil'
@@ -28,8 +28,8 @@ const props = defineProps({
   },
   qualityLevel: {
     type: Number,
-    default: 6
-  }
+    default: 6,
+  },
 })
 const emits = defineEmits({
   /**
@@ -37,6 +37,10 @@ const emits = defineEmits({
    * @param level
    */
   updateHlsLevel: (level: number) => true,
+})
+defineExpose({
+  videoPauseOrPlay,
+  videoFullScreen,
 })
 
 const videoRef = defineModel('video', {
@@ -50,7 +54,6 @@ const currentPointX = ref<number>(50)
 const currentPointTime = ref<number>(50)
 const indicatorLeft = ref<number>(104)
 // const seekTime = ref<number>(0)
-const seekTimeText = ref<string>('00:00')
 const currentTime = ref<number>(0)
 const duration = ref<number>(0)
 const previewImageB64 = ref<string>()
@@ -58,10 +61,13 @@ const playerPause = ref<boolean>(true)
 
 // 清晰度 1 - 6 (360p 480p 720p 1080p 1080p_hbit 4k)
 // const qualityLevel = ref<number>(6)
-watch(() => props.qualityLevel, () => {
-  console.log('qualityLevel updated', props.qualityLevel)
-  currentQuality.value = 6 - props.qualityLevel
-})
+watch(
+  () => props.qualityLevel,
+  () => {
+    console.log('qualityLevel updated', props.qualityLevel)
+    currentQuality.value = 6 - props.qualityLevel
+  },
+)
 const currentQuality = ref<number>(6 - props.qualityLevel)
 watch(currentQuality, () => {
   console.log('currentQuality', currentQuality)
@@ -78,52 +84,48 @@ watch(currentPlaybackRate, () => {
 // 字幕
 const showSubtitle = ref<boolean>(false)
 // 音量
-const volume = ref<number>(70)
+const volume = ref<number>(100)
 watch(volume, () => {
   videoRef.value.volume = volume.value / 100
 })
-// watch(() => videoRef.value.currentTime, () => {
-//
-// })
 
 // 播放/暂停
 function videoPauseOrPlay() {
   if (playerPause.value) {
     // 播放
     videoRef.value.play()
-    playerPause.value = false
   } else {
     // 暂停
     videoRef.value.pause()
-    playerPause.value = true
   }
 }
 
 const isDragging = ref<boolean>(false)
-// 开始拖动进度条
-const startDrag = (event: MouseEvent) => {
-  isDragging.value = true
-  updateSeek(event)
-  document.addEventListener('mousemove', updateSeek)
-  document.addEventListener('mouseup', endDrag)
-}
-
-// 更新拖动进度
-const updateSeek = (event: MouseEvent) => {
-  if (isDragging.value && videoRef.value) {
-    const rect = (event.target as HTMLElement).getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const width = rect.width
-    videoRef.value.currentTime = (x / width) * videoRef.value.duration
-  }
-}
-
-// 结束拖动
-const endDrag = () => {
-  isDragging.value = false
-  document.removeEventListener('mousemove', updateSeek)
-  document.removeEventListener('mouseup', endDrag)
-}
+// // 开始拖动进度条
+// const startDrag = (event: MouseEvent) => {
+//   isDragging.value = true
+//   updateSeek(event)
+//   document.addEventListener('mousemove', updateSeek)
+//   document.addEventListener('mouseup', endDrag)
+// }
+//
+// // 更新拖动进度
+// const updateSeek = (event: MouseEvent) => {
+//   console.log('updateSeek', event)
+//   if (isDragging.value && videoRef.value) {
+//     const rect = (event.target as HTMLElement).getBoundingClientRect()
+//     const x = event.clientX - rect.left
+//     const width = rect.width
+//     videoRef.value.currentTime = (x / width) * videoRef.value.duration
+//   }
+// }
+//
+// // 结束拖动
+// const endDrag = () => {
+//   isDragging.value = false
+//   document.removeEventListener('mousemove', updateSeek)
+//   document.removeEventListener('mouseup', endDrag)
+// }
 
 // 点击进度条跳转
 const seekVideo = (event: MouseEvent) => {
@@ -131,26 +133,74 @@ const seekVideo = (event: MouseEvent) => {
     const rect = (event.target as HTMLElement).getBoundingClientRect()
     const x = event.clientX - rect.left
     const width = rect.width
+    console.log(
+      'seekVideo',
+      x,
+      width,
+      event.clientX,
+      event.clientY,
+      rect,
+      event.target,
+    )
     videoRef.value.currentTime = (x / width) * videoRef.value.duration
   }
 }
-const seekTimeRef = ref()
+// 输入时间跳转
+const seekTimeInputRef = ref()
 const showSeekTimeInput = ref<boolean>(false)
+const seekTimeText = ref<string>('00:00')
+watch(showSeekTimeInput, () => {
+  if (showSeekTimeInput.value) {
+    // 要等DOM更新后才能focus
+    seekTimeText.value = DateTimeUtil.instance.getFormatTextFromSeconds(
+      videoRef.value.currentTime,
+    )
+    setTimeout(() => {
+      seekTimeInputRef.value.focus()
+    })
+  } else {
+    seekTimeInputRef.value.blur()
+  }
+})
 function jumpVideoTime() {
+  // seekTimeInputRef.value.blur()
   if (isEmptyString(seekTimeText.value)) {
     return
   }
   const seekTime = DateTimeUtil.instance.getSecondsFromText(seekTimeText.value)
   console.log('seekTime', seekTime)
-  videoRef.value.currentTime = seekTime
-  seekTimeRef.value.blur()
+  if (seekTime) {
+    videoRef.value.currentTime = seekTime
+  }
+  seekTimeInputRef.value.blur()
 }
-
+// 更新播放速度
 function changePlaybackRate(rate: number) {
   videoRef.value.playbackRate = rate
   console.log('changePlaybackRate', rate)
 }
 
+// 画中画
+const pipBtnRef = ref()
+function handleVideoPip() {
+  if (document.pictureInPictureElement) {
+    document.exitPictureInPicture()
+  } else {
+    videoRef.value.requestPictureInPicture()
+  }
+}
+const pipThreshold = 600
+function scrollListener() {
+  const scrollY = window.scrollY
+  // console.log('scrollListener', scrollY)
+  if (scrollY >= pipThreshold && !document.pictureInPictureElement) {
+    pipBtnRef.value.click()
+  }
+  if (scrollY <= pipThreshold - 20 && document.pictureInPictureElement) {
+    pipBtnRef.value.click()
+  }
+}
+// 全屏
 const fullscreenHandler = inject('fullscreenHandler') as {
   handleFullscreen: () => void
 }
@@ -169,9 +219,9 @@ function updatePlayProgress() {
   const progress = videoRef.value.currentTime / videoRef.value.duration
   // console.log('updatePlayProgress', videoRef.value.currentTime, progress)
   progressCurrent.value = progress * 100
-  if (progress == 1) {
-    playerPause.value = true
-  }
+  // if (progress == 1) {
+  //   playerPause.value = true
+  // }
 }
 function updatePlayBuffered() {
   const buffered = videoRef.value.buffered
@@ -183,9 +233,86 @@ function updatePlayBuffered() {
   // console.log('updatePlayBuffered', videoRef.value.currentTime, bufferedProgress)
   progressBuffer.value = bufferedProgress * 100
 }
+
+// 方向键时间跳转步长（秒）
+const jumpPace: number = 5
+function peekTime(forward: boolean) {
+  if (forward) {
+    videoRef.value.currentTime = Math.min(
+      videoRef.value.duration,
+      videoRef.value.currentTime + jumpPace,
+    )
+  } else {
+    videoRef.value.currentTime = Math.max(
+      0,
+      videoRef.value.currentTime - jumpPace,
+    )
+  }
+}
+const volumePace: number = 5
+function adjustVolume(up: boolean) {
+  if (up) {
+    volume.value = Math.min(
+      100,
+      videoRef.value.volume*100 + volumePace,
+    )
+  } else {
+    volume.value = Math.max(
+      0,
+      videoRef.value.volume*100 - volumePace,
+    )
+  }
+}
+const volumeControlRef = ref()
+
+function onKeyDown(event: KeyboardEvent) {
+  console.log('onkeydown', event.key)
+  switch (event.key) {
+    case 'f':
+    case 'F':
+      videoFullScreen()
+      break
+    case 'ArrowLeft':
+      peekTime(false)
+      break
+    case 'ArrowRight':
+      peekTime(true)
+      break
+    case 'ArrowDown':
+      adjustVolume(false)
+      event.preventDefault()
+      break
+    case 'ArrowUp':
+      adjustVolume(true)
+      event.preventDefault()
+      break
+    case ' ':
+      videoPauseOrPlay()
+      event.preventDefault()
+      break
+    case 'm':
+    case 'M':
+      volumeControlRef.value.switchMuted()
+      break
+  }
+}
 onMounted(() => {
   videoRef.value.ontimeupdate = updatePlayProgress
   videoRef.value.onprogress = updatePlayBuffered
+  videoRef.value.onplay = () => {
+    playerPause.value = false
+  }
+  videoRef.value.onpause = () => {
+    playerPause.value = true
+  }
+
+  window.addEventListener('scroll', scrollListener)
+  window.addEventListener('keydown', onKeyDown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', scrollListener)
+  window.removeEventListener('keydown', onKeyDown)
 })
 </script>
 
@@ -201,13 +328,18 @@ onMounted(() => {
             <div class="bpx-player-progress" style="height: 4px">
               <!--                  进度条块（已播放和已缓冲）-->
               <div class="bpx-player-progress-schedule-wrap">
-                <div class="bpx-player-progress-schedule" @click="seekVideo">
+                <div
+                  id="progress-schedule"
+                  class="bpx-player-progress-schedule"
+                  @click="seekVideo"
+                >
                   <div
+                    id="progress-schedule-current"
                     class="bpx-player-progress-schedule-current"
                     :style="{ transform: `scaleX(${progressCurrent}%)` }"
-                    @mousedown="startDrag"
                   ></div>
                   <div
+                    id="progress-schedule-buffer"
                     class="bpx-player-progress-schedule-buffer"
                     :style="{ transform: `scaleX(${progressBuffer}%)` }"
                   ></div>
@@ -274,6 +406,7 @@ onMounted(() => {
       <!--          控制栏底部：控制按钮-->
       <div class="bpx-player-control-bottom">
         <div class="bpx-player-control-bottom-left">
+          <!--          播放/暂停-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-play"
             aria-label="播放/暂停"
@@ -300,23 +433,26 @@ onMounted(() => {
               </span>
             </div>
           </div>
-          <div
-            ref="seekTimeRef"
-            class="bpx-player-ctrl-btn bpx-player-ctrl-time"
-            tabindex="0"
-            @focus="showSeekTimeInput = true"
-            @blur="showSeekTimeInput = false"
-          >
-<!--            todo: 输入时间跳转待实现-->
+          <!--          当前时间/时间跳转-->
+          <div class="bpx-player-ctrl-btn bpx-player-ctrl-time">
             <input
+              ref="seekTimeInputRef"
               class="bpx-player-ctrl-time-seek"
               v-model="seekTimeText"
               v-show="showSeekTimeInput"
+              @blur="showSeekTimeInput = false"
               @keydown.enter="jumpVideoTime"
             />
-            <div class="bpx-player-ctrl-time-label" v-show="!showSeekTimeInput">
+            <div
+              class="bpx-player-ctrl-time-label"
+              v-show="!showSeekTimeInput"
+              tabindex="0"
+              @click="showSeekTimeInput = true"
+            >
               <span class="bpx-player-ctrl-time-current">
-                {{ DateTimeUtil.instance.getFormatTextFromSeconds(currentTime) }}
+                {{
+                  DateTimeUtil.instance.getFormatTextFromSeconds(currentTime)
+                }}
               </span>
               <span class="bpx-player-ctrl-time-divide">/</span>
               <span class="bpx-player-ctrl-time-duration">
@@ -338,6 +474,7 @@ onMounted(() => {
             v-model:value="currentPlaybackRate"
             @updatePlaybackRate="changePlaybackRate"
           />
+          <!--          字幕-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-subtitle"
             aria-label="字幕"
@@ -368,14 +505,20 @@ onMounted(() => {
             </div>
           </div>
           <!--            音量控制-->
-          <video-player-volume-controller v-model:value="volume" />
+          <video-player-volume-controller
+            ref="volumeControlRef"
+            v-model:value="volume"
+          />
           <!--            设置-->
           <video-player-settings-controller />
+          <!--          画中画-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-pip"
             aria-label="画中画"
             title="画中画"
             tabindex="0"
+            ref="pipBtnRef"
+            @click="handleVideoPip"
           >
             <div class="bpx-player-ctrl-btn-icon bpx-player-ctrl-pip-enter">
               <span class="bpx-common-svg-icon">
@@ -389,6 +532,7 @@ onMounted(() => {
               </span>
             </div>
           </div>
+          <!--          宽屏-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-wide"
             aria-label="宽屏"
@@ -407,6 +551,7 @@ onMounted(() => {
               </span>
             </div>
           </div>
+          <!--          网页全屏-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-web"
             aria-label="网页全屏"
@@ -425,6 +570,7 @@ onMounted(() => {
               </span>
             </div>
           </div>
+          <!--          全屏-->
           <div
             class="bpx-player-ctrl-btn bpx-player-ctrl-full"
             aria-label="全屏"

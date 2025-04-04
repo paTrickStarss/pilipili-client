@@ -102,6 +102,32 @@ export interface UserInfoType {
 }
 
 /**
+ * 用户关注关系信息
+ */
+export interface UserRelaInfoType {
+  /**
+   * 关注发起者uid
+   */
+  fromUid: number
+  /**
+   * 被关注者uid
+   */
+  toUid: number
+  /**
+   * 关注
+   */
+  isFollow: boolean
+  /**
+   * 特别关注
+   */
+  isSpecial: boolean
+  /**
+   * 互相关注
+   */
+  isMutual: boolean
+}
+
+/**
  * 视频详情信息
  */
 export interface VideoDTOType {

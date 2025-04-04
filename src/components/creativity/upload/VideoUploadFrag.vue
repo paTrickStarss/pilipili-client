@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import IconUpload from '@/components/icons/IconUpload.vue'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { WebSocketHelper } from '@/utils/WebSocketHelper'
 import { useTokenStore } from '@/stores/token'
@@ -325,7 +325,6 @@ async function handleSubmit() {
     return
   }
 
-  // todo: 保存视频信息
   // message.info('保存视频信息')
   videoInfo.value.title = videoInfoForm.value.title
   videoInfo.value.uid = token.uid
@@ -418,7 +417,7 @@ onMounted(async () => {
   initWsClient().then()
   fetchCategoryList().then()
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   WebSocketHelper.instance.close()
   window.removeEventListener('beforeunload', beforeUnload)
 })

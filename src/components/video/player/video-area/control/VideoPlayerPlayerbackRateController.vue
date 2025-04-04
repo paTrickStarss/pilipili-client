@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 
-import VideoPlayerPlaybackRateItem from '@/components/video/player/video-area/VideoPlayerPlaybackRateItem.vue'
+import VideoPlayerPlaybackRateItem from '@/components/video/player/video-area/control/VideoPlayerPlaybackRateItem.vue'
 import { computed, ref, watch } from 'vue'
 import type { VideoPlayerPlaybackRateItemProps } from '@/types/PropsType'
 

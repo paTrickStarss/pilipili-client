@@ -14,6 +14,9 @@ const value = defineModel('value', {
   required: true,
   validator: (value: number) => value >= 0 && value <= 100,
 })
+defineExpose({
+  switchMuted
+})
 
 const valueCache = ref<number>(value.value)
 const muted = ref<boolean>(false)
@@ -90,7 +93,7 @@ function menuMouseLeave() {
       @mouseenter="menuMouseEnter"
       @mouseleave="menuMouseLeave"
     >
-      <div class="bpx-player-ctrl-volume-number">{{ value }}</div>
+      <div class="bpx-player-ctrl-volume-number">{{ value.toFixed(0) }}</div>
       <slider-bar
         class="bpx-player-ctrl-volume-progress"
         v-model:value="value"

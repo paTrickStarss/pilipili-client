@@ -6,7 +6,7 @@
 
 import IndexView from '@/views/index/IndexView.vue'
 import VideoInfo from '@/components/video/VideoInfo.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref } from 'vue'
 import type { VideoPageInfoProps, VideoToolbarInfoProps } from '@/types/PropsType'
 import VideoPlayer from '@/components/video/player/VideoPlayer.vue'
 import VideoPlayerPlaceholder from '@/components/video/player/video-area/VideoPlayerPlaceholder.vue'
@@ -19,6 +19,8 @@ import { copyFieldValue } from '@/utils/CommonUtil'
 import VideoDescription from '@/components/video/description/VideoDescription.vue'
 import VideoTag from '@/components/video/tag/VideoTag.vue'
 import VideoComment from '@/components/video/comment/VideoComment.vue'
+import UpUserPanel from '@/components/video/right-container/UpUserPanel.vue'
+import UserInfoCardPopover from '@/components/global/UserInfoCardPopover.vue'
 
 const token = useTokenStore()
 const playerLoading = ref<boolean>(true)
@@ -79,6 +81,13 @@ async function fetchData() {
   //   console.log('fetchData', error)
   // }
 }
+
+const userInfoPopRef = ref()
+const refHandler = reactive({
+  userInfoPopRef,
+})
+provide('refHandler', refHandler)
+
 onMounted(() => {
   fetchData()
 })
@@ -108,9 +117,22 @@ onMounted(() => {
       </div>
 
       <div class="right-container">
+        <div class="right-container-inner scroll-sticky">
+<!--          投稿用户名片-->
+          <up-user-panel
+            v-if="!playerLoading"
+            :uid="videoInfoDTO?.uid || 0"
+          />
+<!--          弹幕列表-->
 
+
+<!--          推荐视频-->
+
+        </div>
       </div>
     </div>
+
+    <user-info-card-popover ref="userInfoPopRef" />
   </index-view>
 </template>
 
@@ -151,6 +173,17 @@ onMounted(() => {
   position: relative;
   pointer-events: none;
 }
+.video-container-v1 .right-container .right-container-inner {
+  padding-bottom: 250px;
+}
+.video-container-v1 .right-container .right-container-inner.scroll-sticky {
+  position: sticky;
+}
+.video-container-v1 .right-container .right-container-inner * {
+  pointer-events: all;
+}
+
+
 
 .fixed-sidenav-storage {
   position: fixed;

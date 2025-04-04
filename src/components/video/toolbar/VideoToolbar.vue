@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import IconVideoLike from '@/components/icons/IconVideoLike.vue'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue'
 import IconVideoCoin from '@/components/icons/IconVideoCoin.vue'
 import IconVideoCollect from '@/components/icons/IconVideoCollect.vue'
 import IconVideoShare from '@/components/icons/IconVideoShare.vue'
@@ -252,7 +252,7 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   window.addEventListener('keyup', handleKeyup)
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('keyup', handleKeyup)
 })

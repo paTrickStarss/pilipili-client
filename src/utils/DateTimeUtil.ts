@@ -17,6 +17,10 @@ export class DateTimeUtil {
     return DateTimeUtil._instance
   }
 
+  private timeRegexHourMinutesSeconds: RegExp = /^([0-9]|[01][0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/
+  private timeRegexMinutesSeconds: RegExp = /^([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/
+  private timeRegexSeconds: RegExp = /^([0-9]|[0-5][0-9])$/
+
   /**
    * 获取日期字符串
    * @param dateTime
@@ -52,15 +56,19 @@ export class DateTimeUtil {
     return time.fromNow()
   }
 
+  /**
+   * 从秒数转为时间字符串
+   * @param seconds
+   */
   public getFormatTextFromSeconds(seconds: number): string {
     const hours = Math.floor(seconds / 3600)
     const remainingSeconds = seconds % 3600
     const minutes = Math.floor(remainingSeconds / 60)
     const remainingSecondsAfterMinutes = remainingSeconds % 60
 
-    const paddedHours = hours.toString().padStart(2, '0')
-    const paddedMinutes = minutes.toString().padStart(2, '0')
-    const paddedSeconds = remainingSecondsAfterMinutes.toString().padStart(2, '0')
+    const paddedHours = hours.toFixed(0).padStart(2, '0')
+    const paddedMinutes = minutes.toFixed(0).padStart(2, '0')
+    const paddedSeconds = remainingSecondsAfterMinutes.toFixed(0).padStart(2, '0')
 
     if (hours > 0) {
       return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
@@ -68,13 +76,27 @@ export class DateTimeUtil {
     return `${paddedMinutes}:${paddedSeconds}`
   }
 
-  public getSecondsFromText(time: string): number {
-    let momentTime: moment.Moment
-    if (time.length <= 5) {
-      momentTime = moment(time, 'mm:ss')
-    } else {
-      momentTime = moment(time, 'HH:mm:ss')
+  /**
+   * 从时间字符串转为秒数
+   * @param time
+   */
+  public getSecondsFromText(time: string): number | undefined {
+    if (this.timeRegexHourMinutesSeconds.test(time)) {
+      const splitArr = time.split(':')
+      const hours = Number(splitArr[0])
+      const minutes = Number(splitArr[1])
+      const seconds = Number(splitArr[2])
+      return (hours*3600 + minutes*60 + seconds)
     }
-    return momentTime.get('seconds')
+    if (this.timeRegexMinutesSeconds.test(time)) {
+      const splitArr = time.split(':')
+      const minutes = Number(splitArr[0])
+      const seconds = Number(splitArr[1])
+      return (minutes*60 + seconds)
+    }
+    if (this.timeRegexSeconds.test(time)) {
+      return Number(time)
+    }
+    return undefined
   }
 }

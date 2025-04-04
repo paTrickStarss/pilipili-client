@@ -37,12 +37,24 @@ function drag(event: MouseEvent) {
 function stopDrag() {
   isDragging = false;
 }
+
+// function seekPointValue(event: MouseEvent) {
+//   setTimeout(() => {
+//     if (isDragging) return
+//     const rect = (event.target as HTMLElement).getBoundingClientRect()
+//     const y = rect.bottom - event.clientY;
+//     const height = rect.height
+//     value.value = (y / height) * 100
+//   })
+// }
 </script>
 
 <template>
   <div class="bui bui-slider">
     <div class="bui-area">
-      <div class="bui-track bui-track-vertical">
+      <div
+        class="bui-track bui-track-vertical"
+      >
         <div class="bui-bar-wrap">
           <div
             class="bui-bar bui-bar-normal"

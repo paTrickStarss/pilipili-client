@@ -3,7 +3,7 @@
   -->
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import HeaderBar from '@/components/navbar/HeaderBar.vue'
 import HeaderChannel from '@/components/navbar/HeaderChannel.vue'
@@ -47,7 +47,7 @@ onMounted(() => {
     signal: controller.signal,
   })
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   // window.removeEventListener('scroll', scrollEventHandler)
   controller.abort()
 })
