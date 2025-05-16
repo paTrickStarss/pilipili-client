@@ -6,6 +6,29 @@
 import IndexView from '@/views/index/IndexView.vue'
 import RecommendedSwipe from '@/components/main/RecommendedSwipe.vue'
 import VideoCard from '@/components/video/VideoCard.vue'
+import { onMounted, ref } from 'vue'
+import type { VideoDTOType } from '@/types/ApiRespType'
+import videoInfoAPI from '@/api/video/VideoInfoAPI'
+
+
+const recVideoInfoList = ref<VideoDTOType[]>()
+
+async function fetchRecVideo() {
+  try {
+    const { data } = await videoInfoAPI.pageQueryPassedByUid({
+      pageNo: 1,
+      pageSize: 10,
+      uid: -1,
+    })
+    recVideoInfoList.value = data
+    console.log('recVideoInfoList', recVideoInfoList)
+  } catch (error) {
+    console.log(error)
+  }
+}
+onMounted(() => {
+  fetchRecVideo()
+})
 </script>
 
 <template>
@@ -15,10 +38,15 @@ import VideoCard from '@/components/video/VideoCard.vue'
         <div class="container is-version8">
           <RecommendedSwipe />
 
-          <div class="feed-card" v-for="i in 20" :key="i">
+          <div
+            class="feed-card"
+            v-for="info in recVideoInfoList"
+            :key="info.vid"
+          >
             <VideoCard
               class="enable-no-interest"
               style="--cover-radio: 56.25%"
+              :info="info"
             />
           </div>
         </div>

@@ -5,6 +5,7 @@
 import axios from 'axios'
 import { useTokenStore } from '@/stores/token'
 import { message } from 'ant-design-vue'
+import router from '@/router/index'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -64,6 +65,7 @@ axiosInstance.interceptors.response.use(
       }
       case 404: {
         msg += ': Not Found!'
+        router.push({ name: 'error-page', params: { status: 'not-found'}})
         break
       }
       default: {

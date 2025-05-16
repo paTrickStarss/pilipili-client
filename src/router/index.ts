@@ -4,6 +4,7 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPageView from '@/views/main/MainPageView.vue'
+import VideoPageErrorView from '@/views/error/VideoPageErrorView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,12 @@ const router = createRouter({
       name: 'main-page',
       component: MainPageView,
     },
-
+    // error-page
+    {
+      path: '/error/:status',
+      name: 'error-page',
+      component: VideoPageErrorView,
+    },
     // space
     {
       path: '/space/:id?',
@@ -162,7 +168,20 @@ const router = createRouter({
               /* webpackChunkName: "VideoUploadFrag" */
               '@/components/creativity/upload/VideoUploadFrag.vue'
               )
-        }
+        },
+        {
+          path: '/creativity/audit',
+          name: 'creativity-audit',
+          meta: {
+            mode: 'audit',
+            index: 6
+          },
+          component: () =>
+            import(
+              /* webpackChunkName: "VideoAuditFrag" */
+              '@/components/creativity/audit/VideoAuditFrag.vue'
+              )
+        },
       ]
     }
   ],

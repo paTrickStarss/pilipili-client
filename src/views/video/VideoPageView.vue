@@ -74,12 +74,6 @@ async function fetchData() {
         console.log('getUserVideoInfo', data, toolbarInfo.value)
       })
   }
-  // try {
-  //   const { data } = await videoInfoAPI.get(vid.value)
-  //   console.log('fetchData', data)
-  // } catch (error) {
-  //   console.log('fetchData', error)
-  // }
 }
 
 const userInfoPopRef = ref()
@@ -95,7 +89,7 @@ onMounted(() => {
 
 <template>
   <index-view>
-    <div id="mirror-vdcon" class="video-container-v1">
+    <div id="mirror-vdcon" class="video-container-v1" v-show="!playerLoading">
       <div class="left-container scroll-sticky">
 <!--        视频标题等主要信息-->
         <video-info :info="videoInfoEntity" />

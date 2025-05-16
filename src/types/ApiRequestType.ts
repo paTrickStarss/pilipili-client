@@ -7,8 +7,8 @@
  * 分页查询请求参数
  */
 export interface PageQueryReq {
-  pageNo: number;
-  pageSize: number;
+  pageNo?: number;
+  pageSize?: number;
 }
 /**
  * 登录请求体
@@ -182,11 +182,12 @@ export interface CreateVideoInfoReq {
  */
 export interface PageQueryVideoInfoReq extends PageQueryReq {
   keyword?: string;
+  status?: number;
   publishDateEnd?: string;
   publishDateStart?: string;
   tag?: string;
   title?: string;
-  uid?: number;
+  uid: number;
 }
 /**
  * UpdateCollectionInfoReq

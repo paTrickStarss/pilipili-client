@@ -62,11 +62,11 @@ defineProps<{
           class="bili-video-card__subtitle"
           :title="DateTimeUtil.instance.getDateTime(info.publishTime || info.uploadTime)"
         >
-          <span v-if="info.publishTime">
+          <span v-if="info.status == 2">
             {{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}
           </span>
           <span v-else>
-<!--            <span>未发布</span>-->
+            <span>{{ info.status == 0 ? '视频处理中': info.status == 1? '审核中':'已下架' }}</span>
             {{ DateTimeUtil.instance.getDateTimeString(info.uploadTime) }}
           </span>
         </div>

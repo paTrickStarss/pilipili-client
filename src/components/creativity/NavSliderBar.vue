@@ -129,6 +129,14 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
         route: '#'
       },
     ]
+  },
+  {
+    id: 6,
+    label: '视频审核',
+    iconClass: 'bcc-icon-kefu',
+    autoOpen: false,
+    groupItem: [],
+    route: '/creativity/audit'
   }
 ])
 </script>

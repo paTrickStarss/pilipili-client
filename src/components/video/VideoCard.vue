@@ -12,42 +12,11 @@ import IconUpUserBlack from '@/components/icons/IconUpUserBlack.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import { ref } from 'vue'
 import NoInterestPopover from '@/components/video/NoInterestPopover.vue'
+import type { VideoDTOType } from '@/types/ApiRespType'
 
-defineProps({
-  empty: {
-    type: Boolean,
-    default: false,
-  },
-  coverUrl: {
-    type: String,
-    default: `${ASSETS_BASE_URL}/image/video-cover-1.jpg@672w_378h_1c.avif`,
-  },
-  title: {
-    type: String,
-    default: '母 鸡 卡 生 产 线',
-  },
-  authorName: {
-    type: String,
-    default: '椿棠陌の笙',
-  },
-  playCount: {
-    type: String,
-    default: '0',
-  },
-  danmakuCount: {
-    type: String,
-    default: '0',
-  },
-  duration: {
-    type: String,
-    default: '0:01',
-  },
-  date: {
-    type: String,
-    default: '今天 14:33',
-  },
-})
-const vid = ref<numbner>(1100)
+defineProps<{
+  info: VideoDTOType
+}>()
 const showTinyMenu = ref<boolean>(false)
 const showWatchLaterIcon = ref<boolean>(false)
 const showWatchLaterText = ref<boolean>(false)
@@ -56,7 +25,7 @@ const showWatchLaterText = ref<boolean>(false)
 <template>
   <div class="pili-video-card">
     <!--    skeleton-->
-    <div class="pili-video-card__skeleton" v-if="empty">
+    <div class="pili-video-card__skeleton" v-if="info === undefined">
       <div class="pili-video-card__skeleton--cover"></div>
       <div class="pili-video-card__skeleton--info">
         <div class="pili-video-card__skeleton--right">
@@ -84,7 +53,7 @@ const showWatchLaterText = ref<boolean>(false)
           </div>
         </div>
       </div>
-      <a class="pili-video-card__image--link" :href="`/video/${vid}`" target="_blank">
+      <a class="pili-video-card__image--link" :href="`/video/${info.vid}`" target="_blank">
         <div
           class="pili-video-card__image pili-video-card__image--hover"
           @mouseenter="showWatchLaterIcon = true"
@@ -108,7 +77,7 @@ const showWatchLaterText = ref<boolean>(false)
               </div>
             </div>
             <picture class="v-img pili-video-card__cover">
-              <source :srcset="coverUrl" type="image/avif" />
+              <source :srcset="info.coverUrl" type="image/avif" />
               <source srcset="" type="image/webp" />
               <img src="" alt="" />
             </picture>
@@ -122,17 +91,17 @@ const showWatchLaterText = ref<boolean>(false)
                 <span class="pili-video-card__stats--item">
                   <IconStatsPlay class="pili-video-card__stats--icon" />
                   <span class="pili-video-card__stats--text">
-                    {{ playCount }}</span>
+                    {{ info.viewCount }}</span>
                 </span>
                 <span class="pili-video-card__stats--item">
                   <IconStatsDanmaku class="pili-video-card__stats--icon" />
                   <span class="pili-video-card__stats--text">
-                    {{ danmakuCount }}
+                    {{ info.danmakuCount }}
                   </span>
                 </span>
               </div>
               <span class="pili-video-card__stats__duration">
-                {{ duration }}
+                {{ info.duration }}
               </span>
             </div>
           </div>
@@ -149,15 +118,15 @@ const showWatchLaterText = ref<boolean>(false)
             <NoInterestPopover />
           </div>
           <h3 class="pili-video-card__info--tit" style="font-weight: 500">
-            <a :href="`/video/${vid}`" target="_blank">{{ title }}</a>
+            <a :href="`/video/${info.vid}`" target="_blank">{{ info.title }}</a>
           </h3>
           <div class="pili-video-card__info--bottom">
             <a class="pili-video-card__info--owner" href="#" target="_blank">
               <IconUpUserBlack class="pili-video-card__info--owner__up" />
               <span class="pili-video-card__info--author">
-                {{ authorName }}
+                {{ info.uid }}
               </span>
-              <span class="pili-video-card__info--date">· {{ date }}</span>
+              <span class="pili-video-card__info--date">· {{ info.publishTime }}</span>
             </a>
           </div>
         </div>

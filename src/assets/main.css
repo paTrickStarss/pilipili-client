@@ -247,3 +247,17 @@ i.vui_icon {
 .avatar-skeleton {
     background-image: url("@/assets/image/deafult-avatar.jpeg");
 }
+
+.bili-btn {
+    height: 28px;
+    display: inline-block;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin-right: 18px;
+    font-size: 12px;
+    border: 0 none;
+}

@@ -16,9 +16,7 @@ import NavSliderBar from '@/components/creativity/NavSliderBar.vue'
       <NavSliderBar />
 
       <div id="cc-body" class="cc-body cc-body-microapp-wrap" style="height: 100%">
-        <div class="micro-app">
-          <RouterView />
-        </div>
+        <RouterView />
       </div>
     </div>
 
@@ -71,18 +69,6 @@ import NavSliderBar from '@/components/creativity/NavSliderBar.vue'
   height: 100%;
 }
 
-.micro-app {
-  box-sizing: border-box;
-  color: #999;
-  font-size: 16px;
-  background: #fafafa;
-  --self-margin-top: 16px;
-  --self-top-height: calc(60px + var(--self-margin-top));
-  overflow: visible;
-  height: auto;
-  min-height: calc(100vh - var(--self-top-height));
-  padding-left: calc(100vw - 200px - 100%);
-}
 
 
 .side-utils {

@@ -425,177 +425,179 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="video-up-app" class="video-up-app">
-    <!--    上传入口-->
-    <div class="video-entrance" v-show="!showQueue">
-      <div class="upload-body">
-        <div class="upload-body-content">
-          <div class="upload-wrp">
-            <!---->
-            <div class="bcc-upload upload">
-              <div class="bcc-upload-wrapper" v-if="!token.isLogin">
-                <span>请先登录</span>
-              </div>
-              <div class="bcc-upload-wrapper" v-else @click="clickUpload" >
-                <div
-                  @dragover.prevent="handleDragOver"
-                  @dragenter="handleDragEnter"
-                  @dragleave="handleDragLeave"
-                  @drop.prevent="handleDrop"
-                >
-                  <IconUpload class="icon-upload" />
-                  <div class="upload-text no-events" v-show="!isDragging">
-                    拖拽到此处也可上传
-                  </div>
-                  <div class="upload-text no-events" v-show="isDragging">
-                    释放以上传
-                  </div>
-                  <div class="upload-btn no-events">上传视频</div>
-                  <div class="upload-audit-progress">
-                    <span>当前审核队列</span>
-                    <span
-                      class="tag"
-                      style="background-color: rgb(69, 129, 142)"
+  <div class="micro-app">
+    <div id="video-up-app" class="video-up-app">
+      <!--    上传入口-->
+      <div class="video-entrance" v-show="!showQueue">
+        <div class="upload-body">
+          <div class="upload-body-content">
+            <div class="upload-wrp">
+              <!---->
+              <div class="bcc-upload upload">
+                <div class="bcc-upload-wrapper" v-if="!token.isLogin">
+                  <span>请先登录</span>
+                </div>
+                <div class="bcc-upload-wrapper" v-else @click="clickUpload" >
+                  <div
+                    @dragover.prevent="handleDragOver"
+                    @dragenter="handleDragEnter"
+                    @dragleave="handleDragLeave"
+                    @drop.prevent="handleDrop"
+                  >
+                    <IconUpload class="icon-upload" />
+                    <div class="upload-text no-events" v-show="!isDragging">
+                      拖拽到此处也可上传
+                    </div>
+                    <div class="upload-text no-events" v-show="isDragging">
+                      释放以上传
+                    </div>
+                    <div class="upload-btn no-events">上传视频</div>
+                    <div class="upload-audit-progress">
+                      <span>当前审核队列</span>
+                      <span
+                        class="tag"
+                        style="background-color: rgb(69, 129, 142)"
                       >快速
                       <span class="tag-block">预计审核完成时间：10分钟内 </span>
                     </span>
+                    </div>
                   </div>
+                  <input
+                    ref="videoFileInput"
+                    accept=".mp4,.flv,.avi,.wmv,.mov,.webm,.mpeg4,.ts,.mpg,.rm,.rmvb,.mkv,.m4v"
+                    multiple
+                    type="file"
+                    @change="handleVideoFileChange"
+                    style="display: none"
+                  />
                 </div>
-                <input
-                  ref="videoFileInput"
-                  accept=".mp4,.flv,.avi,.wmv,.mov,.webm,.mpeg4,.ts,.mpg,.rm,.rmvb,.mkv,.m4v"
-                  multiple
-                  type="file"
-                  @change="handleVideoFileChange"
-                  style="display: none"
-                />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!--    上传情况及信息填写-->
-    <div class="video-basic-wrp" v-show="showQueue">
-      <div class="video-basic">
-        <div class="video-upload">
-          <div class="upload-header">
-            <div class="upload-header-top">
-              <span class="upload-header-top-text">发布视频</span>
-              <div class="upload-header-top-btn">
-                <button class="bcc-button bcc-button--default btn small">
-                  <span>批量操作</span>
-                </button>
+      <!--    上传情况及信息填写-->
+      <div class="video-basic-wrp" v-show="showQueue">
+        <div class="video-basic">
+          <div class="video-upload">
+            <div class="upload-header">
+              <div class="upload-header-top">
+                <span class="upload-header-top-text">发布视频</span>
+                <div class="upload-header-top-btn">
+                  <button class="bcc-button bcc-button--default btn small">
+                    <span>批量操作</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="upload-queue">
-            <div class="task-list">
-              <div class="task-list-triangle"></div>
-              <div class="task-list-content">
-                <VideoUploadingItem
-                  v-for="item in uploadingQueue"
-                  :key="item.id"
-                  :info="item"
-                />
-                <div class="task-list-content-btn"></div>
-              </div>
-              <div class="file-list">
-                <div class="btns"></div>
-                <div class="drag-list">
-                  <div class="drag-handler">
-                    <VideoUploadingFileItem
-                      v-for="item in uploadingQueue"
-                      :key="item.id"
-                      :info="item"
-                      @abort="abortUpload"
-                    />
+            <div class="upload-queue">
+              <div class="task-list">
+                <div class="task-list-triangle"></div>
+                <div class="task-list-content">
+                  <VideoUploadingItem
+                    v-for="item in uploadingQueue"
+                    :key="item.id"
+                    :info="item"
+                  />
+                  <div class="task-list-content-btn"></div>
+                </div>
+                <div class="file-list">
+                  <div class="btns"></div>
+                  <div class="drag-list">
+                    <div class="drag-handler">
+                      <VideoUploadingFileItem
+                        v-for="item in uploadingQueue"
+                        :key="item.id"
+                        :info="item"
+                        @abort="abortUpload"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="form">
-          <div class="title">
-            <span class="label" style="width: 120px"> 基本设置 </span>
-            <span class="quick-fill-entrance">一键填写</span>
-          </div>
-          <form-item wrap-class="cover" label="封面" required>
-            <div class="cover-content">
-              <div class="cover-upload">
-                <img class="img" :src="videoCover" alt="视频封面" />
-                <video
-                  v-if="videoUrl"
-                  style="display: none"
-                  ref="videoPlayer"
-                  :src="videoUrl"
-                  controls
-                  @loadeddata="getVideoFirstFrame"
-                  @loadedmetadata="getVideoMeta"
-                />
-                <input
-                  ref="coverFileInput"
-                  accept="image/png, image/jpeg"
-                  type="file"
-                  @change="handleCoverFileChange"
-                  style="display: none"
-                />
-                <div class="cover-upload-mask-btn">
-                  <span @click="coverFileInput.click()">更改封面</span>
-                  <span @click="setDefaultCover">默认封面</span>
+          <div class="form">
+            <div class="title">
+              <span class="label" style="width: 120px"> 基本设置 </span>
+              <span class="quick-fill-entrance">一键填写</span>
+            </div>
+            <form-item wrap-class="cover" label="封面" required>
+              <div class="cover-content">
+                <div class="cover-upload">
+                  <img class="img" :src="videoCover" alt="视频封面" />
+                  <video
+                    v-if="videoUrl"
+                    style="display: none"
+                    ref="videoPlayer"
+                    :src="videoUrl"
+                    controls
+                    @loadeddata="getVideoFirstFrame"
+                    @loadedmetadata="getVideoMeta"
+                  />
+                  <input
+                    ref="coverFileInput"
+                    accept="image/png, image/jpeg"
+                    type="file"
+                    @change="handleCoverFileChange"
+                    style="display: none"
+                  />
+                  <div class="cover-upload-mask-btn">
+                    <span @click="coverFileInput.click()">更改封面</span>
+                    <span @click="setDefaultCover">默认封面</span>
+                  </div>
                 </div>
+                <div class="cover-preview"></div>
               </div>
-              <div class="cover-preview"></div>
-            </div>
-          </form-item>
-          <form-item
-            class="form-item-short-margin"
-            wrap-class="video-title"
-            label="标题"
-            required
-          >
-            <div class="video-title-content">
-              <form-item-input
-                v-model:value="videoInfoForm.title"
-                placeholder="请输入标题"
-                :maxlength="100"
+            </form-item>
+            <form-item
+              class="form-item-short-margin"
+              wrap-class="video-title"
+              label="标题"
+              required
+            >
+              <div class="video-title-content">
+                <form-item-input
+                  v-model:value="videoInfoForm.title"
+                  placeholder="请输入标题"
+                  :maxlength="100"
+                />
+                <div class="msg"></div>
+              </div>
+            </form-item>
+            <form-item wrap-class="type-check" label="类型" required>
+              <div class="type-check-radio-wrp">
+                <form-item-radio-group
+                  :radio-group="typeCheckRadioGroup"
+                  v-model:value="videoInfoForm.type"
+                />
+              </div>
+            </form-item>
+            <form-item wrap-class="video-human-type" label="分区" required>
+              <form-item-selector
+                class="selector-container"
+                :list="categorySelectList"
+                v-model:value="videoInfoForm.category"
               />
-              <div class="msg"></div>
-            </div>
-          </form-item>
-          <form-item wrap-class="type-check" label="类型" required>
-            <div class="type-check-radio-wrp">
-              <form-item-radio-group
-                :radio-group="typeCheckRadioGroup"
-                v-model:value="videoInfoForm.type"
-              />
-            </div>
-          </form-item>
-          <form-item wrap-class="video-human-type" label="分区" required>
-            <form-item-selector
-              class="selector-container"
-              :list="categorySelectList"
-              v-model:value="videoInfoForm.category"
-            />
-          </form-item>
-          <form-item wrap-class="tag-container" label="标签" required>
-            <div class="tag-input-wrp">
-              <fom-item-tag-input v-model:tag-list="videoInfoForm.tags" />
-            </div>
-          </form-item>
-          <form-item wrap-class="desc-container" label="简介">
-            <div class="desc-text-wrp">
-              <form-item-desc-input v-model:value="videoInfoForm.description" />
-            </div>
-          </form-item>
+            </form-item>
+            <form-item wrap-class="tag-container" label="标签" required>
+              <div class="tag-input-wrp">
+                <fom-item-tag-input v-model:tag-list="videoInfoForm.tags" />
+              </div>
+            </form-item>
+            <form-item wrap-class="desc-container" label="简介">
+              <div class="desc-text-wrp">
+                <form-item-desc-input v-model:value="videoInfoForm.description" />
+              </div>
+            </form-item>
 
-          <form-item wrap-class="submit-container" label="">
-            <span class="submit-draft">存草稿</span>
-            <span class="submit-add" @click="handleSubmit">立即投稿</span>
-          </form-item>
+            <form-item wrap-class="submit-container" label="">
+              <span class="submit-draft">存草稿</span>
+              <span class="submit-add" @click="handleSubmit">立即投稿</span>
+            </form-item>
+          </div>
         </div>
       </div>
     </div>
@@ -603,6 +605,18 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.micro-app {
+  box-sizing: border-box;
+  color: #999;
+  font-size: 16px;
+  background: #fafafa;
+  --self-margin-top: 16px;
+  --self-top-height: calc(60px + var(--self-margin-top));
+  overflow: visible;
+  height: auto;
+  min-height: calc(100vh - var(--self-top-height));
+  padding-left: calc(100vw - 200px - 100%);
+}
 .video-up-app {
   height: 100%;
   min-width: 1000px;
