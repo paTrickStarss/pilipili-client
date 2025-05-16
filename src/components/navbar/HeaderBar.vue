@@ -17,6 +17,8 @@ import IconBulb from '@/components/icons/IconBulb.vue'
 import MessagePopover from '@/components/navbar/message/MessagePopover.vue'
 import UserInfoPopover from '@/components/navbar/user/UserInfoPopover.vue'
 import { useTokenStore } from '@/stores/token'
+import { jumpRoute, openLink } from '@/utils/RouterUtil'
+import { message } from 'ant-design-vue'
 
 defineProps({
   slideDown: {
@@ -26,6 +28,15 @@ defineProps({
 })
 
 const tokenStore = useTokenStore()
+
+function openUploadFrag() {
+  if (tokenStore.isLogin) {
+    openLink('/creativity/upload')
+  } else {
+    message.warn('请先登录')
+  }
+}
+
 </script>
 
 <template>
@@ -102,7 +113,7 @@ const tokenStore = useTokenStore()
         :pop-prohibit="true"
       >
         <template #trigger>
-          <a href="/creativity/upload" target="_blank">
+          <a href="/creativity/upload" target="_blank" @click.prevent="openUploadFrag">
             <div class="header-upload-entry">
               <IconUpload />
               <span class="header-upload-entry__text">投稿</span>

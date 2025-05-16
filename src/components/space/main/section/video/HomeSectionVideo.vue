@@ -12,7 +12,7 @@ import HomeSectionVideoCard from '@/components/space/main/section/video/HomeSect
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import videoInfoAPI from '@/api/video/VideoInfoAPI'
 import { useTokenStore } from '@/stores/token'
-import type { VideoDTOType } from '@/types/ApiRespType'
+import type { PageResponse, VideoDTOType } from '@/types/ApiRespType'
 
 const token = useTokenStore()
 
@@ -32,6 +32,7 @@ const radioList = ref<RadioListType[]>([
 ])
 const selectRadio = ref<number>(0)
 const videoList = ref<VideoDTOType[]>([])
+const total = ref<number>(0)
 
 function playAll() {
   message.info('playAll')
@@ -49,8 +50,10 @@ onMounted(async () => {
       uid: token.uid
     }
   ).then((data) => {
-    console.log('user video list', data)
-    videoList.value = data.data
+    const resp = data as PageResponse
+    console.log('user video list', resp)
+    videoList.value = resp.data as []
+    total.value = resp.total
   })
 })
 </script>
@@ -59,7 +62,7 @@ onMounted(async () => {
   <HomeSection
     wrap-class="video-section"
     title="视频"
-    :desc="`${videoList.length}`"
+    :desc="`${total}`"
   >
     <template #radioGroup>
       <RadioGroup :radio-list="radioList" v-model:select-radio="selectRadio" />

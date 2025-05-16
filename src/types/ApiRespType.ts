@@ -298,6 +298,17 @@ export interface SimpleResponse {
   msg?: string;
   success?: boolean;
 }
+/**
+ * PageResponse
+ */
+export interface PageResponse {
+  code?: number;
+  data?: unknown;
+  msg?: string;
+  pageNo: number;
+  pageSize: number;
+  total: number;
+}
 
 /**
  * QueryUserInfoDTO

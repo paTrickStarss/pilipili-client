@@ -11,7 +11,7 @@ export const authAPI = {
    * @param body
    */
   login(body: LoginReq) {
-    return axios.post('/auth/session/login', body, { withCredentials: false })
+    return axios.get('/auth/session/login', { params: { ...body }, withCredentials: false })
   },
 
   /**

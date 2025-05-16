@@ -28,7 +28,7 @@ export default defineConfig({
       },
       '/ws': {
         // 直连ws服务，绕过网关认证
-        target: 'ws://localhost:8065/ws',
+        target: 'ws://localhost:8600/ws',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ws/, ''),
       },

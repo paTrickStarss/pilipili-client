@@ -26,18 +26,25 @@ export default {
     return axios.get(`/api/video/pageQuery`, { params: { ...query } })
   },
   /**
-   * 分页查询用户所有已上架视频
+   * 分页查询用户所有已上架视频（对外展示用）
    * @param query
    */
   pageQueryPassedByUid(query: PageQueryVideoInfoReq) {
     return axios.get(`/api/video/pageQueryPassedByUid`, { params: { ...query } })
   },
   /**
-   * 分页查询用户所有视频
+   * 分页查询用户所有视频（用户个人用，查询状态为 上传中、审核中、审核通过 的视频）
    * @param query
    */
   pageQueryByUid(query: PageQueryVideoInfoReq) {
     return axios.get(`/api/video/pageQueryByUid`, { params: { ...query } })
+  },
+  /**
+   * 分页查询用户所有视频（管理员用，查询所有状态的视频）
+   * @param query
+   */
+  pageQueryAllByUid(query: PageQueryVideoInfoReq) {
+    return axios.get(`/api/video/pageQueryAllByUid`, { params: { ...query } })
   },
   delete(vid: string) {
     return axios.delete(`/api/video/${vid}`)

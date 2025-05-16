@@ -316,6 +316,7 @@ async function handleSubmit() {
 
   // 上传视频封面
   try {
+    message.loading({ content: '上传封面中...', key: loadingMessageKey })
     const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
     videoInfo.value.coverUrl = data.objectName
   } catch (error) {
@@ -432,7 +433,10 @@ onBeforeUnmount(() => {
           <div class="upload-wrp">
             <!---->
             <div class="bcc-upload upload">
-              <div class="bcc-upload-wrapper" @click="clickUpload">
+              <div class="bcc-upload-wrapper" v-if="!token.isLogin">
+                <span>请先登录</span>
+              </div>
+              <div class="bcc-upload-wrapper" v-else @click="clickUpload" >
                 <div
                   @dragover.prevent="handleDragOver"
                   @dragenter="handleDragEnter"

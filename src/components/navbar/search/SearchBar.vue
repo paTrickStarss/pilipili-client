@@ -13,7 +13,7 @@ const searchInputRef = ref()
 const searchPanelEnter = ref<boolean>(false)
 const searchFormFocus = ref<boolean>(false)
 const inputValue = ref<string>('')
-const inputPlaceholder = ref<string>('青木阳菜上海见面会')
+const inputPlaceholder = ref<string>('输入搜索内容')
 
 const onSearch = () => {
   const value = inputValue.value || inputPlaceholder.value

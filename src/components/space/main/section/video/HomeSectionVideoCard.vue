@@ -58,10 +58,15 @@ defineProps<{
             {{ info.title }}
           </a>
         </div>
-        <div class="bili-video-card__subtitle" :title="DateTimeUtil.instance.getDateTime(info.publishTime || info.uploadTime)">
-          <span v-if="info.publishTime">{{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}</span>
+        <div
+          class="bili-video-card__subtitle"
+          :title="DateTimeUtil.instance.getDateTime(info.publishTime || info.uploadTime)"
+        >
+          <span v-if="info.publishTime">
+            {{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}
+          </span>
           <span v-else>
-            <span>未发布</span>
+<!--            <span>未发布</span>-->
             {{ DateTimeUtil.instance.getDateTimeString(info.uploadTime) }}
           </span>
         </div>

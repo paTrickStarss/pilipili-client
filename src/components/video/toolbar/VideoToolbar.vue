@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import IconVideoLike from '@/components/icons/IconVideoLike.vue'
-import { onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import IconVideoCoin from '@/components/icons/IconVideoCoin.vue'
 import IconVideoCollect from '@/components/icons/IconVideoCollect.vue'
 import IconVideoShare from '@/components/icons/IconVideoShare.vue'
@@ -21,19 +21,6 @@ const props = defineProps<{
 const infoCopy = ref<VideoToolbarInfoProps>(props.info)
 
 const token = useTokenStore()
-
-// const info = ref({
-//   favorCount: 163967,
-//   coinCount: 24386,
-//   collectCount: 18856,
-//   repostCount: 3286,
-// })
-// const interactStatus = ref({
-//   favor: false,
-//   coin: false,
-//   collect: false,
-//   repost: false,
-// })
 
 const key: string = 'interactLoading'
 let loading: boolean = false
@@ -138,36 +125,6 @@ function handleRepostClick() {
     infoCopy.value.repostCount--
   })
 }
-
-// const ringCanvas = ref<HTMLCanvasElement | null>(null)
-// function drawRingCanvas() {
-//   if (!ringCanvas.value) {
-//     message.error('ringCanvas empty!')
-//     console.error('ringCanvas empty', ringCanvas.value)
-//   }
-//   const ctx = ringCanvas.value?.getContext('2d')
-//   if (!ctx) {
-//     message.error('canvas context empty!')
-//     return
-//   }
-//
-//   const centerX = 200
-//   const centerY = 200
-//   const outerRadius = 150
-//   const innerRadius = 100
-//   const color = '#00a1d6'
-//
-//   ctx.beginPath()
-//   ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2)
-//   ctx.fillStyle = color
-//   ctx.fill()
-//
-//   ctx.beginPath()
-//   ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2)
-//   ctx.fillStyle = 'white'
-//   ctx.fill()
-//
-// }
 
 let shakeTimer: number | null = null
 let longPressTimer: number | null = null
