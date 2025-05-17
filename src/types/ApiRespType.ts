@@ -13,6 +13,7 @@ export interface LoginInfoType {
   username: string
   accessToken: string
   expires: number
+  admin: boolean
 }
 
 /**
@@ -23,10 +24,6 @@ export interface UserInfoType {
    * 用户ID
    */
   uid: number
-  /**
-   * UUID
-   */
-  uuid: string
   /**
    * 用户名
    */
@@ -139,6 +136,10 @@ export interface VideoDTOType {
    * 作者UID
    */
   uid: number
+  /**
+   * 作者用户昵称
+   */
+  nickname: string
   /**
    * 视频标题
    */

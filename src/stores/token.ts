@@ -39,6 +39,9 @@ export const useTokenStore = defineStore(
     const uid = computed(() => {
       return Number(tokenInfo.value?.username) || 0
     })
+    const isAdmin = computed(() => {
+      return tokenInfo.value?.admin || false
+    })
 
     function saveTokenInfo(tokenInfoSave: LoginInfoType) {
       tokenInfo.value = tokenInfoSave
@@ -54,6 +57,7 @@ export const useTokenStore = defineStore(
       accessToken,
       username,
       uid,
+      isAdmin,
       saveTokenInfo,
       clearTokenInfo,
     }

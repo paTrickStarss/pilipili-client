@@ -401,7 +401,9 @@ async function fetchCategoryList() {
       key: -1,
       label: '--请选择分区--',
     })
-    data.forEach((item: QueryCategoryListDTO) => {
+
+    const list = data as QueryCategoryListDTO[]
+    list.forEach((item: QueryCategoryListDTO) => {
       categorySelectList.value.push({
         key: item.id,
         label: item.name,

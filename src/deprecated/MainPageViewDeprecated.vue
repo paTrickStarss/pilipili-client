@@ -10,7 +10,7 @@ import {
   RedoOutlined,
   RightCircleOutlined,
 } from '@ant-design/icons-vue'
-import VideoInfoCard from '@/components/video/VideoInfoCard.vue'
+import VideoInfoCardDeprecated from '@/deprecated/VideoInfoCardDeprecated.vue'
 import { onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import type {
   CarouselInfoType,
@@ -157,22 +157,22 @@ onBeforeUnmount(() => {
         </div>
         <!--          推荐区域-->
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
         <div class="grid-item">
-          <VideoInfoCard :video-card-info="demoVideoCardInfo" />
+          <VideoInfoCardDeprecated :video-card-info="demoVideoCardInfo" />
         </div>
 
         <!--          懒加载瀑布流-->
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
           <a-skeleton v-if="flow.loading" :active="flow.loading" />
           <template v-else>
             <div class="grid-item">
-              <VideoInfoCard :video-card-info="flow.videoCardInfo" />
+              <VideoInfoCardDeprecated :video-card-info="flow.videoCardInfo" />
             </div>
           </template>
         </template>

@@ -5,11 +5,14 @@
 <script setup lang="ts">
 
 import NavSliderBarItem from '@/components/creativity/NavSliderBarItem.vue'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import type { NavSliderBarItemProps } from '@/types/PropsType'
 import { jumpRoute } from '@/utils/RouterUtil'
 import { useRoute, useRouter } from 'vue-router'
+import { useTokenStore } from '@/stores/token'
 
+const token = useTokenStore()
+// const isAdmin = ref<boolean>(token.isAdmin)
 const router = useRouter()
 const route = useRoute()
 const navBarIndex = ref<number>(checkNavIndex())
@@ -136,7 +139,8 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
     iconClass: 'bcc-icon-kefu',
     autoOpen: false,
     groupItem: [],
-    route: '/creativity/audit'
+    route: '/creativity/audit',
+    hidden: !token.isAdmin
   }
 ])
 </script>
@@ -172,6 +176,7 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
                           :key="item.id"
                           :info="item"
                           v-model:index="navBarIndex"
+                          v-show="!item.hidden"
                         />
                       </div>
                     </div>

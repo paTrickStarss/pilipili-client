@@ -46,7 +46,13 @@ function initHls() {
         }
       })
       // const frag = document.createDocumentFragment()
-      qualityLevel.value = Math.max(hls.levels.length - 2, 0)
+      if (!hls.levels.length) {
+        // todo： 2025.05.18开始，相比之前移除了144p清晰度，因此这个差值有变，需要根据实际的帧高和码率来确定
+        qualityLevel.value = Math.max(hls.levels.length - 1, 0)
+      } else {
+        // 2025.05.18之前
+        qualityLevel.value = Math.max(hls.levels.length - 2, 0)
+      }
       console.log('hls.levels', hls.levels, qualityLevel.value)
       // const listener = (i: number) => (init: unknown) => {
       //   const last = quantity.itemElements[quantity.itemElements.length - 1]

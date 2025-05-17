@@ -160,6 +160,7 @@ export interface NavSliderBarItemProps {
   autoOpen: boolean
   groupItem: NavSliderGroupItemProps[]
   route?: string
+  hidden?: boolean
 }
 /**
  * 侧边导航栏分组子项信息

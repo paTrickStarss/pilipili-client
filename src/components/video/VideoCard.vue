@@ -13,6 +13,7 @@ import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import { ref } from 'vue'
 import NoInterestPopover from '@/components/video/NoInterestPopover.vue'
 import type { VideoDTOType } from '@/types/ApiRespType'
+import { DateTimeUtil } from '../../utils/DateTimeUtil'
 
 defineProps<{
   info: VideoDTOType
@@ -121,12 +122,14 @@ const showWatchLaterText = ref<boolean>(false)
             <a :href="`/video/${info.vid}`" target="_blank">{{ info.title }}</a>
           </h3>
           <div class="pili-video-card__info--bottom">
-            <a class="pili-video-card__info--owner" href="#" target="_blank">
+            <a class="pili-video-card__info--owner" :href="`/space/${info.uid}`" target="_blank">
               <IconUpUserBlack class="pili-video-card__info--owner__up" />
               <span class="pili-video-card__info--author">
-                {{ info.uid }}
+                {{ info.nickname }}
               </span>
-              <span class="pili-video-card__info--date">· {{ info.publishTime }}</span>
+              <span class="pili-video-card__info--date">
+                · {{ DateTimeUtil.instance.getDateTimeString(info.publishTime) }}
+              </span>
             </a>
           </div>
         </div>

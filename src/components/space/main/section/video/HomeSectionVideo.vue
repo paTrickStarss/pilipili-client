@@ -12,8 +12,11 @@ import HomeSectionVideoCard from '@/components/space/main/section/video/HomeSect
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import videoInfoAPI from '@/api/video/VideoInfoAPI'
 import { useTokenStore } from '@/stores/token'
-import type { PageResponse, VideoDTOType } from '@/types/ApiRespType'
+import type { PageResponse, SimpleResponse, VideoDTOType } from '@/types/ApiRespType'
+import { useRoute } from 'vue-router'
+import type { PageQueryVideoInfoReq } from '@/types/ApiRequestType'
 
+const route = useRoute()
 const token = useTokenStore()
 
 const radioList = ref<RadioListType[]>([
@@ -42,19 +45,26 @@ function showMore() {
   message.info('showMore')
 }
 
-onMounted(async () => {
-  videoInfoAPI.pageQueryByUid(
-    {
-      pageNo: 1,
-      pageSize: 10,
-      uid: token.uid
-    }
-  ).then((data) => {
-    const resp = data as PageResponse
-    console.log('user video list', resp)
-    videoList.value = resp.data as []
-    total.value = resp.total
+async function fetchData(uid: string, api: (query: PageQueryVideoInfoReq) => Promise<PageResponse>) {
+  const resp = await api({
+    pageNo: 1,
+    pageSize: 10,
+    uid: Number(uid)
   })
+  console.log('user video list', resp)
+  videoList.value = resp.data as VideoDTOType[]
+  total.value = resp.total
+}
+onMounted(() => {
+  const uid = route.params.id as string
+  if (token.uid.toString() === uid) {
+    // 用户本人视角
+    fetchData(uid, videoInfoAPI.pageQueryByUid)
+  } else {
+    // 访客视角
+    fetchData(uid, videoInfoAPI.pageQueryPassedByUid)
+  }
+
 })
 </script>
 

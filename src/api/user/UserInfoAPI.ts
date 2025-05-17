@@ -4,6 +4,7 @@
 
 import axios from '@/api/axios'
 import type { PageQueryUserRelaReq, RegisterReq, UpdateUserInfoReq } from '@/types/ApiRequestType'
+import type { SimpleResponse } from '@/types/ApiRespType'
 
 export const userInfoAPI = {
 
@@ -11,7 +12,7 @@ export const userInfoAPI = {
    * 获取用户信息
    * @param uid
    */
-  getUserInfo(uid: string) {
+  getUserInfo(uid: string): Promise<SimpleResponse> {
     return axios.get(`/api/user/${uid}`)
   },
 

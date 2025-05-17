@@ -4,10 +4,28 @@
 
 <script setup lang="ts">
 import HomeAsideSection from '@/components/space/main/section/aside/HomeAsideSection.vue'
-import { useUserStore } from '@/stores/user'
-import { ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
+import type { UserInfoType } from '@/types/ApiRespType'
+import { useRoute } from 'vue-router'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
 
-const userInfo = ref(useUserStore().userInfo)
+const route = useRoute()
+const userInfo = ref<UserInfoType>()
+
+async function fetchData(uid: string) {
+  const resp = await userInfoAPI.getUserInfo(uid)
+  userInfo.value = resp.data as UserInfoType
+
+}
+onMounted(() => {
+  const uid = route.params.id as string
+  console.log('route', route.params)
+  if (uid) {
+    fetchData(uid)
+  }
+  // userInfo.value = inject('userInfo', {}) as UserInfoType
+})
+
 </script>
 
 <template>
@@ -29,13 +47,13 @@ const userInfo = ref(useUserStore().userInfo)
         <div class="info-item">
           <i class="vui_icon sic-fsp-uid_line icon" style="font-size: 20px" />
           <div class="vui_ellipsis multi-mode" style="-webkit-line-clamp: 1">
-            {{ userInfo.uid }}
+            {{ userInfo?.uid }}
           </div>
         </div>
         <div class="info-item">
           <i class="vui_icon sic-fsp-cake_line icon" style="font-size: 20px" />
           <div class="vui_ellipsis multi-mode" style="-webkit-line-clamp: 1">
-            {{ userInfo.uid }}
+            {{ userInfo?.uid }}
           </div>
         </div>
         <div class="info-item">
@@ -44,7 +62,7 @@ const userInfo = ref(useUserStore().userInfo)
             style="font-size: 20px"
           />
           <div class="vui_ellipsis multi-mode" style="-webkit-line-clamp: 1">
-            {{ userInfo.email }}
+            {{ userInfo?.email }}
           </div>
         </div>
       </div>
@@ -58,8 +76,6 @@ const userInfo = ref(useUserStore().userInfo)
   background-color: var(--bg2);
   border-radius: 6px;
 }
-
-
 
 .info-section__header {
   margin-bottom: 16px;

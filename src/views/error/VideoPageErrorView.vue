@@ -42,6 +42,7 @@ onMounted(() => {
                 {{
                   status === 'auditing'? '视频审核中，暂时不可见':
                     status === 'not-found'? '视频不见了？？？' :
+                    status === 'forbidden'? '禁止访问！' :
                       '出错了！！！'
                 }}
               </div>

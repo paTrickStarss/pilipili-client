@@ -4,21 +4,23 @@
 
 <script setup lang="ts">
 import IndexView from '@/views/index/IndexView.vue'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import type { NavTabItemType } from '@/types/PropsType'
 import { useUserStore } from '@/stores/user'
 import NavTabItem from '@/components/space/NavTabItem.vue'
 import { message } from 'ant-design-vue'
 import { useRoute } from 'vue-router'
-import { DictionaryConverter } from '@/utils/DictionaryConverter'
-import { getDate } from '@/utils/CommonUtil'
 import { DateTimeUtil } from '@/utils/DateTimeUtil'
+import { userInfoAPI } from '@/api/user/UserInfoAPI'
+import { useTokenStore } from '@/stores/token'
+import type { UserInfoType } from '@/types/ApiRespType'
+import { copyFieldValue } from '@/utils/CommonUtil'
 
 const route = useRoute()
+const token = useTokenStore()
 const user = useUserStore()
-const userInfo = ref(user.userInfo)
-const spaceUrl = ref<string>('')
+const userInfo = ref<UserInfoType>()
 
 // tab信息
 const navTabItemList = ref<NavTabItemType[]>([])
@@ -69,80 +71,96 @@ const nowDate = ref(DateTimeUtil.instance.getDate())
 watch(
   () => route.path,
   () => {
-    init()
+    initCurrentUserInfo()
     currentTab.value = getSpaceNavTabIndex()
   },
 )
-
-function init() {
-  user.fetchCurrentUserInfo().then(() => {
-    spaceUrl.value = userInfo.value.spaceUrl
-    // message.info(`spaceUrl: ${spaceUrl.value}`)
-    navTabItemList.value = [
-      {
-        id: 0,
-        label: '主页',
-        linkUrl: `${spaceUrl.value}`,
-        styleClass: 'sic-BDC-house_home_line',
-        color: '--Gr6_u',
-      },
-      {
-        id: 1,
-        label: '动态',
-        linkUrl: `${spaceUrl.value}/dynamic`,
-        styleClass: 'sic-BDC-windmill_moments_line',
-        color: '--Pi5_u',
-      },
-      {
-        id: 2,
-        label: '投稿',
-        linkUrl: `${spaceUrl.value}/upload`,
-        styleClass: 'sic-fsp-submission_line',
-        color: '--Lb5_u',
-        countShow: true,
-        countNum: 8,
-      },
-      {
-        id: 3,
-        label: '合集',
-        linkUrl: `${spaceUrl.value}/list`,
-        styleClass: 'sic-BDC-video_archive_line',
-        color: '--Lb4_u',
-      },
-      {
-        id: 4,
-        label: '收藏',
-        linkUrl: `${spaceUrl.value}/collection`,
-        styleClass: 'sic-fsp-fav_line',
-        color: '--Ye5_u',
-        countShow: true,
-        countNum: 23,
-      },
-      {
-        id: 5,
-        label: '追番追剧',
-        linkUrl: `${spaceUrl.value}/bangumi`,
-        styleClass: 'sic-BDC-heart_collect_line',
-        color: '--Re5_u',
-      },
-      {
-        id: 6,
-        label: '设置',
-        linkUrl: `${spaceUrl.value}/settings`,
-        styleClass: 'sic-BDC-nut_setting_line',
-        color: '--Lb5_u',
-      },
-    ]
-  })
+function navTabInit(spaceUrl: string) {
+  message.info(`spaceUrl: ${spaceUrl}`)
+  navTabItemList.value = [
+    {
+      id: 0,
+      label: '主页',
+      linkUrl: `${spaceUrl}`,
+      styleClass: 'sic-BDC-house_home_line',
+      color: '--Gr6_u',
+    },
+    {
+      id: 1,
+      label: '动态',
+      linkUrl: `${spaceUrl}/dynamic`,
+      styleClass: 'sic-BDC-windmill_moments_line',
+      color: '--Pi5_u',
+    },
+    {
+      id: 2,
+      label: '投稿',
+      linkUrl: `${spaceUrl}/upload`,
+      styleClass: 'sic-fsp-submission_line',
+      color: '--Lb5_u',
+      countShow: true,
+      countNum: 8,
+    },
+    {
+      id: 3,
+      label: '合集',
+      linkUrl: `${spaceUrl}/list`,
+      styleClass: 'sic-BDC-video_archive_line',
+      color: '--Lb4_u',
+    },
+    {
+      id: 4,
+      label: '收藏',
+      linkUrl: `${spaceUrl}/collection`,
+      styleClass: 'sic-fsp-fav_line',
+      color: '--Ye5_u',
+      countShow: true,
+      countNum: 23,
+    },
+    {
+      id: 5,
+      label: '追番追剧',
+      linkUrl: `${spaceUrl}/bangumi`,
+      styleClass: 'sic-BDC-heart_collect_line',
+      color: '--Re5_u',
+    },
+    {
+      id: 6,
+      label: '设置',
+      linkUrl: `${spaceUrl}/settings`,
+      styleClass: 'sic-BDC-nut_setting_line',
+      color: '--Lb5_u',
+    },
+  ]
+}
+function initCurrentUserInfo() {
+  // user.fetchCurrentUserInfo().then(() => {
+  //   const spaceUrl = user.userInfo.spaceUrl.value
+  //
+  //   navTabInit(spaceUrl)
+  // })
+  initPublicUserInfo(token.uid.toString())
+}
+async function initPublicUserInfo(uid: string) {
+  const resp = await userInfoAPI.getUserInfo(uid)
+  userInfo.value = resp.data as UserInfoType
+  console.log('initPublicUserInfo', userInfo.value)
+  navTabInit(`/space/${userInfo.value.uid}`)
+  provide('userInfo', userInfo.value)
 }
 
 function getSpaceNavTabIndex() {
   return route.meta.index as number
 }
-
 onMounted(() => {
-  // console.log('route', route, route.meta)
-  init()
+  const uid = route.params.id as string
+  if (uid === token.username) {
+    // 访问自己的个人空间
+    initCurrentUserInfo()
+  } else {
+    // 访问别人的个人空间
+    initPublicUserInfo(uid)
+  }
 })
 </script>
 
@@ -225,23 +243,23 @@ onMounted(() => {
           </div>
           <div class="userinfo-detail">
             <div class="userinfo-detail__top">
-              <div class="nickname">{{ userInfo.nickname }}</div>
+              <div class="nickname">{{ userInfo?.nickname }}</div>
               <a class="level" target="_blank" href="#">
                 <i
                   class="vui_icon level-icon"
-                  :class="`sic-BDC_svg-user_level_${userInfo.level}`"
+                  :class="`sic-BDC_svg-user_level_${userInfo?.level}`"
                   style="font-size: 28px"
                 ></i>
               </a>
               <div
                 class="gender"
                 :style="{
-                  'background-color': `var(--brand_${userInfo.gender === 1 ? 'blue' : 'pink'})`,
+                  'background-color': `var(--brand_${userInfo?.gender === 1 ? 'blue' : 'pink'})`,
                 }"
               >
                 <i
                   class="vui_icon"
-                  :class="`sic-BDC-${userInfo.gender === 1 ? 'male' : 'female'}_line`"
+                  :class="`sic-BDC-${userInfo?.gender === 1 ? 'male' : 'female'}_line`"
                   style="font-variation-settings: 'strk' 2; font-size: 12px"
                 ></i>
               </div>
@@ -257,7 +275,7 @@ onMounted(() => {
             </div>
             <div class="userinfo-detail__bottom">
               <div class="sign header-sign">
-                <div class="editable">
+                <div class="editable" v-if="userInfo">
                   <input
                     class="editable-input"
                     type="text"
@@ -316,11 +334,11 @@ onMounted(() => {
           <div class="nav-statistics">
             <a href="#" class="nav-statistics__item jumpable">
               <span class="nav-statistics__item-text">关注数</span>
-              <span class="nav-statistics__item-num" title="200">{{ userInfo.followerCount }}</span>
+              <span class="nav-statistics__item-num" title="200">{{ userInfo?.followerCount }}</span>
             </a>
             <a href="#" class="nav-statistics__item jumpable">
               <span class="nav-statistics__item-text">粉丝数</span>
-              <span class="nav-statistics__item-num" title="28">{{ userInfo.fansCount }}</span>
+              <span class="nav-statistics__item-num" title="28">{{ userInfo?.fansCount }}</span>
             </a>
             <div class="nav-statistics__item">
               <span class="nav-statistics__item-text">获赞数</span>

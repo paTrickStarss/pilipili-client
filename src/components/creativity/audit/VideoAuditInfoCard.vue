@@ -5,7 +5,9 @@
 <script setup lang="ts">
 import type { VideoDTOType } from '@/types/ApiRespType'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
+import { DateTimeUtil } from '@/utils/DateTimeUtil'
+import VideoAuditPlayerPop from '@/components/creativity/audit/VideoAuditPlayerPop.vue'
 
 const props = defineProps<{
   info: VideoDTOType
@@ -18,6 +20,12 @@ interface ViewStatsInfoType {
   text: string | number,
 }
 const viewStatsInfo = ref<ViewStatsInfoType[]>()
+const showAuditPlayerPop = ref<boolean>(false)
+
+const fetchData = inject('fetchData', async () => {})
+function refresh() {
+  fetchData()
+}
 
 onMounted(() => {
   viewStatsInfo.value = [
@@ -72,19 +80,22 @@ onMounted(() => {
     <div class="article-card v2 clearfix">
       <a :href="`/video/${info.vid}`" target="_blank" class="cover-wrp">
         <img :src="info.coverUrl" :alt="info.title" class="cover-img">
-        <div class="duration">{{ info.duration }}</div>
+        <div class="duration">{{ DateTimeUtil.instance.getFormatTextFromSeconds(info.duration) }}</div>
       </a>
       <div class="meta-wrp">
         <div class="meta-title">
-          <span class="mission-mark">活动</span>
+<!--          <span class="mission-mark">活动</span>-->
           <a :href="`/video/${info.vid}`" target="_blank" class="name vui_ellipsis">
             {{ info.title }}
           </a>
         </div>
         <div class="meta-middle">
           <div class="meta-status">
-            <div class="pubdate is-success">
-              <span class="date">{{ info.uploadTime }}</span>
+            <div class="pubdate" :title="DateTimeUtil.instance.getDateTime(info.uploadTime)">
+              <span class="date">上传时间：{{ DateTimeUtil.instance.getDateTime(info.uploadTime) }}</span>
+            </div>
+            <div class="pubdate is-success" :title="DateTimeUtil.instance.getDateTime(info.publishTime)" v-if="info.status === 2">
+              <span class="date">发布时间：{{ DateTimeUtil.instance.getDateTime(info.publishTime) }}</span>
             </div>
             <div></div>
           </div>
@@ -93,12 +104,16 @@ onMounted(() => {
               <i class="bcc-iconfont bcc-icon-Mediumx" style="font-size: 16px; color: rgb(80, 80, 80);"/>
               编辑
             </a>
-            <a href="#" target="_blank" class="bili-btn">
-              <i class="bcc-iconfont bcc-icon-icon_list_ranking_x1" style="font-size: 16px; color: rgb(80, 80, 80);"/>
-              数据
+<!--            <a href="#" target="_blank" class="bili-btn">-->
+<!--              <i class="bcc-iconfont bcc-icon-icon_list_ranking_x1" style="font-size: 16px; color: rgb(80, 80, 80);"/>-->
+<!--              数据-->
+<!--            </a>-->
+            <a class="bili-btn" v-show="info.status === 1 || info.status === 3" @click="showAuditPlayerPop = true">
+              <i class="bcc-iconfont bcc-icon-ic_audit" style="font-size: 16px; color: rgb(80, 80, 80);"/>
+                审核
             </a>
             <a class="more-btn">
-              <i class="bcc-iconfont bcc-icon-icon_list_ranking_x1" style="font-size: 16px; color: rgb(80, 80, 80);"/>
+              <i class="bcc-iconfont bcc-icon-icon_list_more_x" style="font-size: 16px; color: rgb(80, 80, 80);"/>
             </a>
           </div>
         </div>
@@ -115,6 +130,12 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <video-audit-player-pop
+      :info="info"
+      v-model:show="showAuditPlayerPop"
+      @refresh="refresh"
+    />
   </div>
 </template>
 
@@ -294,6 +315,7 @@ onMounted(() => {
   right: 0;
   position: relative;
   margin-top: 0;
+  user-select: none;
 }
 .cc-article-wrp .article-card .meta-view .bili-btn {
   width: 72px;

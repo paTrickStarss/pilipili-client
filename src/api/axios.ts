@@ -35,9 +35,9 @@ axiosInstance.interceptors.response.use(
     // HttpStatus 2xx
     const { data } = response
     // console.log('response', data)
-    if (data == null) {
-      return Promise.reject(response)
-    }
+    // if (data == null) {
+    //   return Promise.reject(response)
+    // }
 
     const { code, msg } = data
     switch (code) {
@@ -61,6 +61,7 @@ axiosInstance.interceptors.response.use(
       }
       case 403: {
         msg += ': Forbidden!'
+        router.push({ name: 'error-page', params: { status: 'forbidden'}})
         break
       }
       case 404: {
@@ -70,6 +71,7 @@ axiosInstance.interceptors.response.use(
       }
       default: {
         msg += '!'
+        router.push({ name: 'error-page'})
       }
     }
     message.error(msg)

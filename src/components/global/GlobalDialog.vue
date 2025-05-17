@@ -9,6 +9,10 @@ defineProps({
     required: true,
     default: false,
   },
+  width: {
+    type: Number,
+    default: 600
+  }
 })
 
 defineEmits({
@@ -19,7 +23,7 @@ defineEmits({
 <template>
   <transition name="dialog-fade">
     <div class="dialog-container" v-if="visible">
-      <div class="dialog-content">
+      <div class="dialog-content" :style="{ width: `${width}px` }">
         <div class="close-icon" @click="$emit('closeDialog')"></div>
         <div class="dialog-header">
           <slot name="header">Title</slot>
