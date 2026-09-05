@@ -21,7 +21,7 @@ const userInfo = ref({
   nickname: '用户的环境佛',
   level: 6,
 })
-const content = ref<string>('虽然拉了个大的，但冲厕所的声音好汀')
+const content = ref<string>('这是一条评论')  //虽然拉了个大的，但冲厕所的声音好汀
 const datetime = ref<string>(
   DateTimeUtil.instance.getDateTime('2025-1-23 15:32:23', 'YYYY-MM-DD HH:mm'))
 const likeCount = ref(1076)

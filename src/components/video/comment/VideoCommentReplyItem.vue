@@ -17,7 +17,7 @@ const userInfo = ref({
   level: 6,
 })
 const avatarUrl = ref(`${ASSETS_BASE_URL}/image/avatar-patrick.jpg@96w_96h_1c_1s.avif`)
-const content = ref<string>('神人比喻')
+const content = ref<string>('这是一条回复') //神人比喻
 const datetime = ref<string>(
   DateTimeUtil.instance.getDateTime('2025-1-25 21:45:11', 'YYYY-MM-DD HH:mm'))
 const likeCount = ref<number>(12)

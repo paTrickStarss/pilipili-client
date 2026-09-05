@@ -102,7 +102,7 @@ const showWatchLaterText = ref<boolean>(false)
                 </span>
               </div>
               <span class="pili-video-card__stats__duration">
-                {{ info.duration }}
+                {{ DateTimeUtil.instance.getFormatTextFromSeconds(info.duration) }}
               </span>
             </div>
           </div>
