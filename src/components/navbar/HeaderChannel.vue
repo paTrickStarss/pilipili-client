@@ -110,15 +110,8 @@ const showMoreEnter = ref<boolean>(false)
   background: var(--bg1);
   position: relative;
   width: 100%;
-  max-width: 2078px;
+  height: 110px;
   margin: 0 auto;
-}
-
-@media (min-width: 1367px) and (max-width: 1700px) {
-  .pili-header .pili-header__channel {
-    padding: 0 64px;
-    height: 110px;
-  }
 }
 
 .pili-header .channel-icons {
@@ -128,7 +121,7 @@ const showMoreEnter = ref<boolean>(false)
   margin-right: 10px;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .channel-icons {
     margin-right: 8px;
   }
@@ -142,7 +135,7 @@ const showMoreEnter = ref<boolean>(false)
   color: var(--text1);
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .channel-icons__item {
     margin-right: 24px;
   }
@@ -159,7 +152,7 @@ const showMoreEnter = ref<boolean>(false)
   transition: background 0.3s;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .channel-icons .icon-bg {
     width: 46px;
     height: 46px;
@@ -183,7 +176,7 @@ const showMoreEnter = ref<boolean>(false)
   line-height: 18px;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .channel-icons .icon-title {
     font-size: 14px;
     line-height: 20px;
@@ -205,6 +198,7 @@ const showMoreEnter = ref<boolean>(false)
 
 .pili-header .pili-header__channel .right-channel-container {
   width: 100%;
+  min-width: 0;
   display: flex;
   justify-content: space-between;
 }
@@ -216,13 +210,15 @@ const showMoreEnter = ref<boolean>(false)
   grid-column: span 4;
   grid-gap: 10px;
   grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  min-width: 0;
+  padding-right: 16px;
   border-right: 1px solid var(--line_regular);
   position: relative;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .pili-header__channel .channel-items__left {
-    grid-template-columns: repeat(11, 1fr);
     padding-right: 30px;
   }
 }
@@ -233,11 +229,11 @@ const showMoreEnter = ref<boolean>(false)
   grid-auto-flow: column;
   display: grid;
   grid-template-rows: repeat(2, 1fr);
-  width: 168px;
+  width: 220px;
   flex-shrink: 0;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .pili-header__channel .channel-items__right {
     width: 240px;
   }
@@ -246,9 +242,11 @@ const showMoreEnter = ref<boolean>(false)
 .pili-header .pili-header__channel .channel-entry-more__link,
 .pili-header .pili-header__channel .channel-link {
   display: inline-block;
-  box-sizing: content-box;
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
+  height: 28px;
+  line-height: 26px;
+  font-size: 14px;
   border: 1px solid var(--line_light);
   border-radius: 6px;
   background-color: var(--graph_bg_thin);
@@ -257,10 +255,11 @@ const showMoreEnter = ref<boolean>(false)
   transition:
     background-color 0.3s,
     color 0.3s;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+  white-space: nowrap;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .pili-header__channel .channel-entry-more__link,
   .pili-header .pili-header__channel .channel-link {
     height: 26px;
@@ -297,17 +296,19 @@ const showMoreEnter = ref<boolean>(false)
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  height: 100%;
+  height: 28px;
+  font-size: 14px;
   color: var(--text2);
   text-align: center;
   font-weight: 400;
   transition:
     background-color 0.3s,
     color 0.3s;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+  white-space: nowrap;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+@media (min-width: 1367px) {
   .pili-header .pili-header__channel .channel-link__right {
     height: 28px;
     font-size: 14px;

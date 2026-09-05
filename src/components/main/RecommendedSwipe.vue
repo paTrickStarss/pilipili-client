@@ -160,7 +160,7 @@ onMounted(() => {
 <style scoped>
 .recommended-swipe {
   --cover-radio: 56.25%;
-  /*grid-column: span 2;*/
+  min-width: 0;
   grid-column: 1/3;
   grid-row: 1/3;
 }
@@ -290,14 +290,9 @@ onMounted(() => {
   z-index: 1;
   user-select: none;
   pointer-events: none;
+  height: 810px;
   mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
   -webkit-mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
-}
-
-@media (min-width: 1367px) and (max-width: 1700px) {
-  .carousel .carousel-container .vui_carousel .carousel-footer-mask {
-    height: 810px;
-  }
 }
 
 .carousel .carousel-container .vui_carousel .carousel-footer-mask.blur {
@@ -334,16 +329,11 @@ onMounted(() => {
 .carousel .carousel-container .vui_carousel .carousel-footer-text a span {
   display: block;
   line-height: 25px;
+  font-size: 18px;
   color: #fff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-@media (min-width: 1367px) and (max-width: 1700px) {
-  .carousel .carousel-container .vui_carousel .carousel-footer-text a span {
-    font-size: 18px;
-  }
 }
 
 .carousel .carousel-container .vui_carousel .carousel-footer .carousel-dots {

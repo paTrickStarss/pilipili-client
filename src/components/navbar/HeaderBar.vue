@@ -188,7 +188,12 @@ function openUploadFrag() {
   cursor: pointer;
 }
 
-@media (min-width: 1367px) and (max-width: 1700px) {
+.pili-header .left-entry .default-entry,
+.pili-header .left-entry .entry-title {
+  margin-right: 8px;
+}
+
+@media (min-width: 1367px) {
   .pili-header .left-entry .default-entry,
   .pili-header .left-entry .entry-title {
     margin-right: 15px;
@@ -240,13 +245,7 @@ function openUploadFrag() {
 .pili-header .right-entry {
   display: flex;
   align-items: center;
-  margin-left: 50px;
-}
-
-@media (min-width: 1367px) and (max-width: 1700px) {
-  .pili-header .right-entry {
-    margin-left: 10px;
-  }
+  margin-left: 10px;
 }
 
 .pili-header .center-search-container {

@@ -65,16 +65,26 @@ onMounted(() => {
 }
 
 .recommended-container_floor-aside .container {
-  grid-gap: 20px;
+  display: grid;
+  position: relative;
+  width: 100%;
+  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-@media (min-width: 1400px) and (max-width: 1560px) {
+.recommended-container_floor-aside .container > * {
+  min-width: 0;
+}
+
+@media (min-width: 1400px) {
   .recommended-container_floor-aside .container {
-    display: grid;
-    position: relative;
-    width: 100%;
-    grid-column: span 5;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  .recommended-container_floor-aside .container {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 

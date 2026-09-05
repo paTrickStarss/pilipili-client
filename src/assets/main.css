@@ -2,10 +2,8 @@
 @import './color.css';
 @import './font/index.css';
 
-@media (min-width: 1400px) and (max-width: 1600px) {
-    :root {
-        --layout-padding: 60px;
-    }
+:root {
+    --layout-padding: clamp(30px, 4vw, 80px);
 }
 
 html body {
