@@ -30,8 +30,9 @@ export class WebSocketHelper {
   }
 
   public init(path: string = 'ws'): void {
-    const baseUrl = import.meta.env.BASE_URL
-    const url = `${baseUrl}${path}`
+    this.close()
+    const url = new URL(`${import.meta.env.BASE_URL}${path}`, window.location.origin)
+    url.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const ws = new WebSocket(url)
 
     this._initialized = new Promise((resolve, reject) => {
@@ -57,9 +58,11 @@ export class WebSocketHelper {
     if (!this._client) {
       return
     }
-    if (this._client.readyState === WebSocket.OPEN) {
+    if (this._client.readyState === WebSocket.OPEN || this._client.readyState === WebSocket.CONNECTING) {
       this._client.close()
     }
+    this._client = null
+    this._initialized = null
   }
 
   public get client() {

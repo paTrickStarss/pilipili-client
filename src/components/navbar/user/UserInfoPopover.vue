@@ -3,7 +3,7 @@
   -->
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import {
   DeploymentUnitOutlined,
   FileSearchOutlined,
@@ -14,13 +14,11 @@ import { useUserStore } from '@/stores/user'
 import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
-import { useRouter } from 'vue-router'
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import LinkItem from '@/components/navbar/user/LinkItem.vue'
 import ClickItem from '@/components/navbar/user/ClickItem.vue'
 
-const router = useRouter()
 
 const showPop = ref<number>(-1)
 const user = useUserStore()
@@ -32,22 +30,18 @@ const avatarMouseLeave = () => {
   showPop.value = 0
 }
 
-function handleLogout() {
-  const username = useTokenStore().tokenInfo?.username || ''
-  authAPI.logout(username).then(({ code, msg }) => {
-    if (code === 200) {
-      user.clearUserInfo()
-      useTokenStore().clearTokenInfo()
-      message.success('logout success')
-    } else {
-      message.error(msg)
-    }
-  })
+async function handleLogout() {
+  const token = useTokenStore()
+  try {
+    await authAPI.logout(token.username)
+    message.success('已退出登录')
+  } catch { /* Always discard the local session, even if the server is offline. */ }
+  finally {
+    token.clearTokenInfo()
+    user.clearUserInfo()
+  }
 }
 
-onMounted(() => {
-  user.fetchCurrentUserInfo()
-})
 </script>
 
 <template>

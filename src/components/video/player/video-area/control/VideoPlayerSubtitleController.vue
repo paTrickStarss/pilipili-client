@@ -7,7 +7,7 @@
 </script>
 
 <template>
-
+  <span class="bpx-player-ctrl-subtitle-box" aria-hidden="true" />
 </template>
 
 <style scoped>

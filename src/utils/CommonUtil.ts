@@ -2,7 +2,7 @@
  * Copyright (c) 2024-2025.  Bubble
  */
 
-import moment from 'moment'
+
 
 /**
  * 生成一个随机整数（范围左闭右开）

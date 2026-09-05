@@ -8,4 +8,4 @@ export const imgUtil = {
 }
 
 export const ASSETS_BASE_URL: string =
-  import.meta.env.VITE_BASE_URL + 'src/assets'
+  import.meta.env.VITE_ASSETS_BASE_URL || `${import.meta.env.BASE_URL}src/assets`

@@ -3,18 +3,19 @@
   -->
 
 <script setup lang="ts">
+import { useAsyncResource } from '@/composables/useAsyncResource'
 import HomeSection from '@/components/space/main/HomeSection.vue'
 import RadioGroup from '@/components/space/main/section/RadioGroup.vue'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { RadioListType } from '@/types/PropsType'
 import { message } from 'ant-design-vue'
 import HomeSectionVideoCard from '@/components/space/main/section/video/HomeSectionVideoCard.vue'
-import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+
 import videoInfoAPI from '@/api/video/VideoInfoAPI'
 import { useTokenStore } from '@/stores/token'
-import type { PageResponse, SimpleResponse, VideoDTOType } from '@/types/ApiRespType'
+
 import { useRoute } from 'vue-router'
-import type { PageQueryVideoInfoReq } from '@/types/ApiRequestType'
+
 
 const route = useRoute()
 const token = useTokenStore()
@@ -34,8 +35,7 @@ const radioList = ref<RadioListType[]>([
   },
 ])
 const selectRadio = ref<number>(0)
-const videoList = ref<VideoDTOType[]>([])
-const total = ref<number>(0)
+
 
 function playAll() {
   message.info('playAll')
@@ -45,27 +45,14 @@ function showMore() {
   message.info('showMore')
 }
 
-async function fetchData(uid: string, api: (query: PageQueryVideoInfoReq) => Promise<PageResponse>) {
-  const resp = await api({
-    pageNo: 1,
-    pageSize: 10,
-    uid: Number(uid)
-  })
-  console.log('user video list', resp)
-  videoList.value = resp.data as VideoDTOType[]
-  total.value = resp.total
-}
-onMounted(() => {
-  const uid = route.params.id as string
-  if (token.uid.toString() === uid) {
-    // 用户本人视角
-    fetchData(uid, videoInfoAPI.pageQueryByUid)
-  } else {
-    // 访客视角
-    fetchData(uid, videoInfoAPI.pageQueryPassedByUid)
-  }
-
+const { data: result, loading, error, execute } = useAsyncResource(async () => {
+  const uid = Number(route.params.id || token.uid)
+  const api = uid === token.uid ? videoInfoAPI.pageQueryByUid : videoInfoAPI.pageQueryPassedByUid
+  return api({ uid, pageNo: 1, pageSize: 10 })
 })
+const videoList = computed(() => result.value?.data || [])
+const total = computed(() => result.value?.total || 0)
+onMounted(execute)
 </script>
 
 <template>
@@ -91,7 +78,10 @@ onMounted(() => {
       </button>
     </template>
 
-    <div class="wrap">
+    <div v-if="loading" class="page-state" role="status">正在加载视频…</div>
+    <div v-else-if="error" class="page-state" role="alert">{{ error }}<button @click="execute">重试</button></div>
+    <div v-else-if="!videoList.length" class="page-state">暂无视频</div>
+    <div v-else class="wrap">
       <div class="items full">
         <div class="items__item" v-for="item in videoList" :key="item.vid">
           <HomeSectionVideoCard :info="item" :progress="50" />
@@ -113,13 +103,13 @@ onMounted(() => {
 
 .video-section .items.full {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
 }
 
 @media (min-width: 1340px) {
   .video-section .items.full {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
   }
 }
 

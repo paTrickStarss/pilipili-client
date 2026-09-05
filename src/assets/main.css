@@ -2,9 +2,7 @@
 @import './color.css';
 @import './font/index.css';
 
-:root {
-    --layout-padding: clamp(30px, 4vw, 80px);
-}
+@import './layout.css';
 
 html body {
     -webkit-box-sizing: border-box;
@@ -19,7 +17,7 @@ html body {
     text-size-adjust: none;
     margin: 0;
     padding: 0;
-    font-family: PingFang SC, HarmonyOS Sans SC, Helvetica Neue, Microsoft YaHei, sans-serif !important
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'HarmonyOS Sans SC', sans-serif
 }
 
 body ul {

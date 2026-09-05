@@ -9,7 +9,7 @@ import IconWatchLater from '@/components/icons/IconWatchLater.vue'
 import IconStatsPlay from '@/components/icons/IconStatsPlay.vue'
 import IconStatsDanmaku from '@/components/icons/IconStatsDanmaku.vue'
 import IconUpUserBlack from '@/components/icons/IconUpUserBlack.vue'
-import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+
 import { ref } from 'vue'
 import NoInterestPopover from '@/components/video/NoInterestPopover.vue'
 import type { VideoDTOType } from '@/types/ApiRespType'

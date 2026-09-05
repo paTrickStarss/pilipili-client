@@ -20,6 +20,8 @@ export interface LoginInfoType {
  * 用户信息
  */
 export interface UserInfoType {
+  uuid?: string
+  favoredCount?: number
   /**
    * 用户ID
    */
@@ -293,19 +295,16 @@ export interface CommentDTOType {
 /**
  * SimpleResponse
  */
-export interface SimpleResponse {
+export interface SimpleResponse<T = unknown> {
   code?: number;
-  data?: unknown;
+  data: T;
   msg?: string;
   success?: boolean;
 }
 /**
  * PageResponse
  */
-export interface PageResponse {
-  code?: number;
-  data?: unknown;
-  msg?: string;
+export interface PageResponse<T = unknown> extends SimpleResponse<T[]> {
   pageNo: number;
   pageSize: number;
   total: number;
@@ -374,4 +373,17 @@ export interface UploadTaskMessage {
    * 消息发送时间戳
    */
   msgTime: number;
+}
+
+export interface CollectionDTO {
+  collectionId: number
+  title: string
+  coverUrl: string
+  himitsu: number
+  videoCount: number
+}
+
+export interface UploadResult {
+  taskId: string
+  objectName: string
 }

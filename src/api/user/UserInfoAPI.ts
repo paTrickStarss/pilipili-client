@@ -4,7 +4,7 @@
 
 import axios from '@/api/axios'
 import type { PageQueryUserRelaReq, RegisterReq, UpdateUserInfoReq } from '@/types/ApiRequestType'
-import type { SimpleResponse } from '@/types/ApiRespType'
+import type { SimpleResponse, UserInfoType, UserRelaInfoType } from '@/types/ApiRespType'
 
 export const userInfoAPI = {
 
@@ -12,12 +12,12 @@ export const userInfoAPI = {
    * 获取用户信息
    * @param uid
    */
-  getUserInfo(uid: string): Promise<SimpleResponse> {
-    return axios.get(`/api/user/${uid}`)
+  getUserInfo(uid: string): Promise<SimpleResponse<UserInfoType>> {
+    return axios.get<UserInfoType>(`/api/user/${uid}`)
   },
 
   queryRela(fromUid: number, toUid: number) {
-    return axios.get(`/api/user/isFollow`, { params: { fromUid, toUid }})
+    return axios.get<UserRelaInfoType>(`/api/user/isFollow`, { params: { fromUid, toUid }})
   },
   queryFollowers(query: PageQueryUserRelaReq) {
     return axios.get('/api/user/pageQueryFollowers', { params: { ...query }})
@@ -30,7 +30,7 @@ export const userInfoAPI = {
    * @param req
    */
   register(req: RegisterReq) {
-    return axios.post('/api/user/register', req)
+    return axios.post<{ success: boolean; uid: number }>('/api/user/register', req)
   },
   updateUserInfo(body: UpdateUserInfoReq) {
     return axios.put('/api/user/update', body)

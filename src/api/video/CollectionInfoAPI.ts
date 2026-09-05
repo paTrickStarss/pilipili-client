@@ -3,6 +3,7 @@
  */
 
 import axios from '@/api/axios'
+import type { CollectionDTO, VideoDTOType } from '@/types/ApiRespType'
 import type {
   ChangeCollectionVideoReq,
   PageQueryCollectionInfoReq, PageQueryCollectionVideoReq,
@@ -28,10 +29,10 @@ export default {
     return axios.delete(`/api/video/collection/${id}`)
   },
   queryUserCollection(query: PageQueryCollectionInfoReq) {
-    return axios.get('/api/video/collection/query', { params: { ...query } })
+    return axios.getPage<CollectionDTO>('/api/video/collection/query', { params: { ...query } })
   },
   queryCollectionVideo(query: PageQueryCollectionVideoReq) {
-    return axios.get('/api/video/collection/queryVideo', { params: { ...query } })
+    return axios.getPage<VideoDTOType>('/api/video/collection/queryVideo', { params: { ...query } })
   },
   deleteCollectionVideo(params: ChangeCollectionVideoReq) {
     return axios.delete('/api/video/collection/deleteVideo', { params: { ...params } })

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import IconUpload from '@/components/icons/IconUpload.vue'
-import { computed, onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { WebSocketHelper } from '@/utils/WebSocketHelper'
 import { useTokenStore } from '@/stores/token'
@@ -15,7 +15,7 @@ import type {
   VideoUploadingItemProps,
 } from '@/types/PropsType'
 import VideoUploadingFileItem from '@/components/creativity/upload/VideoUploadingFileItem.vue'
-import { deepCopy, isEmptyString, randomInt } from '@/utils/CommonUtil'
+import { isEmptyString } from '@/utils/CommonUtil'
 import FileUtil from '@/utils/FileUtil'
 import FormItem from '@/components/creativity/upload/FormItem.vue'
 import FormItemInput from '@/components/creativity/upload/FormItemInput.vue'
@@ -31,8 +31,7 @@ import type {
 import ossAPI from '@/api/oss/OssAPI'
 import type { AxiosProgressEvent } from 'axios'
 import type { CreateVideoInfoReq } from '@/types/ApiRequestType'
-import { useRouter } from 'vue-router'
-import { jumpRoute } from '@/utils/RouterUtil'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
 const router = useRouter()
 const token = useTokenStore()
@@ -71,59 +70,64 @@ const handleVideoFileChange = (event: Event) => {
 }
 
 const abortController = ref<AbortController>()
+const selectedFile = ref<File>()
+const uploadState = ref<'idle' | 'uploading' | 'success' | 'error' | 'cancelled'>('idle')
+const uploadError = ref('')
+const saved = ref(false)
+let submitController: AbortController | undefined
+let disposed = false
+const hasUnsavedChanges = computed(() => !saved.value && (showQueue.value || !!videoInfoForm.value.title.trim()))
 // 上传视频文件
-function uploadFile(file: File) {
-  console.log('upload file', file)
-
+async function uploadFile(file: File) {
+  if (loading.value || disposed) return
+  if (!file.type.startsWith('video/')) { message.warn('请选择视频文件'); return }
+  abortController.value?.abort()
+  const controller = new AbortController()
+  abortController.value = controller
+  selectedFile.value = file
+  uploadState.value = 'uploading'
+  uploadError.value = ''
+  saved.value = false
+  videoInfo.value.taskId = ''
+  videoInfo.value.contentUrl = ''
+  if (videoUrl.value) URL.revokeObjectURL(videoUrl.value)
   videoUrl.value = URL.createObjectURL(file)
-  console.log('createObjectURL', videoUrl.value)
-
-  // 默认视频标题为文件名
-  videoInfoForm.value.title = FileUtil.sliceOffExtension(file.name)
-
-  // 新增上传任务
-  const uploadInfo: VideoUploadingItemProps = {
-    id: ++uploadFileCount.value,
-    fileName: file.name,
-    fileSize: FileUtil.getFileSizeInMegabytes(file.size),
-    progress: 0,
-    speed: 0,
-    eta: 0,
-    paused: false,
+  videoInfoForm.value.title ||= FileUtil.sliceOffExtension(file.name)
+  uploadingQueue.value = [{ id: ++uploadFileCount.value, fileName: file.name,
+    fileSize: FileUtil.getFileSizeInMegabytes(file.size), progress: 0, speed: 0, eta: 0, paused: false }]
+  try {
+    const { data } = await ossAPI.uploadVideo(file, event => {
+      if (abortController.value === controller) uploadProgressHandler(event)
+    }, controller.signal)
+    if (controller.signal.aborted || disposed) return
+    if (!data.taskId || !data.objectName) throw new Error('上传响应不完整，请重试')
+    videoInfo.value.taskId = data.taskId
+    videoInfo.value.contentUrl = data.objectName
+    uploadState.value = 'success'
+    uploadingQueue.value[0].progress = 100
+    message.success('视频上传成功')
+  } catch (error) {
+    if (controller.signal.aborted || disposed) return
+    uploadState.value = 'error'
+    uploadError.value = error instanceof Error ? error.message : '上传失败，请重试'
   }
-  uploadingQueue.value.push(uploadInfo)
-  console.log('uploadingQueue', uploadingQueue.value)
-
-  abortController.value = new AbortController()
-  // 上传视频文件
-  ossAPI
-    .uploadVideo(file, uploadProgressHandler, abortController.value.signal)
-    .then(({ data }) => {
-      message.success('视频上传成功')
-      console.log('upload file', data)
-      const taskId = data.taskId
-      const objectName = data.objectName
-      if (taskId) {
-        videoInfo.value.taskId = taskId
-        videoInfo.value.contentUrl = objectName
-      }
-    })
 }
 const uploadProgressHandler = (event: AxiosProgressEvent) => {
-  console.log('uploadProgress', event)
-  const progress = event.progress || 0
-  const rate = event.rate || 0
-  const estimated = event.estimated || 0
-  uploadingQueue.value[0].progress = progress * 100
-  uploadingQueue.value[0].speed = rate / (1024 * 1024)
-  uploadingQueue.value[0].eta = Math.round(estimated)
+  const item = uploadingQueue.value[0]
+  if (!item) return
+  // Sending all bytes does not mean the server has accepted the file.
+  item.progress = Math.min(99, (event.progress || 0) * 100)
+  item.speed = (event.rate || 0) / (1024 * 1024)
+  item.eta = Math.round(event.estimated || 0)
 }
-
-// 放弃上传文件
 function abortUpload() {
-  abortController.value?.abort('User Cancelled')
-  abortController.value = undefined
-  message.warn('取消上传')
+  if (loading.value) return
+  abortController.value?.abort()
+  uploadState.value = 'cancelled'
+  uploadError.value = '上传已取消，可以重新上传'
+}
+function retryUpload() {
+  if (selectedFile.value && uploadState.value !== 'uploading') void uploadFile(selectedFile.value)
 }
 
 // 点击上传文件
@@ -177,7 +181,9 @@ const wsClient = ref<WebSocket | null>()
 function handleMessage(msg: MessageEvent) {
   const { data } = msg
   // message.info(`getMessage(${data})`)
-  const body: UploadTaskMessage = JSON.parse(data) as UploadTaskMessage
+  let body: UploadTaskMessage
+  try { body = JSON.parse(data) as UploadTaskMessage } catch { return }
+  if (!body || body.taskId !== videoInfo.value.taskId) return
   console.log('getMessage', msg, body)
   // videoInfo.value.taskId = body.taskId
   if (body.msg) {
@@ -211,7 +217,7 @@ function getVideoFirstFrame() {
         ctx.drawImage(videoPlayer.value, 0, 0, canvas.width, canvas.height)
         defaultVideoCoverFile.value = null
         canvas.toBlob(blob => {
-          if (blob) {
+          if (blob && !disposed) {
             const file = new File([blob], 'default-video-cover.png', {
               type: 'image/png',
             })
@@ -225,7 +231,7 @@ function getVideoFirstFrame() {
           URL.revokeObjectURL(videoUrl.value)
           videoUrl.value = null
         }
-      })
+      }, { once: true })
       // videoPlayer.value.addEventListener('loadedmetadata', () => {
       //   videoInfo.value.duration = videoPlayer.value.duration
       // })
@@ -285,64 +291,32 @@ const categorySelectList = ref<SelectorInfoProps[]>([])
 const loadingMessageKey = 'saving'
 const loading = ref<boolean>(false)
 async function handleSubmit() {
-  if (loading.value) {
-    return
+  if (loading.value || saved.value) return
+  if (!formCheck()) { message.warn('请填写标题并选择分区'); return }
+  if (uploadState.value !== 'success' || !videoInfo.value.taskId) {
+    message.warn('请等待视频上传成功后再投稿'); return
   }
-
+  const cover = videoCoverFile.value || defaultVideoCoverFile.value
+  if (!cover) { message.warn('请等待默认封面生成，或手动上传封面'); return }
   loading.value = true
-  message.loading({ content: '检查信息...', key: loadingMessageKey })
-  if (!videoCoverFile.value) {
-    if (!defaultVideoCoverFile.value) {
-      message.warn( { content: '请等待默认封面生成', key: loadingMessageKey })
-      loading.value = false
-      return
-    }
-    videoCoverFile.value = defaultVideoCoverFile.value
-  }
-
-  // 检查视频信息表单
-  if (!formCheck()) {
-    message.warn({ content: '请填写完整视频信息', key: loadingMessageKey })
-    loading.value = false
-    return
-  }
-
-  // 确认视频文件上传完毕
-  if (uploadingQueue.value[0].progress < 100) {
-    message.warn({ content: '请等待视频上传完成', key: loadingMessageKey })
-    loading.value = false
-    return
-  }
-
-  // 上传视频封面
+  submitController = new AbortController()
   try {
-    message.loading({ content: '上传封面中...', key: loadingMessageKey })
-    const { data } = await ossAPI.uploadVideoCover(videoCoverFile.value)
-    videoInfo.value.coverUrl = data.objectName
+    message.loading({ content: '上传封面中…', key: loadingMessageKey })
+    const { data } = await ossAPI.uploadVideoCover(cover, submitController.signal)
+    if (disposed) return
+    const form = videoInfoForm.value
+    await videoInfoAPI.save({ ...videoInfo.value, coverUrl: data.objectName,
+      title: form.title.trim(), uid: token.uid, tag: form.tags.join(','),
+      description: form.description, sourceType: form.type, primaryCategoryId: form.category, reprintPermit: 1 })
+    if (disposed) return
+    saved.value = true
+    message.success({ content: '投稿成功', key: loadingMessageKey })
+    await router.push(`/space/${token.uid}`)
   } catch (error) {
-    message.error({ content: '上传视频封面失败', key: loadingMessageKey })
+    if (!disposed) message.error({ content: error instanceof Error ? error.message : '投稿失败，请重试', key: loadingMessageKey })
+  } finally {
     loading.value = false
-    console.error('上传视频封面失败', error)
-    return
   }
-
-  // message.info('保存视频信息')
-  videoInfo.value.title = videoInfoForm.value.title
-  videoInfo.value.uid = token.uid
-  videoInfo.value.tag = videoInfoForm.value.tags.join(',')
-  videoInfo.value.description = videoInfoForm.value.description
-  videoInfo.value.sourceType = videoInfoForm.value.type
-  videoInfo.value.primaryCategoryId = videoInfoForm.value.category
-  videoInfo.value.reprintPermit = 1
-  videoInfoAPI.save(videoInfo.value)
-    .then(res => {
-      message.success({ content: '保存成功', key: loadingMessageKey })
-      console.log('SaveVideoInfo', res)
-      setTimeout(() => {
-        jumpRoute(router, '/creativity')
-      }, 1000)
-      loading.value = false
-    })
 }
 // 检查表单
 function formCheck(): boolean {
@@ -389,6 +363,7 @@ async function initWsClient() {
 //   }
 // }
 const beforeUnload = (event: BeforeUnloadEvent) => {
+  if (!hasUnsavedChanges.value) return
   const msg = '刷新页面将会丢失未保存内容，是否继续？'
   event.preventDefault()
   event.returnValue = msg
@@ -420,7 +395,13 @@ onMounted(async () => {
   initWsClient().then()
   fetchCategoryList().then()
 })
+onBeforeRouteLeave(() => !hasUnsavedChanges.value || window.confirm('有未保存的投稿内容，确定离开吗？'))
 onBeforeUnmount(() => {
+  disposed = true
+  abortController.value?.abort()
+  submitController?.abort()
+  if (videoUrl.value) URL.revokeObjectURL(videoUrl.value)
+  if (videoCoverUrl.value) URL.revokeObjectURL(videoCoverUrl.value)
   WebSocketHelper.instance.close()
   window.removeEventListener('beforeunload', beforeUnload)
 })
@@ -513,6 +494,7 @@ onBeforeUnmount(() => {
                         :key="item.id"
                         :info="item"
                         @abort="abortUpload"
+                        @reload="retryUpload"
                       />
                     </div>
                   </div>
@@ -521,7 +503,8 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="form">
+          <div v-if="uploadError" class="page-state" role="alert">{{ uploadError }}<button @click="retryUpload">重新上传</button></div>
+        <div class="form">
             <div class="title">
               <span class="label" style="width: 120px"> 基本设置 </span>
               <span class="quick-fill-entrance">一键填写</span>
@@ -597,7 +580,7 @@ onBeforeUnmount(() => {
 
             <form-item wrap-class="submit-container" label="">
               <span class="submit-draft">存草稿</span>
-              <span class="submit-add" @click="handleSubmit">立即投稿</span>
+              <button type="button" class="submit-add" :disabled="loading || uploadState !== 'success' || saved" @click="handleSubmit">{{ loading ? '正在提交…' : '立即投稿' }}</button>
             </form-item>
           </div>
         </div>
@@ -617,11 +600,11 @@ onBeforeUnmount(() => {
   overflow: visible;
   height: auto;
   min-height: calc(100vh - var(--self-top-height));
-  padding-left: calc(100vw - 200px - 100%);
+  padding: 0;
 }
 .video-up-app {
   height: 100%;
-  min-width: 1000px;
+  min-width: 0;
   max-width: 1100px;
   margin: 0 auto 0;
   background-color: #fff;
@@ -850,10 +833,10 @@ onBeforeUnmount(() => {
 }
 
 .form {
-  margin: 30px 30px 0 0;
+  margin: 30px 0 0;
   background: #fff;
-  width: 80%;
-  min-width: 900px;
+  width: 100%;
+  min-width: 0;
 }
 .title {
   margin: 0 0 0 32px;
@@ -956,8 +939,8 @@ onBeforeUnmount(() => {
   margin-top: 12px;
 }
 .desc-container .desc-text-wrp {
-  width: 80%;
-  min-width: 700px;
+  width: 100%;
+  min-width: 0;
   flex: 1;
 }
 .submit-container .submit-add,
@@ -988,4 +971,14 @@ onBeforeUnmount(() => {
   color: #fff;
   background: #00a1d6;
 }
+
+.video-up-app { padding-inline: clamp(12px, 2vw, 24px); }
+.video-title-content, .tag-container .tag-input-wrp, .desc-container .desc-text-wrp { min-width: 0; }
+.cover-content { flex-wrap: wrap; gap: 16px; }
+.cover-preview { padding: 0; }
+@media (max-width: 767px) {
+  .video-human-type .selector-container { flex-wrap: wrap; gap: 12px; }
+  .title { margin: 0; }
+}
+
 </style>

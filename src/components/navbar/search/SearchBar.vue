@@ -91,7 +91,7 @@ const onSearch = () => {
 .pili-header .center-search-container .center-search__bar {
   position: relative;
   margin: 0 auto;
-  min-width: 181px;
+  min-width: 0;
   max-width: 500px;
 }
 
@@ -247,4 +247,9 @@ const onSearch = () => {
   font-size: 16px;
   line-height: 24px;
 }
+
+.center-search-container { min-width: 0; width: 100%; }
+#nav-searchform { min-width: 0; }
+.search-panel { max-width: calc(100vw - 32px); }
+
 </style>

@@ -6,29 +6,17 @@
 import IndexView from '@/views/index/IndexView.vue'
 import RecommendedSwipe from '@/components/main/RecommendedSwipe.vue'
 import VideoCard from '@/components/video/VideoCard.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import { useAsyncResource } from '@/composables/useAsyncResource'
 import type { VideoDTOType } from '@/types/ApiRespType'
 import videoInfoAPI from '@/api/video/VideoInfoAPI'
 
 
-const recVideoInfoList = ref<VideoDTOType[]>()
-
-async function fetchRecVideo() {
-  try {
-    const { data } = await videoInfoAPI.pageQueryPassedByUid({
-      pageNo: 1,
-      pageSize: 10,
-      uid: -1,
-    })
-    recVideoInfoList.value = data
-    console.log('recVideoInfoList', recVideoInfoList)
-  } catch (error) {
-    console.log(error)
-  }
-}
-onMounted(() => {
-  fetchRecVideo()
+const { data: recVideoInfoList, loading, error, execute: fetchRecVideo } = useAsyncResource<VideoDTOType[]>(async () => {
+  const { data } = await videoInfoAPI.pageQueryPassedByUid({ pageNo: 1, pageSize: 10, uid: -1 })
+  return data || []
 })
+onMounted(fetchRecVideo)
 </script>
 
 <template>
@@ -37,6 +25,11 @@ onMounted(() => {
       <div class="recommended-container_floor-aside">
         <div class="container is-version8">
           <RecommendedSwipe />
+          <div v-if="loading" class="feed-status page-state" role="status">正在加载推荐视频…</div>
+          <div v-else-if="error" class="feed-status page-state" role="alert">
+            <p>{{ error }}</p><button @click="fetchRecVideo">重新加载</button>
+          </div>
+          <div v-else-if="!recVideoInfoList?.length" class="feed-status page-state">暂无推荐视频</div>
 
           <div
             class="feed-card"
@@ -56,6 +49,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.feed-status { grid-column: span 2; }
+
 .recommended-container_floor-aside {
   padding-bottom: 60px;
 }
@@ -95,4 +90,13 @@ onMounted(() => {
   z-index: 2;
   transform: translate(10px);
 }
+
+@media (max-width: 1099px) {
+  .recommended-container_floor-aside .container { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
+@media (max-width: 767px) {
+  .recommended-container_floor-aside .container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .recommended-container_floor-aside .container :deep(.recommended-swipe) { grid-column: 1 / -1; grid-row: auto; }
+}
+
 </style>

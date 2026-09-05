@@ -4,10 +4,13 @@
 
 <script setup lang="ts">
 import GlobalPopover from '@/components/global/GlobalPopover.vue'
-import LoginModal from '@/components/navbar/user/LoginModal.vue'
-import { ref } from 'vue'
+const LoginModal = defineAsyncComponent(() => import('@/components/navbar/user/LoginModal.vue'))
+import { defineAsyncComponent, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const loginModalVisible = ref<boolean>(false)
+const loginModalVisible = ref(false)
+const route = useRoute()
+watch(() => route.query.login, value => { loginModalVisible.value = value === '1' }, { immediate: true })
 </script>
 
 <template>
@@ -15,9 +18,9 @@ const loginModalVisible = ref<boolean>(false)
     <GlobalPopover>
       <template #trigger>
         <div class="right-entry__outside go-login-btn">
-          <div class="header-login-entry" @click="loginModalVisible = true">
+          <button type="button" class="header-login-entry" @click="loginModalVisible = true">
             <span>登录</span>
-          </div>
+          </button>
         </div>
       </template>
 
@@ -25,12 +28,13 @@ const loginModalVisible = ref<boolean>(false)
         <span>请登录或注册</span>
       </div>
     </GlobalPopover>
-    <LoginModal v-model:visible="loginModalVisible" />
+    <LoginModal v-if="loginModalVisible" v-model:visible="loginModalVisible" />
   </div>
 </template>
 
 <style scoped>
 .header-login-entry {
+  border: 0;
   width: 36px;
   height: 36px;
   border-radius: 50%;

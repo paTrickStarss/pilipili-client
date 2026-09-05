@@ -13,7 +13,7 @@ const emits = defineEmits({
    * 更新播放速度
    * @param rate
    */
-  updatePlaybackRate: (rate: number) => true
+  updatePlaybackRate: (rate: number) => Number.isFinite(rate)
 })
 
 const resultText = computed(() => {

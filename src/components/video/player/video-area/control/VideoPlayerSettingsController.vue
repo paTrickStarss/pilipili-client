@@ -7,7 +7,7 @@
 import IconSettings from '@/components/icons/IconSettings.vue'
 import { ref } from 'vue'
 import BuiSwitch from '@/components/global/BuiSwitch.vue'
-import IconArrowMoreRight from '@/components/icons/IconArrowMoreRight.vue'
+
 import IconArrowRight from '@/components/icons/IconArrowRight.vue'
 
 

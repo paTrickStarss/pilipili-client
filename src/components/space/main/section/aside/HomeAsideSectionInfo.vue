@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import HomeAsideSection from '@/components/space/main/section/aside/HomeAsideSection.vue'
-import { inject, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { UserInfoType } from '@/types/ApiRespType'
 import { useRoute } from 'vue-router'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'

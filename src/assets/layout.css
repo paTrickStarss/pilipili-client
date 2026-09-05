@@ -1,0 +1,48 @@
+:root {
+  --layout-padding: clamp(16px, 4vw, 80px);
+  --content-max-width: 1980px;
+  --header-height: 64px;
+  --sidebar-width: 200px;
+  --layout-gap: 24px;
+  --layer-header: 100;
+  --layer-popover: 200;
+  --layer-dialog: 1000;
+}
+
+html { scrollbar-gutter: stable; }
+body { background: var(--bg1); color: var(--text1); }
+#app { min-width: 0; min-height: 100dvh; isolation: isolate; }
+button, input, textarea, select { font: inherit; }
+button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--brand_blue);
+  outline-offset: 3px;
+}
+.page-container {
+  width: 100%;
+  max-width: calc(var(--content-max-width) + 2 * var(--layout-padding));
+  margin-inline: auto;
+  padding-inline: var(--layout-padding);
+  min-width: 0;
+}
+.page-state {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.page-state button {
+  margin: 12px;
+  padding: 8px 20px;
+  border: 1px solid var(--line_regular);
+  border-radius: 6px;
+  background: var(--bg1);
+  color: var(--brand_blue);
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media (max-width: 767px) {
+  :root { --header-height: 96px; --layout-gap: 16px; }
+}

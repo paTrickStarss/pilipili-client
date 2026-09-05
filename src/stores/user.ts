@@ -1,161 +1,53 @@
-/*
- * Copyright (c) 2024-2025.  Bubble
- */
-
+import { computed, reactive, ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 import type { UserInfoType } from '@/types/ApiRespType'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
-import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
 
-export const useUserStore = defineStore('user', () => {
-  const isFetching = ref(true)
-  const uid = ref<number>(0)
-  const uuid = ref<string>('')
-  const nickname = ref<string>('')
-  const gender = ref<number>(0)
-  const avatarUrl = ref<string>('')
-  const backgroundUrl = ref<string>('')
-  const email = ref<string>('')
-  const description = ref<string>('')
-  const vipStatus = ref<number>(0)
-  const authority = ref<number>(0)
-  const authorityDesc = ref<string>('')
-  const validStatus = ref<number>(0)
-  const role = ref<number>(0)
-  const exp = ref<number>(0)
-  const hcoin = ref<number>(0)
-  const pcoin = ref<number>(0)
-  const level = ref<number>(0)
-  const followerCount = ref<number>(0)
-  const fansCount = ref<number>(0)
-  const dynamicCount = ref<number>(0)
-
-  const userInfo = computed(() => {
-    return {
-      uid,
-      uuid,
-      nickname,
-      gender,
-      avatarUrl,
-      backgroundUrl,
-      email,
-      description,
-      vipStatus,
-      authority,
-      authorityDesc,
-      validStatus,
-      role,
-      exp,
-      hcoin,
-      pcoin,
-      level,
-      followerCount,
-      fansCount,
-      dynamicCount,
-      spaceUrl,
-    }
-  })
-
-  const spaceUrl = computed(() => {
-    return `/space/${uid.value}`
-  })
-
-  const isLogin = computed(() => {
-    return uid.value !== 0
-  })
-
-  /**
-   * 清空用户信息
-   */
-  function clearUserInfo() {
-    // isLogin.value = false
-    uid.value = 0
-    nickname.value = ''
-    gender.value = 0
-    description.value = ''
-    avatarUrl.value = ''
-  }
-
-  /**
-   * 获取测试用户信息
-   */
-  function fetchDemoUserInfo() {
-    uid.value = 233
-    nickname.value = 'Bubble'
-    gender.value = 1
-    description.value = 'This is Bubble speaking.'
-    avatarUrl.value = 'hhh'
-  }
-
-  /**
-   * 保存用户信息
-   * @param userInfo 保存的用户信息
-   */
-  function saveUserInfo(userInfo: UserInfoType) {
-    // isLogin.value = true
-    uid.value = userInfo.uid
-    uuid.value = userInfo.uuid
-    nickname.value = userInfo.nickname
-    gender.value = userInfo.gender
-    avatarUrl.value = userInfo.avatarUrl
-    backgroundUrl.value = userInfo.backgroundUrl
-    email.value = userInfo.email
-    description.value = userInfo.description
-    vipStatus.value = userInfo.vipStatus
-    authority.value = userInfo.authority
-    authorityDesc.value = userInfo.authorityDesc
-    validStatus.value = userInfo.validStatus
-    role.value = userInfo.role
-    exp.value = userInfo.exp
-    hcoin.value = userInfo.hcoin
-    pcoin.value = userInfo.pcoin
-    level.value = userInfo.level
-    followerCount.value = userInfo.followerCount
-    fansCount.value = userInfo.fansCount
-    dynamicCount.value = userInfo.dynamicCount
-  }
-
-  /**
-   * 获取当前用户信息
-   */
-  async function fetchCurrentUserInfo() {
-    isFetching.value = true
-    const token = useTokenStore()
-    return new Promise((resolve, reject) => {
-      if (token.isLogin) {
-        userInfoAPI
-          .getUserInfo(token.username)
-          .then(({ data }) => {
-            saveUserInfo(data)
-            // message.success('getUserInfo successfully logged in')
-            console.log('userInfo', data)
-            return resolve(data)
-          })
-          .catch(err => {
-            reject(err)
-          })
-          .finally(() => {
-            isFetching.value = false
-          })
-
-      }
-    })
-  }
-
+function emptyUser(): UserInfoType {
   return {
-    isLogin,
-    uid,
-    nickname,
-    spaceUrl,
-    description,
-    avatarUrl,
-    vipStatus,
-    userInfo,
-    clearUserInfo,
-    fetchDemoUserInfo,
-    saveUserInfo,
-    fetchCurrentUserInfo,
+    uid: 0, nickname: '', gender: 0, avatarUrl: '', backgroundUrl: '', email: '',
+    description: '', vipStatus: 0, authority: 0, authorityDesc: '', validStatus: 0,
+    role: 0, exp: 0, hcoin: 0, pcoin: 0, level: 0, followerCount: 0, fansCount: 0,
+    dynamicCount: 0, uuid: '', favoredCount: 0,
   }
+}
+
+export const useUserStore = defineStore('user', () => {
+  const userInfo = reactive(emptyUser())
+  const isFetching = ref(false)
+  let requestVersion = 0
+  const spaceUrl = computed(() => `/space/${userInfo.uid}`)
+  const isLogin = computed(() => useTokenStore().isLogin && userInfo.uid !== 0)
+
+  function clearUserInfo() {
+    requestVersion++
+    Object.assign(userInfo, emptyUser())
+    isFetching.value = false
+  }
+
+  function saveUserInfo(info: UserInfoType) {
+    Object.assign(userInfo, emptyUser(), info)
+  }
+
+  async function fetchCurrentUserInfo() {
+    const token = useTokenStore()
+    if (!token.isLogin) {
+      clearUserInfo()
+      return
+    }
+    const version = ++requestVersion
+    const session = token.accessToken
+    isFetching.value = true
+    try {
+      const { data } = await userInfoAPI.getUserInfo(token.username)
+      if (version === requestVersion && session === token.accessToken) saveUserInfo(data)
+      return data
+    } finally {
+      if (version === requestVersion) isFetching.value = false
+    }
+  }
+
+  return { ...toRefs(userInfo), userInfo, isFetching, spaceUrl, isLogin,
+    clearUserInfo, saveUserInfo, fetchCurrentUserInfo }
 })

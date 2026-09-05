@@ -6,9 +6,7 @@ import piniaPersistState from 'pinia-plugin-persistedstate'
 
 import App from './App.vue'
 import router from './router'
-import axios from './api/axios'
-import Antd from 'ant-design-vue'
-import { CryptoUtil } from '@/utils/CryptoUtil'
+import { installUi } from '@/plugins/ui'
 import "moment/dist/locale/zh-cn.js";
 // import 'ant-design-vue/dist/reset.css'
 
@@ -23,21 +21,13 @@ pinia.use(piniaPersistState)
 
 app.use(pinia)
 app.use(router)
-app.use(Antd)
+installUi(app)
 
-app.config.globalProperties.$api = axios
 
 app.component('IconDanmakuModeScroll', IconDanmakuModeScroll)
 app.component('IconDanmakuModeTop', IconDanmakuModeTop)
 app.component('IconDanmakuModeBottom', IconDanmakuModeBottom)
 
 
-const crypto = CryptoUtil.instance
-try {
-  await CryptoUtil.checkInitialized()
-  app.config.globalProperties.$crypto = crypto
-} catch (error) {
-  console.error('CryptoUtil initialization error', error)
-}
-
+// Public pages can mount without waiting for the authentication service.
 app.mount('#app')

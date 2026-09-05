@@ -3,8 +3,9 @@
   -->
 
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
+import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+import UserInfoCardPopover from '@/components/global/UserInfoCardPopover.vue'
 import IconMenu from '@/components/icons/IconMenu.vue'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
 import type { UserInfoType, UserRelaInfoType } from '@/types/ApiRespType'
@@ -53,40 +54,46 @@ async function fetchData() {
   //   isSpecial: false,
   //   isMutual: false,
   // }
-  await Promise.all(promiseArr)
-  loading.value = false
+  try { await Promise.all(promiseArr) } catch { /* Request errors are reported centrally. */ }
+  finally { loading.value = false }
 }
 
 const avatarEnter = ref<boolean>(false)
-const avatarMouseEnter = () => {
+let avatarRect: DOMRect | undefined
+let hoverTimer: ReturnType<typeof setTimeout> | undefined
+const avatarMouseEnter = (event: MouseEvent) => {
+  avatarRect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  clearTimeout(hoverTimer)
   avatarEnter.value = true
-  setTimeout(() => {
+  hoverTimer = setTimeout(() => {
     if (avatarEnter.value) {
       showPopover()
     }
   }, 300)
 }
 const avatarMouseLeave = () => {
+  clearTimeout(hoverTimer)
   avatarEnter.value = false
-  setTimeout(() => {
+  hoverTimer = setTimeout(() => {
     if (!getPopoverEnter()) {
       hidePopover()
     }
   }, 300)
 }
 
-const refHandler = inject('refHandler') as { userInfoPopRef: any }
+const refHandler = inject<{ userInfoPopRef: InstanceType<typeof UserInfoCardPopover> | null }>('refHandler')
 function getPopoverEnter() {
-  return refHandler.userInfoPopRef.getPopoverEnter()
+  return refHandler?.userInfoPopRef?.getPopoverEnter()
 }
 function showPopover() {
   console.log('showPopover')
-  refHandler.userInfoPopRef.loadData(userInfo.value, relaInfo.value)
-  refHandler.userInfoPopRef.show({ left: 920, top: 170 })
+  if (!userInfo.value) return
+  refHandler?.userInfoPopRef?.loadData(userInfo.value, relaInfo.value)
+  refHandler?.userInfoPopRef?.show({ left: avatarRect?.left || 8, top: avatarRect?.bottom || 8 })
 }
 function hidePopover() {
   console.log('hidePopover')
-  refHandler.userInfoPopRef.hide()
+  refHandler?.userInfoPopRef?.hide()
 }
 
 /**
@@ -126,6 +133,7 @@ async function handleUnFollow() {
 onMounted(() => {
   fetchData()
 })
+onBeforeUnmount(() => clearTimeout(hoverTimer))
 </script>
 
 <template>

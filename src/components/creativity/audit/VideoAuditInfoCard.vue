@@ -392,4 +392,96 @@ onMounted(() => {
 }
 
 
+
+@media (max-width: 767px) {
+  .article-card.v2 {
+    align-items: flex-start;
+    padding: 20px 0;
+  }
+
+  .article-card.v2 .cover-wrp {
+    flex: 0 0 min(40%, 140px);
+    width: min(40%, 140px);
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin-right: 16px;
+  }
+
+  .article-card.v2 .meta-wrp {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+  }
+
+  .cc-article-wrp .article-card .meta-title {
+    height: auto;
+  }
+
+  .cc-article-wrp .article-card .meta-title .name {
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+
+  .article-card.v2 .meta-middle {
+    align-items: stretch;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .article-card.v2 .meta-status {
+    display: block;
+    min-width: 0;
+    padding: 10px 0;
+  }
+
+  .article-card.v2 .meta-status .pubdate {
+    display: block;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .article-card.v2 .meta-status .pubdate .date {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .article-card.v2 .meta-view {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .article-card.v2 .meta-view .bili-btn {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    margin-right: 0;
+  }
+
+  .article-card.v2 .meta-view .bili-btn .bcc-iconfont {
+    margin-right: 3px;
+  }
+
+  .article-card.v2 .meta-view .more-btn {
+    flex: 0 0 32px;
+  }
+
+  .article-card.v2 .meta-footer {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 8px;
+    margin-top: 10px;
+  }
+
+  .article-card.v2 .meta-footer .view-stat {
+    min-width: 0;
+    margin-right: 0;
+  }
+}
+
 </style>

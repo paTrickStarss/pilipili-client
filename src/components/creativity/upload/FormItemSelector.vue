@@ -11,8 +11,8 @@ import { message } from 'ant-design-vue'
 const props = defineProps<{
   list: SelectorInfoProps[]
 }>()
-const map = computed<Map<string, string>>(() => {
-  const res = new Map<string, string>()
+const map = computed<Map<number, string>>(() => {
+  const res = new Map<number, string>()
   props.list.forEach(item => {
     res.set(item.key, item.label)
   })

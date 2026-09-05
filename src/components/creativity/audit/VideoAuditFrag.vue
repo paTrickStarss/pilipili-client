@@ -3,18 +3,20 @@
   -->
 
 <script setup lang="ts">
+import { useAsyncResource } from '@/composables/useAsyncResource'
 import VideoAuditInfoCard from '@/components/creativity/audit/VideoAuditInfoCard.vue'
-import { onMounted, provide, reactive, ref, watch } from 'vue'
-import type { VideoDTOType } from '@/types/ApiRespType'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
+
 import VideoInfoAPI from '@/api/video/VideoInfoAPI'
 
 
 const status = ref<number>(-1)
 watch(status, () => {
+  pagination.pageNo = 1
   fetchData()
 })
 
-const videoInfoList = ref<VideoDTOType[]>()
+
 
 const statusList: number[] = [-1, 0, 1, 2, 3, 4]
 function statusClick(newStatus: number) {
@@ -23,7 +25,7 @@ function statusClick(newStatus: number) {
   }
   status.value = newStatus
 }
-const currentTotal = ref<number>(0)
+
 const pagination = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -36,18 +38,12 @@ function pageChange(pageNo: number, pageSize: number) {
   pagination.pageSize = pageSize
   fetchData()
 }
-async function fetchData() {
-  const resp = await VideoInfoAPI.pageQueryAllByUid({
-    uid: -1,
-    pageNo: pagination.pageNo,
-    pageSize: pagination.pageSize,
-    status: status.value !== -1 ? status.value : undefined,
-  })
-  console.log('resp:', resp)
-  currentTotal.value = resp.total
-  videoInfoList.value = resp.data as VideoDTOType[]
-  console.log('videoInfoList', videoInfoList.value)
-}
+const { data: result, loading, error, execute: fetchData } = useAsyncResource(() => VideoInfoAPI.pageQueryAllByUid({
+  uid: -1, pageNo: pagination.pageNo, pageSize: pagination.pageSize,
+  status: status.value !== -1 ? status.value : undefined,
+}))
+const currentTotal = computed(() => result.value?.total || 0)
+const videoInfoList = computed(() => result.value?.data || [])
 provide('fetchData', fetchData)
 onMounted(() => {
   fetchData()
@@ -62,6 +58,9 @@ onMounted(() => {
         <div class="bcc-search-input-wrapper article-header_search">
 
         </div>
+        <div v-if="loading" class="page-state" role="status">正在加载稿件…</div>
+        <div v-else-if="error" class="page-state" role="alert">{{ error }}<button @click="fetchData">重试</button></div>
+        <div v-else-if="!videoInfoList.length" class="page-state">暂无符合条件的稿件</div>
         <div class="cc-article-wrp is-article">
           <div class="article-header showSecondTab">
             <div class="tabs">
@@ -288,6 +287,41 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   margin: 25px 0 10px 0;
+}
+
+
+.upload-manage .content { padding: 16px; }
+@media (max-width: 767px) {
+  .article-v2-wrap .article-header_search { position: relative; top: auto; right: auto; width: 100%; margin-block: 16px; }
+
+  .cc-article-wrp .article-header,
+  .article-header.showSecondTab {
+    display: flex;
+    height: auto;
+    margin-bottom: 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .article-header.showSecondTab .secondTabs {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    margin-top: 0;
+    gap: 10px 0;
+  }
+
+  .text-split_wrap .operate-txt {
+    min-width: 0;
+    padding-right: 8px;
+    text-align: center;
+  }
+
+  .text-split_wrap .operate-txt:nth-child(3n)::after,
+  .text-split_wrap .operate-txt:last-child::after {
+    display: none;
+  }
 }
 
 </style>

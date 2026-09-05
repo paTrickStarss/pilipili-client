@@ -3,6 +3,7 @@
  */
 
 import axios from '@/api/axios'
+import type { UploadResult } from '@/types/ApiRespType'
 import type { AxiosProgressEvent } from 'axios';
 
 export default {
@@ -24,8 +25,8 @@ export default {
    * 上传视频封面
    * @param file
    */
-  uploadVideoCover(file: File) {
-    return this.uploadFile('/api/oss/image/cover/video', file)
+  uploadVideoCover(file: File, signal?: AbortSignal) {
+    return this.uploadFile('/api/oss/image/cover/video', file, undefined, signal)
   },
 
 
@@ -45,7 +46,7 @@ export default {
     const formData = new FormData()
     formData.append('file', file)
 
-    return axios.post(path, formData, {
+    return axios.post<UploadResult>(path, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         // 'Connection': 'keep-alive', // Error: Refused to set unsafe header "Connection"

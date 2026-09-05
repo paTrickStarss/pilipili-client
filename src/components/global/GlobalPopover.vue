@@ -3,77 +3,66 @@
   -->
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { nextTick, onBeforeUnmount, ref } from 'vue'
+import type { CSSProperties } from 'vue'
+const props = withDefaults(defineProps<{
+  position?: string; wrapClass?: string; contentClass?: string;
+  contentStyle?: CSSProperties; popProhibit?: boolean;
+}>(), { position: 'bottom', wrapClass: '', contentClass: '', popProhibit: false })
+const emit = defineEmits<{ mouseenter: []; mouseleave: [] }>()
+const visible = ref(false)
+const triggerRef = ref<HTMLElement>()
+const popoverRef = ref<HTMLElement>()
+const placement = ref<CSSProperties>({ left: '0px', top: '0px' })
+let timer: ReturnType<typeof setTimeout> | undefined
+let observer: ResizeObserver | undefined
 
-defineProps({
-  position: {
-    type: String,
-    default: 'bottom',
-  },
-  wrapClass: {
-    default: '',
-  },
-  contentClass: {
-    default: '',
-  },
-  contentStyle: {
-    default: {},
-  },
-  popProhibit: {
-    type: Boolean,
-    default: false,
-  },
-})
-const emit = defineEmits({
-  mouseenter: () => true,
-  mouseleave: () => true,
-})
-// const visible = defineModel<boolean>('visible',
-//   { required: true, default: false })
-const visible = ref<boolean>(false)
-let triggerEnter: boolean = false
-let contentEnter: boolean = false
-
-function showPopover() {
+function positionPopover() {
+  const trigger = triggerRef.value?.getBoundingClientRect()
+  const pop = popoverRef.value?.getBoundingClientRect()
+  if (!trigger || !pop) return
+  const maxX = document.documentElement.clientWidth - pop.width - 8
+  const maxY = window.innerHeight - pop.height - 8
+  let left = trigger.left + (trigger.width - pop.width) / 2
+  let top = trigger.bottom + 12
+  if (props.position === 'top' || top > maxY) top = trigger.top - pop.height - 12
+  if (props.position === 'left') left = trigger.left - pop.width - 12
+  if (props.position === 'right') left = trigger.right + 12
+  placement.value = { left: `${Math.max(8, Math.min(left, maxX))}px`, top: `${Math.max(8, Math.min(top, maxY))}px` }
+}
+function cleanup() {
+  clearTimeout(timer)
+  window.removeEventListener('resize', positionPopover)
+  window.removeEventListener('scroll', hidePopover, true)
+  observer?.disconnect()
+}
+async function showPopover() {
+  clearTimeout(timer)
+  if (props.popProhibit || visible.value) return
   visible.value = true
   emit('mouseenter')
+  await nextTick()
+  if (!visible.value) return
+  positionPopover()
+  window.addEventListener('resize', positionPopover)
+  window.addEventListener('scroll', hidePopover, true)
+  observer = new ResizeObserver(positionPopover)
+  if (popoverRef.value) observer.observe(popoverRef.value)
 }
-
-function hidePopover() {
+function hidePopover(event?: Event) {
+  if (event && popoverRef.value?.contains(event.target as Node)) return
+  cleanup()
   visible.value = false
   emit('mouseleave')
 }
-
-function mouseTriggerEnter() {
-  triggerEnter = true
-  setTimeout(() => {
-    if (triggerEnter && !contentEnter) {
-      showPopover()
-    }
-  }, 300)
+function mouseTriggerEnter() { clearTimeout(timer); timer = setTimeout(showPopover, 200) }
+function mouseTriggerLeave() { clearTimeout(timer); timer = setTimeout(hidePopover, 250) }
+function mouseContentEnter() { clearTimeout(timer) }
+function mouseContentLeave() { mouseTriggerLeave() }
+function onFocusOut(event: FocusEvent) {
+  if (!popoverRef.value?.contains(event.relatedTarget as Node) && !triggerRef.value?.contains(event.relatedTarget as Node)) mouseTriggerLeave()
 }
-
-function mouseTriggerLeave() {
-  triggerEnter = false
-  setTimeout(() => {
-    if (!contentEnter) {
-      hidePopover()
-    }
-  }, 1000)
-}
-
-function mouseContentEnter() {
-  contentEnter = true
-}
-
-function mouseContentLeave() {
-  contentEnter = false
-  if (!triggerEnter) {
-    hidePopover()
-  }
-}
-
-// style="--text-color: var(--text2); --icon-color: var(--text1);"
+onBeforeUnmount(cleanup)
 </script>
 
 <template>
@@ -81,6 +70,9 @@ function mouseContentLeave() {
     <div
       class="trigger"
       ref="triggerRef"
+      @focusin="showPopover"
+      @focusout="onFocusOut"
+      @keydown.esc="hidePopover()"
       @mouseenter="mouseTriggerEnter"
       @mouseleave="mouseTriggerLeave"
     >
@@ -89,6 +81,7 @@ function mouseContentLeave() {
       </slot>
     </div>
 
+    <Teleport to="body">
     <transition name="fade">
       <div
         class="v-popover"
@@ -96,7 +89,10 @@ function mouseContentLeave() {
         v-show="!popProhibit && visible"
         @mouseenter="mouseContentEnter"
         @mouseleave="mouseContentLeave"
-        :class="`position-${position}`"
+        :style="placement"
+        @focusin="mouseContentEnter"
+        @focusout="onFocusOut"
+        @keydown.esc="hidePopover()"
       >
         <div
           class="v-popover-content"
@@ -107,6 +103,7 @@ function mouseContentLeave() {
         </div>
       </div>
     </transition>
+    </Teleport>
   </li>
 </template>
 
@@ -218,12 +215,16 @@ function mouseContentLeave() {
 }
 
 .v-popover {
-  position: absolute;
-  transition: 0.3s;
-  z-index: 1;
+  position: fixed;
+  z-index: var(--layer-popover);
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
 }
 
 .v-popover-content {
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
   position: relative;
   background-color: var(--bg1_float);
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
@@ -234,35 +235,6 @@ function mouseContentLeave() {
 
 .header-favorite-popover {
   overflow: hidden;
-}
-
-.position-top,
-.position-bottom {
-  transform: translate3d(-50%, 0, 0);
-}
-
-.position-top {
-  margin-bottom: 15px;
-  bottom: 100%;
-  left: 50%;
-}
-
-.position-bottom {
-  margin-top: 15px;
-  top: 100%;
-  left: 50%;
-}
-
-.position-left {
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.position-right {
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .fade-enter-active,

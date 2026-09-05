@@ -16,37 +16,15 @@ import IconWebEnter from '@/components/icons/IconWebEnter.vue'
 import IconProgressThumb from '@/components/icons/IconProgressThumb.vue'
 import IconWideEnter from '@/components/icons/IconWideEnter.vue'
 import VideoPlayerPlayerbackRateController from '@/components/video/player/video-area/control/VideoPlayerPlayerbackRateController.vue'
-import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { VideoPlayerPlaybackRateItemProps } from '@/types/PropsType'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import type { VideoPlayerPlaybackRateItemProps, VideoPlayerQualityItemProps } from '@/types/PropsType'
 import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import { isEmptyString } from '@/utils/CommonUtil'
 
-const props = defineProps({
-  dataShadowShow: {
-    type: Boolean,
-    required: true,
-  },
-  qualityLevel: {
-    type: Number,
-    default: 6,
-  },
-})
-const emits = defineEmits({
-  /**
-   * 更新Hls当前清晰度
-   * @param level
-   */
-  updateHlsLevel: (level: number) => true,
-})
-defineExpose({
-  videoPauseOrPlay,
-  videoFullScreen,
-})
-
-const videoRef = defineModel('video', {
-  type: HTMLVideoElement,
-  required: true,
-})
+const props = defineProps<{ dataShadowShow: boolean; qualityLevel: number; qualities: VideoPlayerQualityItemProps[]; video: HTMLVideoElement }>()
+const emits = defineEmits<{ updateHlsLevel: [level: number] }>()
+defineExpose({ videoPauseOrPlay, videoFullScreen })
+const videoRef = computed(() => props.video)
 
 const progressBuffer = ref<number>(0)
 const progressCurrent = ref<number>(0)
@@ -59,23 +37,10 @@ const duration = ref<number>(0)
 const previewImageB64 = ref<string>()
 const playerPause = ref<boolean>(true)
 
-// 清晰度 1 - 6 (360p 480p 720p 1080p 1080p_hbit 4k)
-// const qualityLevel = ref<number>(6)
-watch(
-  () => props.qualityLevel,
-  () => {
-    console.log('qualityLevel updated', props.qualityLevel)
-    currentQuality.value = 6 - props.qualityLevel
-  },
-)
-const currentQuality = ref<number>(6 - props.qualityLevel)
-watch(currentQuality, () => {
-  console.log('currentQuality', currentQuality)
-  updateHlsCurrentLevel(7 - currentQuality.value)
+const currentQuality = computed({
+  get: () => props.qualityLevel,
+  set: (level: number) => emits('updateHlsLevel', level),
 })
-function updateHlsCurrentLevel(level: number) {
-  emits('updateHlsLevel', level)
-}
 // 倍速
 const currentPlaybackRate = ref<VideoPlayerPlaybackRateItemProps>()
 watch(currentPlaybackRate, () => {
@@ -93,7 +58,7 @@ watch(volume, () => {
 function videoPauseOrPlay() {
   if (playerPause.value) {
     // 播放
-    videoRef.value.play()
+    void videoRef.value.play().catch(() => { playerPause.value = true })
   } else {
     // 暂停
     videoRef.value.pause()
@@ -266,6 +231,7 @@ function adjustVolume(up: boolean) {
 const volumeControlRef = ref()
 
 function onKeyDown(event: KeyboardEvent) {
+  if ((event.target as HTMLElement)?.closest('input, textarea, select, button, [contenteditable="true"]')) return
   console.log('onkeydown', event.key)
   switch (event.key) {
     case 'f':
@@ -311,6 +277,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  videoRef.value.ontimeupdate = null
+  videoRef.value.onprogress = null
+  videoRef.value.onplay = null
+  videoRef.value.onpause = null
   window.removeEventListener('scroll', scrollListener)
   window.removeEventListener('keydown', onKeyDown)
 })
@@ -466,7 +436,7 @@ onBeforeUnmount(() => {
           <!--              清晰度控制-->
           <video-player-quality-controller
             ref="qualityControllerRef"
-            :level="qualityLevel"
+            :qualities="qualities"
             v-model:value="currentQuality"
           />
           <!--              倍速控制-->
@@ -1136,4 +1106,12 @@ onBeforeUnmount(() => {
 .bpx-player-ctrl-web-enter {
   display: block;
 }
+
+@container (max-width: 620px) {
+  .bpx-player-control-bottom { display: flex; flex-wrap: wrap; height: auto; gap: 8px; padding: 0 8px 8px; }
+  .bpx-player-control-bottom-left { width: 100%; min-width: 0 !important; }
+  .bpx-player-control-bottom-right { width: 100%; min-width: 0 !important; justify-content: space-between; }
+  .bpx-player-ctrl-btn { flex-shrink: 0; }
+}
+
 </style>

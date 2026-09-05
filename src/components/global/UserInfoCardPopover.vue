@@ -8,7 +8,7 @@ import IconLevel6 from '@/components/icons/IconLevel6.vue'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
 import { reactive, ref } from 'vue'
 import type { UserInfoType, UserRelaInfoType } from '@/types/ApiRespType'
-import { isEmptyString } from '@/utils/CommonUtil'
+
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import { useTokenStore } from '@/stores/token'
 import { message } from 'ant-design-vue'
@@ -46,25 +46,9 @@ function mouseLeave() {
 }
 
 /**
- * 获取用户信息
- */
-async function fetchData(uid: string) {
-  if (isEmptyString(uid)) return
-  loading.value = true
-  try {
-    const { data } = await userInfoAPI.getUserInfo(uid)
-    userInfo.value = data as UserInfoType
-    loading.value = false
-    console.log('UserInfoCardPopover fetchData', data)
-  } catch (e) {
-    console.error('UserInfoCardPopover fetchData error', e)
-  }
-}
-
-/**
  * 加载用户信息
  */
-function loadData(userInfoData: UserInfoType, relaInfoData: UserRelaInfoType) {
+function loadData(userInfoData: UserInfoType, relaInfoData?: UserRelaInfoType) {
   userInfo.value = userInfoData
   relaInfo.value = relaInfoData
   console.log('UserInfoCardPopover loadData', userInfoData)
@@ -75,8 +59,8 @@ function loadData(userInfoData: UserInfoType, relaInfoData: UserRelaInfoType) {
  * @param newPos
  */
 function show(newPos: PopoverPosition) {
-  pos.left = newPos.left
-  pos.top = newPos.top
+  pos.left = Math.max(8, Math.min(newPos.left, window.innerWidth - 382))
+  pos.top = Math.max(8, Math.min(newPos.top, window.innerHeight - 360))
   showPopover.value = true
   console.log('UserInfoCardPopover show', newPos)
 }
@@ -209,7 +193,9 @@ async function handleUnFollow() {
   position: absolute;
   z-index: 10099;
   border-radius: 8px;
-  width: 366px;
+  width: min(366px, calc(100vw - 16px));
+  max-height: calc(100dvh - 16px);
+  overflow: auto;
   box-sizing: border-box;
   cursor: default;
   transition: left 0.3s, top 0.3s;

@@ -3,6 +3,7 @@
  */
 
 import axios from '@/api/axios'
+import type { LoginInfoType } from '@/types/ApiRespType'
 import type { LoginReq } from '@/types/ApiRequestType'
 
 export const authAPI = {
@@ -11,7 +12,7 @@ export const authAPI = {
    * @param body
    */
   login(body: LoginReq) {
-    return axios.get('/auth/session/login', { params: { ...body }, withCredentials: false })
+    return axios.get<LoginInfoType>('/auth/session/login', { params: { ...body }, withCredentials: false })
   },
 
   /**
@@ -26,6 +27,6 @@ export const authAPI = {
    * 获取参数加密公钥
    */
   getPublicKey() {
-    return axios.get('/auth/crypto/publicKey')
+    return axios.get<{ publicKey: string }>('/auth/crypto/publicKey')
   },
 }

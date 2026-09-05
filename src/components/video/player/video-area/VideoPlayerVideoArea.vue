@@ -4,8 +4,8 @@
 
 <script setup lang="ts">
 import VideoPlayerDanmakuItem from '@/components/video/player/video-area/VideoPlayerDanmakuItem.vue'
-import { onMounted, ref, watch } from 'vue'
-import Hls from 'hls.js'
+import { onBeforeUnmount, ref } from 'vue'
+import { useHlsPlayer } from '@/composables/useHlsPlayer'
 import VideoPlayerControl from '@/components/video/player/video-area/control/VideoPlayerControl.vue'
 
 const props = defineProps({
@@ -19,99 +19,8 @@ const props = defineProps({
   },
   dataShadowShow: Boolean,
 })
-watch(() => props.danmakuSwitchOn, (value: boolean) => {
-  console.log('danmakuSwitchOn', value)
-})
-
-const loadingOver = ref<boolean>(false)
-// const videoSrc = ref<string>()
 const videoRef = ref<HTMLVideoElement>()
-
-const hls = new Hls()
-const qualityLevel = ref<number>(6)
-function initHls() {
-  if (!videoRef.value) {
-    console.error('videoRef is undefined')
-    return
-  }
-  hls.attachMedia(videoRef.value)
-  hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      // 清晰度降序排序
-      hls.levels.sort((a, b) => {
-        if (b.height === a.height) {
-          return a.bitrate - b.bitrate
-        } else {
-          return a.height - b.height
-        }
-      })
-      // const frag = document.createDocumentFragment()
-      if (!hls.levels.length) {
-        // todo： 2025.05.18开始，相比之前移除了144p清晰度，因此这个差值有变，需要根据实际的帧高和码率来确定
-        qualityLevel.value = Math.max(hls.levels.length - 1, 0)
-      } else {
-        // 2025.05.18之前
-        qualityLevel.value = Math.max(hls.levels.length - 2, 0)
-      }
-      console.log('hls.levels', hls.levels, qualityLevel.value)
-      // const listener = (i: number) => (init: unknown) => {
-      //   const last = quantity.itemElements[quantity.itemElements.length - 1]
-      //   const prev = quantity.itemElements[quantity.value] || last
-      //   const el = quantity.itemElements[i] || last
-      //   prev.classList.add('quantity_item-active')
-      //   el.classList.add('quantity_item-active')
-      //   quantity.btn.textContent = el.textContent
-      //
-      //   if (init !== true && !player.paused) {
-      //     setTimeout(() => player.play())
-      //   }
-      //   quantity.value = hls.currentLevel = hls.loadLevel = i
-      //   quantity.popover.hide()
-      // }
-      // quantity.itemElements = hls.levels.map((l, i) => {
-      //   const el = document.createElement('div')
-      //   el.textContent = l.name + 'p'
-      //   if (l.height === 1080) {
-      //     // todo: 当有两档1080p时，若比特率较高的没有超过5Mbps，这里会失效，考虑在外层重新判断
-      //     if (l.bitrate > 5000000) {
-      //       el.textContent += '高比特率'
-      //     } else {
-      //       el.textContent += '超清'
-      //     }
-      //   }
-      //   if (l.height == 720) el.textContent += '高清'
-      //   if (l.height == 480) el.textContent += '清晰'
-      //   el.classList.add('quantity_item')
-      //   el.addEventListener('click', listener(i))
-      //   frag.appendChild(el)
-      //   return el
-      // })
-      //
-      // // 自动 - 根据当前客户端网络带宽决定加载的清晰度
-      // const el = document.createElement('div')
-      // el.textContent = '自动'
-      // el.addEventListener('click', listener(-1))
-      // el.classList.add('quantity_item')
-      // frag.appendChild(el)
-      // quantity.itemElements.push(el)
-      //
-      // quantity.popover.panelEl.appendChild(frag)
-      // quantity.el.style.display = 'block'
-
-      // listener(hls.currentLevel)(true)
-      // listener(hls.levels[0].id)
-    })
-    // 使用HLS格式的视频流播放
-    hls.loadSource(props.src)
-    // hls.loadSource('/hls/input-1/master.m3u8')
-    // videoRef.value?.play()
-  })
-}
-function updateHlsLevel(level: number) {
-  console.log('updateHlsLevel', level)
-  hls.loadLevel = level
-  hls.currentLevel = level
-}
+const { error, qualities, quality, load, selectQuality } = useHlsPlayer(videoRef, () => props.src)
 
 const controlRef = ref()
 
@@ -129,15 +38,12 @@ function videoClick() {
   }
 }
 
-onMounted(() => {
-  initHls()
-  loadingOver.value = true
-})
+onBeforeUnmount(() => { if (timer) clearTimeout(timer) })
 </script>
 
 <template>
   <div class="bpx-player-video-area">
-    <div class="bpx-player-error-sign"></div>
+    <div v-if="error" class="media-error" role="alert"><p>{{ error }}</p><button @click="load">重试</button></div>
 
     <!--    视频内容区域-->
     <div class="bpx-player-video-perch">
@@ -182,7 +88,7 @@ onMounted(() => {
       <div class="bpx-player-cmd-dm-wrap">
         <div
           class="bpx-player-cmd-dm-inside"
-          style="width: 750px; height: 422px"
+          style="width: 100%; height: 100%"
         ></div>
       </div>
     </div>
@@ -196,13 +102,12 @@ onMounted(() => {
     <div class="bpx-player-summary-wrap"></div>
 
     <!--      视频控制栏-->
-    <video-player-control
+    <video-player-control v-if="videoRef"
       ref="controlRef"
-      v-if="loadingOver"
       :data-shadow-show="dataShadowShow"
-      v-model:video="videoRef"
-      :quality-level="qualityLevel"
-      @updateHlsLevel="updateHlsLevel"
+      :video="videoRef"
+      :qualities="qualities" :quality-level="quality"
+      @updateHlsLevel="selectQuality"
     />
 
     <div class="bpx-player-dialog-wrap"></div>
@@ -213,6 +118,9 @@ onMounted(() => {
 </template>
 
 <style>
+.media-error { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; color: white; background: #111; }
+.media-error button { color: white; background: #333; border: 1px solid #666; border-radius: 6px; padding: 8px 24px; cursor: pointer; }
+
 .bpx-player-video-area {
   -webkit-box-flex: 1;
   background-color: #000;

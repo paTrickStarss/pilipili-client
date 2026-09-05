@@ -55,6 +55,8 @@ const router = useRouter()
 }
 
 .nav-tab__item {
+  flex-shrink: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,4 +106,5 @@ const router = useRouter()
     display: block;
   }
 }
+.nav-tab__item.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--brand_blue); }
 </style>

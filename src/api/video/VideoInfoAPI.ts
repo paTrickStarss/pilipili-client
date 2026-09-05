@@ -4,48 +4,48 @@
 
 import axios from '@/api/axios'
 import type { CreateVideoInfoReq, PageQueryVideoInfoReq, UpdateVideoInfoReq } from '@/types/ApiRequestType'
-import type { PageResponse, SimpleResponse } from '@/types/ApiRespType'
+import type { PageResponse, SimpleResponse, VideoDTOType, QueryCategoryListDTO } from '@/types/ApiRespType'
 
 export default {
 
-  get(vid: number): Promise<SimpleResponse> {
-    return axios.get(`/api/video/${vid}`)
+  get(vid: number): Promise<SimpleResponse<VideoDTOType>> {
+    return axios.get<VideoDTOType>(`/api/video/${vid}`)
   },
   /**
    * 查询用户视频互动状态
    * @param vid
    * @param uid
    */
-  getUserVideo(vid: number, uid: number): Promise<SimpleResponse> {
-    return axios.get('/api/video/getUserVideo', { params: { vid, uid }})
+  getUserVideo(vid: number, uid: number): Promise<SimpleResponse<Record<string, boolean>>> {
+    return axios.get<Record<string, boolean>>('/api/video/getUserVideo', { params: { vid, uid }})
   },
   /**
    * 分页查询视频（搜索引擎）
    * @param query
    */
-  pageQuery(query: PageQueryVideoInfoReq): Promise<PageResponse> {
-    return axios.get(`/api/video/pageQuery`, { params: { ...query } })
+  pageQuery(query: PageQueryVideoInfoReq): Promise<PageResponse<VideoDTOType>> {
+    return axios.getPage<VideoDTOType>(`/api/video/pageQuery`, { params: { ...query } })
   },
   /**
    * 分页查询用户所有已上架视频（对外展示用）
    * @param query
    */
-  pageQueryPassedByUid(query: PageQueryVideoInfoReq): Promise<PageResponse> {
-    return axios.get(`/api/video/pageQueryPassedByUid`, { params: { ...query } })
+  pageQueryPassedByUid(query: PageQueryVideoInfoReq): Promise<PageResponse<VideoDTOType>> {
+    return axios.getPage<VideoDTOType>(`/api/video/pageQueryPassedByUid`, { params: { ...query } })
   },
   /**
    * 分页查询用户所有视频（用户个人用，查询状态为 上传中、审核中、审核通过 的视频）
    * @param query
    */
-  pageQueryByUid(query: PageQueryVideoInfoReq): Promise<PageResponse> {
-    return axios.get(`/api/video/pageQueryByUid`, { params: { ...query } })
+  pageQueryByUid(query: PageQueryVideoInfoReq): Promise<PageResponse<VideoDTOType>> {
+    return axios.getPage<VideoDTOType>(`/api/video/pageQueryByUid`, { params: { ...query } })
   },
   /**
    * 分页查询用户所有视频（管理员用，查询所有状态的视频）
    * @param query
    */
-  pageQueryAllByUid(query: PageQueryVideoInfoReq): Promise<PageResponse> {
-    return axios.get(`/api/video/pageQueryAllByUid`, { params: { ...query } })
+  pageQueryAllByUid(query: PageQueryVideoInfoReq): Promise<PageResponse<VideoDTOType>> {
+    return axios.getPage<VideoDTOType>(`/api/video/pageQueryAllByUid`, { params: { ...query } })
   },
   delete(vid: string): Promise<SimpleResponse> {
     return axios.delete(`/api/video/${vid}`)
@@ -91,6 +91,6 @@ export default {
   },
 
   categoryList(): Promise<SimpleResponse> {
-    return axios.get('/api/video/categoryList')
+    return axios.get<QueryCategoryListDTO[]>('/api/video/categoryList')
   },
 }

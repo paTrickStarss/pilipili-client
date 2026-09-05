@@ -8,12 +8,11 @@ import HomeSectionVideo from '@/components/space/main/section/video/HomeSectionV
 import HomeAsideSectionAuth from '@/components/space/main/section/aside/HomeAsideSectionAuth.vue'
 import HomeAsideSectionInfo from '@/components/space/main/section/aside/HomeAsideSectionInfo.vue'
 import { useWindowStore } from '@/stores/window'
-import { ref } from 'vue'
+
 import HomeAsideSectionUpload from '@/components/space/main/section/aside/HomeAsideSectionUpload.vue'
 import HomeSectionCollection from '@/components/space/main/section/collection/HomeSectionCollection.vue'
 
 const windowStore = useWindowStore()
-const slideDown = ref(windowStore.slideDownComputed)
 
 function goTop() {
   window.scrollTo({
@@ -59,8 +58,8 @@ function goTop() {
 
 <style scoped>
 #app .space-main {
-  --side-padding: 60px;
-  max-width: 2260px;
+  --side-padding: var(--layout-padding);
+  max-width: calc(var(--content-max-width) + 2 * var(--layout-padding));
   margin: 0 auto;
   padding: 0 var(--side-padding);
   min-height: calc(100vh - 294px);
@@ -68,13 +67,13 @@ function goTop() {
 
 @media (min-width: 0) {
   #app .space-main {
-    min-width: 1100px;
+    min-width: 0;
   }
 }
 
 @media (min-width: 1100px) {
   #app .space-main {
-    min-width: 1100px;
+    min-width: 0;
   }
 }
 
@@ -128,4 +127,11 @@ function goTop() {
 .float-button__icon {
   display: flex;
 }
+
+.space-home .content { min-width: 0; }
+@media (max-width: 1099px) {
+  .space-home { flex-direction: column; gap: 24px; }
+  .space-home .aside { margin: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+}
+
 </style>

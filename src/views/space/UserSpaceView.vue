@@ -7,7 +7,7 @@ import IndexView from '@/views/index/IndexView.vue'
 import { onMounted, provide, ref, watch } from 'vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
 import type { NavTabItemType } from '@/types/PropsType'
-import { useUserStore } from '@/stores/user'
+
 import NavTabItem from '@/components/space/NavTabItem.vue'
 import { message } from 'ant-design-vue'
 import { useRoute } from 'vue-router'
@@ -15,50 +15,18 @@ import { DateTimeUtil } from '@/utils/DateTimeUtil'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
 import { useTokenStore } from '@/stores/token'
 import type { UserInfoType } from '@/types/ApiRespType'
-import { copyFieldValue } from '@/utils/CommonUtil'
+
 
 const route = useRoute()
 const token = useTokenStore()
-const user = useUserStore()
 const userInfo = ref<UserInfoType>()
+provide('userInfo', userInfo)
 
 // tab信息
 const navTabItemList = ref<NavTabItemType[]>([])
 
 // 当前tab索引
 const currentTab = ref<number>(getSpaceNavTabIndex())
-
-//todo: 光标的对齐长度需要根据当前的tabItem元素宽度动态计算
-const tabCursorLocationList = ref([
-  {
-    width: 56,
-    left: 0,
-  },
-  {
-    width: 56,
-    left: 86,
-  },
-  {
-    width: 67,
-    left: 172,
-  },
-  {
-    width: 56,
-    left: 269,
-  },
-  {
-    width: 70,
-    left: 355,
-  },
-  {
-    width: 88,
-    left: 459,
-  },
-  {
-    width: 56,
-    left: 577,
-  },
-])
 
 const searchInput = ref<string>('')
 
@@ -71,12 +39,10 @@ const nowDate = ref(DateTimeUtil.instance.getDate())
 watch(
   () => route.path,
   () => {
-    initCurrentUserInfo()
     currentTab.value = getSpaceNavTabIndex()
   },
 )
 function navTabInit(spaceUrl: string) {
-  message.info(`spaceUrl: ${spaceUrl}`)
   navTabItemList.value = [
     {
       id: 0,
@@ -133,33 +99,25 @@ function navTabInit(spaceUrl: string) {
     },
   ]
 }
-function initCurrentUserInfo() {
-  // user.fetchCurrentUserInfo().then(() => {
-  //   const spaceUrl = user.userInfo.spaceUrl.value
-  //
-  //   navTabInit(spaceUrl)
-  // })
-  initPublicUserInfo(token.uid.toString())
-}
 async function initPublicUserInfo(uid: string) {
   const resp = await userInfoAPI.getUserInfo(uid)
   userInfo.value = resp.data as UserInfoType
   console.log('initPublicUserInfo', userInfo.value)
   navTabInit(`/space/${userInfo.value.uid}`)
-  provide('userInfo', userInfo.value)
+
 }
 
 function getSpaceNavTabIndex() {
   return route.meta.index as number
 }
 onMounted(() => {
-  const uid = route.params.id as string
+  const uid = String(route.params.id || token.uid)
   if (uid === token.username) {
     // 访问自己的个人空间
-    initCurrentUserInfo()
+    void initPublicUserInfo(uid).catch(() => {})
   } else {
     // 访问别人的个人空间
-    initPublicUserInfo(uid)
+    void initPublicUserInfo(uid).catch(() => {})
   }
 })
 </script>
@@ -302,21 +260,9 @@ onMounted(() => {
               :info="item"
               :count-num="item.countNum || 0"
             />
-            <div
-              class="nav-tab-cursor"
-              :style="{
-                width: `${tabCursorLocationList[currentTab].width}px`,
-                left: `${tabCursorLocationList[currentTab].left}px`,
-              }"
-            ></div>
           </div>
           <label class="nav-search nav-bar-search">
-            <input
-              class="nav-search-input"
-              type="text"
-              placeholder="搜索视频、动态"
-              v-model="searchInput"
-            />
+            <input class="nav-search-input" type="text" placeholder="搜索视频、动态" v-model="searchInput" />
             <div class="actions">
               <i
                 class="vui_icon sic-BDC-xmark_close_circle_fill clear"
@@ -436,8 +382,8 @@ onMounted(() => {
 }
 
 .header-userinfo {
-  --side-padding: 60px;
-  max-width: 2260px;
+  --side-padding: var(--layout-padding);
+  max-width: calc(var(--content-max-width) + 2 * var(--layout-padding));
   margin: 0 auto;
   padding: 0 var(--side-padding);
   width: 100%;
@@ -448,13 +394,13 @@ onMounted(() => {
 
 @media (min-width: 0) {
   .header-userinfo {
-    min-width: 1100px;
+    min-width: 0;
   }
 }
 
 @media (min-width: 1100px) {
   .header-userinfo {
-    min-width: 1100px;
+    min-width: 0;
   }
 }
 
@@ -697,9 +643,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 2260px;
+  max-width: calc(var(--content-max-width) + 2 * var(--layout-padding));
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 0 var(--layout-padding);
 }
 
 .nav-bar__main-left {
@@ -876,4 +822,16 @@ onMounted(() => {
   font-weight: 500;
   color: var(--text1);
 }
+
+.nav-bar { top: var(--header-height); }
+.nav-bar__main { flex-wrap: wrap; gap: 12px; }
+.nav-bar__main-left { min-width: 0; max-width: 100%; overflow-x: auto; }
+.userinfo__main { min-width: 0; margin-right: 24px; }
+@media (max-width: 767px) {
+  .header-userinfo { flex-wrap: wrap; gap: 16px; }
+  .userinfo__main { margin: 0; flex-basis: 100%; }
+  .nav-bar { position: relative; top: auto; }
+  .nav-bar__main { padding-block: 12px; }
+}
+
 </style>

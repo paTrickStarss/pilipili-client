@@ -411,4 +411,8 @@ function overflowLeave() {
 }
 
 
+
+.video-info-container .video-info-title { min-width: 0; }
+.video-info-container .video-info-title .video-title { min-width: 0; max-width: 100%; }
+
 </style>

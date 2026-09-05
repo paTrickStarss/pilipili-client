@@ -107,4 +107,8 @@ async function updateStatus(status: number) {
   justify-content: space-around;
 }
 
+
+.dialog-footer { display: flex; flex-wrap: wrap; gap: 12px; }
+.button { flex: 1 1 140px; max-width: 100%; }
+
 </style>

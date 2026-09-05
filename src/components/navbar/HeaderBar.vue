@@ -17,7 +17,7 @@ import IconBulb from '@/components/icons/IconBulb.vue'
 import MessagePopover from '@/components/navbar/message/MessagePopover.vue'
 import UserInfoPopover from '@/components/navbar/user/UserInfoPopover.vue'
 import { useTokenStore } from '@/stores/token'
-import { jumpRoute, openLink } from '@/utils/RouterUtil'
+import { openLink } from '@/utils/RouterUtil'
 import { message } from 'ant-design-vue'
 
 defineProps({
@@ -273,4 +273,54 @@ function openUploadFrag() {
 .pili-header .header-upload-entry:hover {
   background-color: #ff92ae;
 }
+
+.pili-header .pili-header__bar {
+  max-width: none;
+  height: var(--header-height);
+  padding-inline: clamp(12px, 2vw, 32px);
+  gap: 16px;
+  z-index: var(--layer-header);
+}
+.pili-header .pili-header__bar.slide-down { left: 0; right: 0; }
+.pili-header .left-entry { margin: 0; }
+.pili-header .right-entry { margin: 0; flex-shrink: 0; }
+.pili-header .center-search-container { min-width: 0; }
+@media (max-width: 1399px) {
+  .pili-header .left-entry > li:nth-child(n + 4) { display: none; }
+}
+@media (max-width: 1023px) {
+  .pili-header .left-entry > li:not(:first-child) { display: none; }
+  .pili-header .pili-header__bar { gap: 8px; }
+  .pili-header .header-upload-entry { min-width: 64px; width: auto; padding-inline: 12px; }
+}
+@media (max-width: 767px) {
+  .pili-header .pili-header__bar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 48px 48px;
+    row-gap: 0;
+    background: var(--bg1);
+  }
+  .pili-header .left-entry a { color: var(--text1); height: 48px; line-height: 48px; }
+  .pili-header .right-entry {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .pili-header .right-entry :deep(.right-entry-item),
+  .pili-header .right-entry :deep(.right-entry__outside) { min-width: 32px; margin-right: 0; }
+  .pili-header .right-entry :deep(.right-entry-text) { font-size: 10px; }
+  .pili-header .right-entry :deep(.header-avatar-wrap) { width: 36px; height: 36px; padding-right: 0; }
+  .pili-header .right-entry :deep(.v-popover-wrap) { --text-color: var(--text1); --icon-color: var(--text1); }
+  .pili-header .header-upload-entry { min-width: 40px; padding: 6px; }
+  .pili-header .header-upload-entry :deep(svg) { display: none; }
+}
+
+
+@media (max-width: 767px) {
+  .pili-header .left-entry .entry-title { color: var(--text1); }
+  .pili-header .right-entry :deep(.header-entry-mini) { top: 0; left: 0; width: 36px; height: 36px; }
+}
+
 </style>

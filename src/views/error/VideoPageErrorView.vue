@@ -62,7 +62,7 @@ onMounted(() => {
   padding: 30px;
 }
 .error-container {
-  width: 980px;
+  width: min(980px, 100%);
   margin: 0 auto;
   background: var(--bg1);
   border-radius: 10px;

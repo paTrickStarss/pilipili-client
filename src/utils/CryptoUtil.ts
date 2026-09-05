@@ -13,22 +13,25 @@ import { authAPI } from '@/api/auth/AuthAPI'
  */
 export class CryptoUtil {
   private static _instance: CryptoUtil
-  private static _initialized: Promise<void>
+  private static _initialized: Promise<void> | undefined
 
   private constructor() {}
 
   public static get instance(): CryptoUtil {
     if (!CryptoUtil._instance) {
       CryptoUtil._instance = new CryptoUtil()
-      CryptoUtil._initialized = CryptoUtil._instance.init()
     }
     return CryptoUtil._instance
   }
 
   public static async checkInitialized(): Promise<void> {
-    if (CryptoUtil._initialized) {
-      await CryptoUtil._initialized
+    if (!CryptoUtil._initialized) {
+      CryptoUtil._initialized = CryptoUtil.instance.init().catch(error => {
+        CryptoUtil._initialized = undefined
+        throw error
+      })
     }
+    await CryptoUtil._initialized
   }
 
   private async init() {
@@ -44,7 +47,7 @@ export class CryptoUtil {
 
   private PUBLIC_KEY: string = ''
   private PRIVATE_KEY: string = ''
-  private CRYPTO_ALGORITHM: 'RSA' = 'RSA'
+  private CRYPTO_ALGORITHM = 'RSA' as const
   private SIGNATURE_ALGORITHM: string = 'SHA256withRSA'
   private PRIVATE_KEY_FORMAT: PrivateKeyOutputFormatType = 'PKCS8PRV'
   private KEY_LENGTH: number = 2048

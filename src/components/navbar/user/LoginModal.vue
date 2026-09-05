@@ -9,7 +9,6 @@ import { authAPI } from '@/api/auth/AuthAPI'
 import { message } from 'ant-design-vue'
 import { useTokenStore } from '@/stores/token'
 import GlobalDialog from '@/components/global/GlobalDialog.vue'
-import { useUserStore } from '@/stores/user'
 import { CryptoUtil } from '@/utils/CryptoUtil'
 import { userInfoAPI } from '@/api/user/UserInfoAPI'
 import { useRouter } from 'vue-router'
@@ -74,37 +73,28 @@ const registerFormRules = reactive({
 })
 const registerFormRef = ref()
 
-function loginCommit() {
-  loginFormRef.value.validate().then(() => {
+async function loginCommit() {
+  if (loading.value) return
+  try {
+    await loginFormRef.value.validate()
     loading.value = true
-
-    const encryptedPassword = CryptoUtil.instance.encrypt(
-      loginBody.password || '',
-    )
-    // const signature = CryptoUtil.instance.sign(encryptedPassword)
-    const body: LoginReq = {
-      username: loginBody.username,
-      password: encryptedPassword,
-      // signature,
-    }
-
-    authAPI
-      .login(body)
-      .then(({ data }) => {
-        useTokenStore().saveTokenInfo(data)
-        useUserStore().fetchCurrentUserInfo()
-        emit('commit')
-        message.success('登录成功！欢迎回来。')
-        console.log('login success', data)
-        router.go(0)
-      })
-      .catch(msg => {
-        message.error(msg)
-      })
-      .finally(() => {
-        loading.value = false
-      })
-  })
+    await CryptoUtil.checkInitialized()
+    const password = CryptoUtil.instance.encrypt(loginBody.password || '')
+    if (!password) throw new Error('密码加密失败，请重试')
+    const { data } = await authAPI.login({ username: loginBody.username, password })
+    useTokenStore().saveTokenInfo(data)
+    loginBody.password = ''
+    visible.value = false
+    emit('commit')
+    message.success('登录成功！欢迎回来。')
+    const redirect = router.currentRoute.value.query.redirect
+    await router.replace(typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')
+      ? redirect : { path: router.currentRoute.value.path, query: {} })
+  } catch (error) {
+    if (error instanceof Error) message.error(error.message)
+  } finally {
+    loading.value = false
+  }
 }
 
 async function registerCommit() {
@@ -113,6 +103,9 @@ async function registerCommit() {
   } else if (passwordGroup.firstInput !== passwordGroup.lastInput) {
     message.warn('请确认二次输入密码一致')
   } else {
+    try {
+      await CryptoUtil.checkInitialized()
+    } catch { return }
     const cryptoInstance = CryptoUtil.instance
     const encryptedPassword = cryptoInstance.encrypt(
       passwordGroup.firstInput
@@ -130,7 +123,7 @@ async function registerCommit() {
         message.success('注册成功')
         // 返回登录页面并填充账号密码
         loginTab.value = true
-        loginBody.username = data.uid
+        loginBody.username = String(data.uid)
         loginBody.password = passwordGroup.firstInput
       }
       console.log('register success', data)

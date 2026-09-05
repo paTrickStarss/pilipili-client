@@ -7,9 +7,9 @@
 
 import type { VideoUploadingItemProps } from '@/types/PropsType'
 import { computed } from 'vue'
-import IconPlay from '@/components/icons/IconPlay.vue'
+
 import IconRefresh from '@/components/icons/IconRefresh.vue'
-import IconPause from '@/components/icons/IconPause.vue'
+
 import IconClose from '@/components/icons/IconClose.vue'
 
 defineEmits({
@@ -82,7 +82,7 @@ const uploadOverPart = computed(() =>
 .file-item {
   display: flex;
   align-items: center;
-  width: 838px;
+  width: 100%; min-width: 0;
   height: 76px;
 }
 .file-item-icon {
@@ -93,7 +93,7 @@ const uploadOverPart = computed(() =>
   background-size: 100% 100%;
 }
 .file-item-content {
-  width: 838px;
+  width: 100%; min-width: 0;
 }
 .file-item-content-detail {
   flex: 1;

@@ -7,7 +7,7 @@
 
 import { computed, onMounted, ref } from 'vue'
 import VideoCommentAvatar from '@/components/video/comment/VideoCommentAvatar.vue'
-import { ASSETS_BASE_URL } from '@/utils/imgUtil'
+
 import BiliRichText from '@/components/video/comment/BiliRichText.vue'
 import VideoCommentListItemFooter from '@/components/video/comment/VideoCommentListItemFooter.vue'
 import { message } from 'ant-design-vue'

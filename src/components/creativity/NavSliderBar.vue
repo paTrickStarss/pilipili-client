@@ -193,22 +193,22 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
 
 <style scoped>
 .cc-nav-wrp {
-  position: fixed;
+  position: relative;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  padding-top: 42px;
+  padding-top: 16px;
   top: 0;
   left: 0;
   border-right: 1px solid #e5e9ef;
   background: #fff;
   z-index: 10;
-  height: 100%;
-  width: 240px;
-  overflow: hidden;
+  height: calc(100dvh - var(--header-height));
+  width: var(--sidebar-width);
+  overflow: auto;
   font-family: PingFangSC-Regular,Microsoft YaHei,Arial,Helvetica,sans-serif;
 }
 #app .cc-nav-wrp {
-  padding-top: 60px;
+  padding-top: 16px;
   width: 200px;
   border-right: 1px solid #f4f4f4;
 }
@@ -341,4 +341,9 @@ const sliderNavItemList = ref<NavSliderBarItemProps[]>([
   content: " ";
   display: table;
 }
+
+@media (max-width: 1023px) {
+  #app .cc-nav-wrp, .cc-nav-wrp .cc-nav { width: 100% !important; height: auto; max-height: 360px; }
+}
+
 </style>

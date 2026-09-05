@@ -1,84 +1,56 @@
-/*
- * Copyright (c) 2024-2025.  Bubble
- */
-
-import axios from 'axios'
-import { useTokenStore } from '@/stores/token'
+import axios, { type AxiosRequestConfig } from 'axios'
 import { message } from 'ant-design-vue'
-import router from '@/router/index'
+import { useTokenStore } from '@/stores/token'
+import { useUserStore } from '@/stores/user'
+import type { PageResponse, SimpleResponse } from '@/types/ApiRespType'
+import { getRequestError, validateResponse } from '@/utils/requestError'
 
-const axiosInstance = axios.create({
+const transport = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000,
 })
 
-axiosInstance.interceptors.request.use(
-  config => {
-    // Do something before request...
-    if (!config.url?.includes('/login')
-      && !config.url?.includes('/register')
-      && !config.url?.includes('/publicKey')
-    ) {
-      config.headers['Authorization'] = `Bearer ${useTokenStore().accessToken}`
-    }
-    return config
-  },
-  error => {
-    // Catch request error
+transport.interceptors.request.use(config => {
+  const token = useTokenStore().accessToken
+  const isPublic = /\/(login|register|publicKey)(?:\/|$)/.test(config.url || '')
+  if (token && !isPublic) config.headers.set('Authorization', `Bearer ${token}`)
+  return config
+})
 
-    return Promise.reject(error)
-  },
-)
-
-axiosInstance.interceptors.response.use(
-  response => {
-    // HttpStatus 2xx
-    const { data } = response
-    // console.log('response', data)
-    // if (data == null) {
-    //   return Promise.reject(response)
-    // }
-
-    const { code, msg } = data
-    switch (code) {
-      case 400:
-      case 500:
-        return Promise.reject(msg)
-    }
-
+async function request<R extends SimpleResponse>(config: AxiosRequestConfig): Promise<R> {
+  try {
+    const { data } = await transport.request<R>(config)
+    validateResponse(data)
     return data
-  },
-  error => {
-    // HttpStatus 3xx 4xx 5xx
-
-    let msg = 'API error'
-    switch (error.response.status) {
-      case 401: {
-        msg += ': 登录状态失效! 请重新登录'
-        // 清除登录状态
-        useTokenStore().clearTokenInfo()
-        break
-      }
-      case 403: {
-        msg += ': Forbidden!'
-        router.push({ name: 'error-page', params: { status: 'forbidden'}})
-        break
-      }
-      case 404: {
-        msg += ': Not Found!'
-        router.push({ name: 'error-page', params: { status: 'not-found'}})
-        break
-      }
-      default: {
-        msg += '!'
-        router.push({ name: 'error-page'})
-      }
+  } catch (error) {
+    if (axios.isCancel(error)) throw error
+    const failure = getRequestError(error)
+    if (failure.status === 401) {
+      useTokenStore().clearTokenInfo()
+      useUserStore().clearUserInfo()
     }
-    message.error(msg)
-    // console.error(error.response)
+    message.error({ content: failure.message, key: 'api-error' })
+    throw failure
+  }
+}
 
-    return Promise.reject(error)
+export default {
+  get<T = unknown>(url: string, config?: AxiosRequestConfig) {
+    return request<SimpleResponse<T>>({ ...config, method: 'GET', url })
   },
-)
-
-export default axiosInstance
+  getPage<T = unknown>(url: string, config?: AxiosRequestConfig) {
+    return request<PageResponse<T>>({ ...config, method: 'GET', url })
+  },
+  post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    return request<SimpleResponse<T>>({ ...config, method: 'POST', url, data })
+  },
+  put<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    return request<SimpleResponse<T>>({ ...config, method: 'PUT', url, data })
+  },
+  patch<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    return request<SimpleResponse<T>>({ ...config, method: 'PATCH', url, data })
+  },
+  delete<T = unknown>(url: string, config?: AxiosRequestConfig) {
+    return request<SimpleResponse<T>>({ ...config, method: 'DELETE', url })
+  },
+}

@@ -97,4 +97,13 @@ defineProps({
   position: relative;
 }
 
+
+.form-item > div > :not(.section-title-container) { min-width: 0; }
+.section-title-container { flex: 0 0 134px; }
+@media (max-width: 767px) {
+  .form-item { margin-left: 0; }
+  .form-item > div { flex-direction: column; align-items: stretch; gap: 12px; }
+  .section-title-container { flex-basis: auto; width: auto; }
+}
+
 </style>

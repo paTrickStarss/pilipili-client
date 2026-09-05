@@ -498,4 +498,15 @@ function sendDanmaku() {
   color: var(--bpx-dmsend-disable-button-text,#999);
 }
 
+
+.bpx-player-video-inputbar, .bpx-player-video-inputbar-wrap, .bpx-player-dm-input { min-width: 0; }
+.bpx-player-container[data-revision="1"] .bpx-player-sending-bar .bpx-player-video-inputbar { min-width: 0; }
+@container (max-width: 620px) {
+  .bpx-player-sending-bar { flex-wrap: wrap; height: auto; gap: 8px; padding: 8px; }
+  .bpx-player-sending-bar .bpx-player-video-info { display: none; }
+  .bpx-player-sending-bar .bpx-player-video-inputbar { width: 100%; }
+  .bpx-player-sending-bar .bpx-player-video-inputbar-wrap { min-width: 0; width: auto; }
+  .bpx-player-sending-bar .bpx-player-dm-input { min-width: 0; }
+}
+
 </style>

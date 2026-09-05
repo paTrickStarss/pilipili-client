@@ -3,193 +3,37 @@
   -->
 
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, provide, reactive, ref } from 'vue'
 import VideoPlayerVideoArea from '@/components/video/player/video-area/VideoPlayerVideoArea.vue'
-import { onMounted, provide, reactive, ref, watch } from 'vue'
 import VideoPlayerSendingArea from '@/components/video/player/sending-area/VideoPlayerSendingArea.vue'
-// import Player, { type ControlItem, Popover } from 'nplayer'
-// import Danmaku from '@nplayer/danmaku'
-// import Hls from 'hls.js'
-// import type { DanmakuPluginOption } from '@nplayer/danmaku/src/ts/main'
-import { message } from 'ant-design-vue'
 
-const props = defineProps({
-  vid: {
-    type: Number,
-    required: true,
-  },
-  src: {
-    type: String,
-    required: true,
-  },
-})
-
-const controlHidden = ref<boolean>(true)
-const screenMode = ref<string>('normal')
-
-function playerMouseEnter() {
-  if (screenMode.value !== 'full') {
-    controlHidden.value = false
-  }
-}
-function playerMouseLeave() {
-  if (screenMode.value !== 'full') {
-    controlHidden.value = true
-  }
-}
-
-// 使用NPlayer方案
-// const nplayerRef = ref()
-// const hls = new Hls()
-// const nplayer = ref<Player>()
-// const danmakuOptions = ref<DanmakuPluginOption>({
-//   autoInsert: false,
-//   items: [
-//     { time: 1, text: '弹幕1', color: '#FFFFFF' },
-//     { time: 2, text: '弹幕2', color: '#FFFFFF' },
-//     { time: 3, text: '弹幕3', color: '#ff4646' },
-//     { time: 5, text: '弹幕4', color: '#66CCFF' },
-//     { time: 10, text: '弹幕554555', color: '#FFFFFF' },
-//   ],
-// })
-// const quantity: ControlItem = {
-//   el: document.createElement('div'),
-//   init() {
-//     this.btn = document.createElement('div')
-//     this.btn.textContent = '画质'
-//     this.el.appendChild(this.btn)
-//     this.popover = new Popover(this.el)
-//     this.btn.addEventListener('click', () => this.popover.show())
-//     this.el.style.display = 'block'
-//     this.el.classList.add('quantity')
-//   },
-// }
-// function createNPlayer() {
-//   const player = new Player({
-//     controls: [
-//       [
-//         'play',
-//         'volume',
-//         'time',
-//         'spacer',
-//         quantity,
-//         'danmaku-settings',
-//         'settings',
-//         'web-fullscreen',
-//         'fullscreen',
-//       ],
-//       ['progress'],
-//       ['spacer'],
-//     ],
-//     plugins: [new Danmaku(danmakuOptions.value)],
-//   })
-//
-//   hls.attachMedia(player.video)
-//   hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-//
-//     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-//       // 清晰度降序排序
-//       hls.levels.sort((a, b) => {
-//         if (b.height === a.height) {
-//           return b.bitrate - a.bitrate
-//         } else {
-//           return b.height - a.height
-//         }
-//       })
-//       const frag = document.createDocumentFragment()
-//       const listener = (i: number) => (init: unknown) => {
-//         const last = quantity.itemElements[quantity.itemElements.length - 1]
-//         const prev = quantity.itemElements[quantity.value] || last
-//         const el = quantity.itemElements[i] || last
-//         prev.classList.add('quantity_item-active')
-//         el.classList.add('quantity_item-active')
-//         quantity.btn.textContent = el.textContent
-//
-//         if (init !== true && !player.paused) {
-//           setTimeout(() => player.play())
-//         }
-//         quantity.value = hls.currentLevel = hls.loadLevel = i
-//         quantity.popover.hide()
-//       }
-//       console.log('hls.levels', hls.levels)
-//       quantity.itemElements = hls.levels.map((l, i) => {
-//         const el = document.createElement('div')
-//         el.textContent = l.name + 'p'
-//         if (l.height === 1080) {
-//           // todo: 当有两档1080p时，若比特率较高的没有超过5Mbps，这里会失效，考虑在外层重新判断
-//           if (l.bitrate > 5000000) {
-//             el.textContent += '高比特率'
-//           } else {
-//             el.textContent += '超清'
-//           }
-//         }
-//         if (l.height == 720) el.textContent += '高清'
-//         if (l.height == 480) el.textContent += '清晰'
-//         el.classList.add('quantity_item')
-//         el.addEventListener('click', listener(i))
-//         frag.appendChild(el)
-//         return el
-//       })
-//
-//       // 自动 - 根据当前客户端网络带宽决定加载的清晰度
-//       const el = document.createElement('div')
-//       el.textContent = '自动'
-//       el.addEventListener('click', listener(-1))
-//       el.classList.add('quantity_item')
-//       frag.appendChild(el)
-//       quantity.itemElements.push(el)
-//
-//       quantity.popover.panelEl.appendChild(frag)
-//       quantity.el.style.display = 'block'
-//
-//       // listener(hls.currentLevel)(true)
-//       listener(hls.levels[0].id)
-//     })
-//     // 使用HLS格式的视频流播放
-//     hls.loadSource('/hls/master.m3u8')
-//   })
-//
-//   player.mount(nplayerRef.value)
-//   nplayer.value = player
-// }
-
+defineProps<{ src: string; vid: number }>()
+const screenMode = ref('normal')
+const controlHidden = ref(false)
 const playerContainerRef = ref<HTMLDivElement>()
-const fullscreenHandler = reactive({
-  handleFullscreen: () => {
-    // message.info('fullscreen')
-    playerContainerRef.value?.requestFullscreen()
-  }
-})
-provide('fullscreenHandler', fullscreenHandler)
-
-const danmakuSwitchOn = ref<boolean>(false)
-
-let timer: number | null = null
-function fullscreenMouseMoveHandler(event: MouseEvent) {
-  if (timer) {
-    clearTimeout(timer)
-  }
+const danmakuSwitchOn = ref(false)
+let timer: ReturnType<typeof setTimeout> | undefined
+function playerMouseEnter() { controlHidden.value = false }
+function playerMouseLeave() { if (screenMode.value !== 'full') controlHidden.value = true }
+function fullscreenMouseMoveHandler() {
+  clearTimeout(timer)
   controlHidden.value = false
-  timer = setTimeout(() => {
-    controlHidden.value = true
-    timer = null
-  }, 2000)
+  timer = setTimeout(() => { controlHidden.value = true }, 2000)
 }
-onMounted(() => {
-  // console.log('videoPlayer mounted', nplayerOptions.value.src, nplayerOptions.value, nplayer.value)
-  // createNPlayer()
-  document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-      // 进入全屏
-      screenMode.value = 'full'
-      controlHidden.value = true
-      window.addEventListener('mousemove', fullscreenMouseMoveHandler)
-    } else {
-      // 退出全屏
-      screenMode.value = 'normal'
-      // controlHidden.value = true
-      window.removeEventListener('mousemove', fullscreenMouseMoveHandler)
-    }
-  })
+function fullscreenChange() {
+  const full = document.fullscreenElement === playerContainerRef.value
+  screenMode.value = full ? 'full' : 'normal'
+  window.removeEventListener('mousemove', fullscreenMouseMoveHandler)
+  clearTimeout(timer)
+  controlHidden.value = false
+  if (full) window.addEventListener('mousemove', fullscreenMouseMoveHandler)
+}
+provide('fullscreenHandler', reactive({ handleFullscreen: () => playerContainerRef.value?.requestFullscreen() }))
+onMounted(() => document.addEventListener('fullscreenchange', fullscreenChange))
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', fullscreenChange)
+  window.removeEventListener('mousemove', fullscreenMouseMoveHandler)
+  clearTimeout(timer)
 })
 </script>
 
@@ -225,8 +69,8 @@ onMounted(() => {
 
 <style >
 #bilibili-player {
-  width: 750px;
-  height: 468px;
+  width: 100%;
+  min-width: 0;
   position: static;
 }
 .bpx-docker {
@@ -294,4 +138,10 @@ onMounted(() => {
 .quantity_item-active {
   color: var(--theme-color);
 }
+
+.bpx-player-video-area { aspect-ratio: 16 / 9; flex: auto; min-height: 0; }
+.bpx-player-container:fullscreen { width: 100%; height: 100%; }
+.bpx-player-container:fullscreen .bpx-player-video-area { flex: 1; aspect-ratio: auto; }
+.bpx-player-primary-area { container-type: inline-size; }
+
 </style>

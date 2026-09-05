@@ -11,7 +11,7 @@ import IconVideoShare from '@/components/icons/IconVideoShare.vue'
 import { formatCount } from '@/utils/CommonUtil'
 import { message } from 'ant-design-vue'
 import videoInfoAPI from '@/api/video/VideoInfoAPI'
-import type { AxiosResponse } from 'axios'
+import type { SimpleResponse } from '@/types/ApiRespType'
 import { useTokenStore } from '@/stores/token'
 import type { VideoToolbarInfoProps } from '@/types/PropsType'
 
@@ -48,7 +48,7 @@ async function applyInteractAPI(
   apiMethod: (
     vid: number,
     uid: number,
-  ) => Promise<AxiosResponse<unknown, unknown>>,
+  ) => Promise<SimpleResponse>,
   // callBack?: () => void,
   fallback?: () => void,
 ) {
@@ -135,7 +135,7 @@ async function longPressFavorBtn() {
   loading = true
   message.loading({ content: `一键三连...`, key })
   try {
-    const result = await videoInfoAPI.triple(1100, token.uid)
+    const result = await videoInfoAPI.triple(infoCopy.value.vid, token.uid)
     infoCopy.value.favor = true
     infoCopy.value.coin = true
     infoCopy.value.collect = true
@@ -143,7 +143,7 @@ async function longPressFavorBtn() {
     message.success({ content: '一键三连成功！', key })
   } catch (error) {
     console.error('一键三连异常', error)
-    message.success({ content: '一键三连异常！', key })
+    message.error({ content: '一键三连异常！', key })
   } finally {
     loading = false
   }
@@ -178,6 +178,7 @@ function handleFavorKeyUp() {
   keyFavorDown = false
 }
 function handleKeydown(event: KeyboardEvent) {
+  if ((event.target as HTMLElement | null)?.closest('input, textarea, select, button, [contenteditable="true"]')) return
   switch (event.key) {
     case 'q':
     case 'Q':
@@ -312,12 +313,12 @@ onBeforeUnmount(() => {
   padding-bottom: 12px;
   line-height: 28px;
   border-bottom: 1px solid var(--line_regular);
-  border-bottom: 1px solid var(--line_regular);
 }
 .video-toolbar-container .video-toolbar-left {
   position: relative;
   display: flex;
   align-items: center;
+  min-width: 0;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -419,6 +420,44 @@ onBeforeUnmount(() => {
   position: absolute;
   width: 0;
   height: 0;
+}
+
+@media (max-width: 620px) {
+  .video-toolbar-container,
+  .video-toolbar-container .video-toolbar-left,
+  .video-toolbar-container .video-toolbar-left .video-toolbar-left-main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .video-toolbar-container .video-toolbar-left .video-toolbar-left-main {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .video-toolbar-container .video-toolbar-left .toolbar-left-item-wrap {
+    min-width: 0;
+    margin-right: 0;
+  }
+
+  .video-toolbar-left-item,
+  .video-share-wrap,
+  .video-share-wrap .video-share,
+  .video-share-wrap .video-share .video-share-info {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .video-toolbar-left-item,
+  .video-share-wrap .video-share {
+    justify-content: center;
+  }
+
+  .video-toolbar-left-item .video-toolbar-item-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+  }
 }
 .teleport.hidden {
   visibility: hidden;

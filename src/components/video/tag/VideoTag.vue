@@ -84,4 +84,9 @@ const showMoreLength = ref<number>(7)
   color: var(--graph_icon);
 }
 
+
+.video-tag-container .tag-panel { display: flex; flex-wrap: wrap; }
+.video-tag-container .tag-panel .tag { min-width: 0; max-width: 100%; float: none; }
+.video-tag-container .tag-panel .tag-link { height: auto; min-height: 28px; overflow-wrap: anywhere; max-width: 100%; }
+
 </style>

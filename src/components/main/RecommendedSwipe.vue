@@ -5,10 +5,9 @@
 <script setup lang="ts">
 import CarouselSlide from '@/components/main/CarouselSlide.vue'
 import { ASSETS_BASE_URL } from '@/utils/imgUtil'
-import VideoCard from '@/components/video/VideoCard.vue'
-import { onMounted, ref } from 'vue'
+
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { CarouselInfoType } from '@/types/PropsType'
-import { deepCopy } from '@/utils/CommonUtil'
 import CarouselFooterDot from '@/components/main/CarouselFooterDot.vue'
 import IconArrowLeft from '@/components/icons/IconArrowLeft.vue'
 import IconArrowRight from '@/components/icons/IconArrowRight.vue'
@@ -62,11 +61,13 @@ function nextSlide() {
 function prevSlide() {
   current.value = (current.value - 1) % slidesItems.value.length
   if (current.value < 0) {
-    current.value = slidesItems.value.length - 2
+    current.value = slidesItems.value.length - 1
   }
 }
 
 function autoPlay() {
+  clearInterval(quartz)
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   quartz = setInterval(() => {
     nextSlide()
   }, props.interval * 1000)
@@ -77,9 +78,9 @@ function pauseAutoPlay() {
 }
 
 onMounted(() => {
-  slidesItems.value.push(deepCopy(slidesItems.value[0]))
   autoPlay()
 })
+onBeforeUnmount(pauseAutoPlay)
 </script>
 
 <template>
@@ -89,13 +90,6 @@ onMounted(() => {
       @mouseenter="pauseAutoPlay"
       @mouseleave="autoPlay"
     >
-      <div class="recommended-swipe-shim">
-        <VideoCard empty style="--cover-radio: 56.25%" />
-        <VideoCard empty style="--cover-radio: 56.25%" />
-        <div class="shim-card"></div>
-        <div class="shim-card"></div>
-      </div>
-
       <div class="recommended-swipe-body">
         <div class="recommended-swipe-body-normal">
           <div class="carousel">
@@ -166,31 +160,9 @@ onMounted(() => {
 }
 
 .recommended-swipe-core {
+  aspect-ratio: 16 / 10;
   position: relative;
   width: 100%;
-}
-
-.recommended-swipe-shim {
-  width: 100%;
-  display: grid;
-  grid-gap: 20px 12px;
-  opacity: 0;
-  visibility: hidden;
-  user-select: none;
-  pointer-events: none;
-  grid-column: span 2;
-  grid-row: span 2;
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.recommended-container_floor-aside .recommended-swipe-shim {
-  grid-gap: 20px;
-}
-
-.recommended-swipe-shim .shim-card {
-  width: 100%;
-  height: 0;
-  padding-top: var(--cover-radio);
 }
 
 .recommended-swipe-body {
@@ -290,7 +262,7 @@ onMounted(() => {
   z-index: 1;
   user-select: none;
   pointer-events: none;
-  height: 810px;
+  height: 100%;
   mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
   -webkit-mask-image: linear-gradient(0, #2f3238 11%, transparent 20%);
 }
@@ -380,4 +352,8 @@ onMounted(() => {
   width: 12px;
   height: 12px;
 }
+
+.recommended-swipe { display: flex; flex-direction: column; }
+.recommended-swipe-core { flex: 1; }
+
 </style>

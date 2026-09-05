@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 
+import { useAsyncResource } from '@/composables/useAsyncResource'
 import IndexView from '@/views/index/IndexView.vue'
 import VideoInfo from '@/components/video/VideoInfo.vue'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
@@ -23,7 +24,6 @@ import UpUserPanel from '@/components/video/right-container/UpUserPanel.vue'
 import UserInfoCardPopover from '@/components/global/UserInfoCardPopover.vue'
 
 const token = useTokenStore()
-const playerLoading = ref<boolean>(true)
 const playerRef = ref()
 
 const route = useRoute()
@@ -37,8 +37,8 @@ const videoInfoEntity = ref<VideoPageInfoProps>({
   publishTime: '--',
   viewCount: 0,
   danmakuCount: 0,
-  honorText: '全站排行榜最高第4名',
-  argue: '该内容仅供娱乐，请勿过分解读',
+  honorText: '',
+  argue: '',
   reprintPermit: 1,
 })
 const toolbarInfo = ref<VideoToolbarInfoProps>({
@@ -52,29 +52,21 @@ const toolbarInfo = ref<VideoToolbarInfoProps>({
   collect: false,
   repost: false,
 })
-async function fetchData() {
-  if (vid.value === 0) {
-    return
-  }
-  // 获取当前视频信息
-  videoInfoAPI.get(vid.value)
-    .then(({ data }) => {
-      videoInfoDTO.value = data as VideoDTOType
-      copyFieldValue(videoInfoDTO.value, videoInfoEntity.value)
-      copyFieldValue(videoInfoDTO.value, toolbarInfo.value)
-      console.log('getVideoInfo', videoInfoDTO.value, videoInfoEntity.value, toolbarInfo.value)
-      playerLoading.value = false
-      // playerRef.value.updatePlayerOptions()
-    })
+const { loading: playerLoading, error, execute: fetchData } = useAsyncResource(async () => {
+  if (!Number.isSafeInteger(vid.value) || vid.value <= 0) throw new Error('视频地址无效')
+  const { data } = await videoInfoAPI.get(vid.value)
+  if (!data) throw new Error('视频不存在或暂不可用')
+  videoInfoDTO.value = data
+  copyFieldValue(data, videoInfoEntity.value)
+  copyFieldValue(data, toolbarInfo.value)
   if (token.isLogin) {
-    // 若已登录，则获取用户对该视频的互动信息
-    videoInfoAPI.getUserVideo(vid.value, token.uid)
-      .then(({ data }) => {
-        copyFieldValue(data, toolbarInfo.value)
-        console.log('getUserVideoInfo', data, toolbarInfo.value)
-      })
+    try {
+      const response = await videoInfoAPI.getUserVideo(vid.value, token.uid)
+      copyFieldValue(response.data, toolbarInfo.value)
+    } catch { /* A failed interaction lookup should not prevent video playback. */ }
   }
-}
+  return data
+})
 
 const userInfoPopRef = ref()
 const refHandler = reactive({
@@ -89,7 +81,9 @@ onMounted(() => {
 
 <template>
   <index-view>
-    <div id="mirror-vdcon" class="video-container-v1" v-show="!playerLoading">
+    <div v-if="playerLoading" class="page-state" role="status">正在加载视频…</div>
+    <div v-else-if="error" class="page-state" role="alert"><p>{{ error }}</p><button @click="fetchData">重试</button></div>
+    <div v-else-if="videoInfoDTO" id="mirror-vdcon" class="video-container-v1">
       <div class="left-container scroll-sticky">
 <!--        视频标题等主要信息-->
         <video-info :info="videoInfoEntity" />
@@ -132,57 +126,19 @@ onMounted(() => {
 
 <style scoped>
 .video-container-v1 {
-  width: auto;
-  padding: 0 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 350px);
+  gap: var(--layout-gap);
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 24px var(--layout-padding);
 }
-.video-container-v1 {
-  display: flex;
-  justify-content: center;
-  box-sizing: content-box;
-  position: relative;
-}
-.left-container {
-  width: 750px;
-}
-.video-container-v1 .left-container {
-  position: relative;
-}
-.video-container-v1 .left-container.scroll-sticky {
-  position: sticky;
-  height: fit-content;
-  z-index: 1;
-}
-.player-wrap {
-  position: relative;
-}
-#playerWrap {
-  height: 468px;
-}
-
-
-.video-container-v1 .right-container {
-  width: 350px;
-  flex: none;
-  margin-left: 30px;
-  position: relative;
-  pointer-events: none;
-}
-.video-container-v1 .right-container .right-container-inner {
-  padding-bottom: 250px;
-}
-.video-container-v1 .right-container .right-container-inner.scroll-sticky {
-  position: sticky;
-}
-.video-container-v1 .right-container .right-container-inner * {
-  pointer-events: all;
-}
-
-
-
-.fixed-sidenav-storage {
-  position: fixed;
-  right: 6px;
-  bottom: 50px;
-  z-index: 6;
+.left-container, .right-container { min-width: 0; }
+.player-wrap { position: relative; }
+.right-container-inner { position: sticky; top: calc(var(--header-height) + 24px); }
+@media (max-width: 1099px) {
+  .video-container-v1 { grid-template-columns: minmax(0, 1fr); }
+  .right-container-inner { position: static; }
 }
 </style>

@@ -3,115 +3,18 @@
   -->
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import VideoPlayerQualityItem from '@/components/video/player/video-area/control/VideoPlayerQualityItem.vue'
-import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import type { VideoPlayerQualityItemProps } from '@/types/PropsType'
-
-const props = defineProps({
-  level: {
-    type: Number,
-    default: 6
-  }
-})
-watch(() => props.level, () => {
-  doUpdateQualityList(props.level)
-})
-
-// 清晰度
-const currentQualityText = computed<string>(
-  () =>
-    qualityList.value.filter(
-      quality => quality.id === currentQuality.value,
-    )?.[0].text,
-)
-const currentQuality = defineModel('value', { type: Number, required: true })
-const qualityList = ref<VideoPlayerQualityItemProps[]>([
-  {
-    id: 0,
-    text: '4K 超清',
-    value: 'v4k',
-    vip: true,
-    show: true,
-  },
-  {
-    id: 1,
-    text: '1080P 高码率',
-    value: 'v1080p_hbit',
-    vip: true,
-    show: true,
-  },
-  {
-    id: 2,
-    text: '1080P 高清',
-    value: 'v1080p',
-    vip: false,
-    show: true,
-  },
-  {
-    id: 3,
-    text: '720P 高清',
-    value: 'v720p',
-    vip: false,
-    show: true,
-  },
-  {
-    id: 4,
-    text: '480P 清晰',
-    value: 'v480p',
-    vip: false,
-    show: true,
-  },
-  {
-    id: 5,
-    text: '360P 流畅',
-    value: 'v360p',
-    vip: false,
-    show: true,
-  },
-])
-
-const showQualityMenu = ref<boolean>(false)
-const btnEnter = ref<boolean>(false)
-const menuEnter = ref<boolean>(false)
-function btnMouseEnter() {
-  btnEnter.value = true
-  setTimeout(() => {
-    if (btnEnter.value) {
-      showQualityMenu.value = true
-    }
-  }, 100)
-}
-function btnMouseLeave() {
-  btnEnter.value = false
-  setTimeout(() => {
-    if (!menuEnter.value) {
-      showQualityMenu.value = false
-    }
-  }, 100)
-}
-function menuMouseEnter() {
-  menuEnter.value = true
-}
-function menuMouseLeave() {
-  menuEnter.value = false
-  setTimeout(() => {
-    if (!btnEnter.value) {
-      showQualityMenu.value = false
-    }
-  }, 100)
-}
-
-function doUpdateQualityList(level: number) {
-  // console.log('doUpdateQualityList', level)
-  const unavailableLevelCount = Math.min((qualityList.value.length - level), qualityList.value.length)
-  for (let i = 0; i < unavailableLevelCount; i++) {
-    qualityList.value[i].show = false
-  }
-}
-
-onMounted(() => {
-  doUpdateQualityList(props.level)
-})
+const props = defineProps<{ qualities: VideoPlayerQualityItemProps[] }>()
+const currentQuality = defineModel<number>('value', { required: true })
+const qualityList = computed(() => [{ id: -1, text: '自动', value: 'auto', vip: false, show: true }, ...props.qualities])
+const currentQualityText = computed(() => qualityList.value.find(item => item.id === currentQuality.value)?.text || '自动')
+const showQualityMenu = ref(false)
+function btnMouseEnter() { showQualityMenu.value = true }
+function btnMouseLeave() { showQualityMenu.value = false }
+function menuMouseEnter() { showQualityMenu.value = true }
+function menuMouseLeave() { showQualityMenu.value = false }
 </script>
 
 <template>
@@ -119,6 +22,9 @@ onMounted(() => {
     class="bpx-player-ctrl-btn bpx-player-ctrl-quality"
     aria-label="清晰度"
     tabindex="0"
+    @click="showQualityMenu = !showQualityMenu"
+    @keydown.enter.prevent="showQualityMenu = !showQualityMenu"
+    @keydown.esc="showQualityMenu = false"
     @mouseenter="btnMouseEnter"
     @mouseleave="btnMouseLeave"
   >

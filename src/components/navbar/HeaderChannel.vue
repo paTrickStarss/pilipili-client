@@ -330,4 +330,23 @@ const showMoreEnter = ref<boolean>(false)
   fill: var(--text2);
   transition: fill 0.3s;
 }
+
+.pili-header .pili-header__channel { min-height: 110px; height: auto; padding-block: 20px; gap: 12px; }
+.pili-header .channel-icons { flex-shrink: 0; }
+@media (max-width: 1099px) {
+  .pili-header .pili-header__channel { align-items: flex-start; }
+  .pili-header .pili-header__channel .right-channel-container { flex-wrap: wrap; gap: 12px; }
+  .pili-header .pili-header__channel .channel-items__left { grid-auto-flow: row; grid-template-columns: repeat(6, minmax(0, 1fr)); border: 0; padding: 0; }
+  .pili-header .pili-header__channel .channel-items__right { width: 100%; grid-auto-flow: row; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: auto; }
+  .pili-header .pili-header__channel .channel-link__right { justify-content: center; }
+}
+@media (max-width: 599px) {
+  .pili-header .pili-header__channel { flex-direction: column; }
+  .pili-header .channel-icons { margin: 0; }
+  .pili-header .channel-icons__item { flex-direction: row; align-items: center; gap: 8px; }
+  .pili-header .channel-icons .icon-bg { width: 32px; height: 32px; margin: 0; }
+  .pili-header .pili-header__channel .channel-items__left,
+  .pili-header .pili-header__channel .channel-items__right { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
 </style>

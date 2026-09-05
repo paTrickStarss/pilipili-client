@@ -4,11 +4,13 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPageView from '@/views/main/MainPageView.vue'
+import { useTokenStore } from '@/stores/token'
 import VideoPageErrorView from '@/views/error/VideoPageErrorView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/:pathMatch(.*)*', redirect: '/error/not-found' },
     // main-page
     {
       path: '/',
@@ -120,6 +122,7 @@ const router = createRouter({
           name: 'space-settings',
           meta: {
             mode: 'settings',
+            requiresAuth: true,
             index: 6
           },
           component: () =>
@@ -146,7 +149,9 @@ const router = createRouter({
     {
       name: 'creativity-center',
       path: '/creativity',
+      redirect: { name: 'creativity-upload' },
       meta: {
+        requiresAuth: true,
         mode: 'main',
         index: 0
       },
@@ -174,6 +179,7 @@ const router = createRouter({
           name: 'creativity-audit',
           meta: {
             mode: 'audit',
+            requiresAdmin: true,
             index: 6
           },
           component: () =>
@@ -187,13 +193,14 @@ const router = createRouter({
   ],
 })
 
-// router.beforeEach((to, from, next) => {
-//
-// })
-//
-// router.afterEach((to, from, next) => {
-//
-// })
+router.beforeEach(to => {
+  const token = useTokenStore()
+  if ((to.meta.requiresAuth || (to.name === 'space-main' && !to.params.id)) && !token.isLogin) {
+    return { name: 'main-page', query: { login: '1', redirect: to.fullPath } }
+  }
+  if (to.meta.requiresAdmin && !token.isAdmin) return { name: 'error-page', params: { status: 'forbidden' } }
+})
+
 router.afterEach((to, from) => {
   const toDepth = to.path.split('/').length
   const fromDepth = from.path.split('/').length
